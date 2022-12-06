@@ -1,8 +1,6 @@
 package com.kreinto.chefico.components.views
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -20,7 +18,6 @@ import com.kreinto.chefico.components.TopBar
 import com.kreinto.chefico.components.buttons.RoundButton
 
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun DashboardView() {
   Column(
@@ -91,6 +88,3 @@ fun DashboardView() {
     NavigationFloatingMenu()
   }
 }
-
-
-

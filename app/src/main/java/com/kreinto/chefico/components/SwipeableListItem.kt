@@ -43,7 +43,6 @@ fun SwipeableListItem(
         thresholds = { _, _ -> FractionalThreshold(threshold) },
         orientation = Orientation.Horizontal
       )
-
   ) {
     Row(
       verticalAlignment = Alignment.CenterVertically,
