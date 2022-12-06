@@ -1,6 +1,8 @@
 package com.kreinto.chefico.components.views
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -12,15 +14,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kreinto.chefico.components.Notification
+import com.kreinto.chefico.components.NotificationData
 import com.kreinto.chefico.components.NotificationsList
 import com.kreinto.chefico.components.TopBar
 import com.kreinto.chefico.components.buttons.RoundButton
 
+
+@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun DashboardView() {
   Column(
-    modifier = Modifier.fillMaxSize()
+    modifier = Modifier.fillMaxSize(),
+    horizontalAlignment = Alignment.CenterHorizontally
   ) {
     TopBar {
       Box(
@@ -52,11 +57,40 @@ fun DashboardView() {
         }
       }
     }
-    NotificationsList {
-      Notification("Primula")
-      Notification("Dopula")
-      Notification("Ultpula")
-      Notification("kami")
-    }
+    NotificationsList(
+      modifier = Modifier.height(500.dp),
+      notificationData = listOf(
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+        NotificationData(12, "message"),
+      )
+    )
+    NavigationFloatingMenu()
   }
 }
+
+
+
