@@ -1,47 +1,57 @@
 package com.kreinto.chefico.components
 
-import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.kreinto.chefico.components.inputs.SearchInput
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@ExperimentalMaterial3Api
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppFrame() {
+fun AppFrame(
+  title: @Composable () -> Unit,
+  navigationIcon: @Composable () -> Unit,
+  actions: @Composable () -> Unit,
+  floatingActionButton: @Composable () -> Unit,
+  content: @Composable () -> Unit,
+) {
   Scaffold(
     topBar = {
-      TopAppBar(
-        title = { SearchInput() },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-          containerColor = Color.White
-        ),
-        navigationIcon = {
-          Icon(
-            modifier = Modifier.size(32.dp),
-            imageVector = Icons.Default.ArrowBack,
-            contentDescription = "Back",
-            tint = Color.Green
-          )
-        },
-        scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
-        actions = {}
-      )
-    },
-    floatingActionButtonPosition = FabPosition.End,
-    floatingActionButton = {
-      FloatingActionButton(onClick = {}) {
-        Text("X")
+      Surface(
+        shadowElevation = 12.dp,
+      ) {
+        TopAppBar(
+          modifier = Modifier,
+          title = title,
+          colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = Color.White
+          ),
+          navigationIcon = navigationIcon,
+          scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
+          actions = {
+            if (actions != null) {
+              actions()
+            } else {
+              Spacer(modifier = Modifier.size(32.dp))
+            }
+          }
+        )
       }
     },
-    content = { Text("BodyContent") }
+    floatingActionButtonPosition = FabPosition.Center,
+    floatingActionButton = floatingActionButton,
+    content = { padding ->
+      Column(
+        modifier = Modifier.padding(padding)
+      ) {
+        content()
+      }
+    }
   )
 }
 
@@ -49,5 +59,4 @@ fun AppFrame() {
 @Composable
 @Preview
 fun AppFramePreview() {
-  AppFrame()
 }

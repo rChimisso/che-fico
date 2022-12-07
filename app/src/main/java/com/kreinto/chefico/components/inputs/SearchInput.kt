@@ -8,7 +8,6 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,11 +20,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SearchInput() {
+fun SearchInput(
+  onValueChange: (query: String) -> Unit
+) {
   var query: String by rememberSaveable { mutableStateOf("") }
   TextField(
     value = query,
-    onValueChange = { query = it },
+    onValueChange = {
+      query = it
+      onValueChange(query)
+    },
     maxLines = 1,
     singleLine = true,
     colors = TextFieldDefaults.textFieldColors(
@@ -38,14 +42,7 @@ fun SearchInput() {
     ),
     placeholder = { Text(text = "Placeholder") },
     trailingIcon = {
-      if (query.isEmpty()) {
-        Icon(
-          modifier = Modifier.size(32.dp),
-          imageVector = Icons.Default.Search,
-          contentDescription = "SearchInput",
-          tint = Color.Green
-        )
-      } else {
+      if (!query.isEmpty()) {
         IconButton(onClick = { query = "" }) {
           Icon(
             modifier = Modifier.size(32.dp),
@@ -63,5 +60,7 @@ fun SearchInput() {
 @Composable
 @Preview(showBackground = true)
 fun SearchInputPreview() {
-  SearchInput()
+  SearchInput {
+
+  }
 }

@@ -51,7 +51,6 @@ fun SwipeableListItem(
       buttons()
     }
     Surface(
-      elevation = elevation,
       shape = shape,
       modifier = Modifier
         .fillMaxSize()
