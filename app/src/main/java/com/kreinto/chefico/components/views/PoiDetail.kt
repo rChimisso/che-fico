@@ -6,7 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.twotone.ArrowBack
@@ -136,26 +136,20 @@ fun PoiDetailView() {
                   unfocusedIndicatorColor = Color.Transparent,
                   disabledIndicatorColor = Color.Transparent
                 )
-
               )
-              Spacer(modifier = Modifier.width(8.dp))
-              RoundButton(
-                modifier = Modifier.offset(y = -(24).dp),
-                icon = Icons.Default.ShoppingCart,
-                onClick = {}
+              val icons = arrayOf(
+                Icons.Default.ShoppingCart,
+                Icons.Default.Share,
+                Icons.Default.Call
               )
-              Spacer(modifier = Modifier.width(8.dp))
-              RoundButton(
-                modifier = Modifier.offset(y = -(24).dp),
-                icon = Icons.Default.MoreVert,
-                onClick = {}
-              )
-              Spacer(modifier = Modifier.width(8.dp))
-              RoundButton(
-                modifier = Modifier.offset(y = -(24).dp),
-                icon = Icons.Default.Share,
-                onClick = {}
-              )
+              for (i in 0..2) {
+                Spacer(modifier = Modifier.width(8.dp))
+                RoundButton(
+                  modifier = Modifier.offset(y = -(20).dp),
+                  icon = icons[i],
+                  onClick = {}
+                )
+              }
               Spacer(modifier = Modifier.width(8.dp))
             }
           }
