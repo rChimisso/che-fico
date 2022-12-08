@@ -8,6 +8,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,15 +41,22 @@ fun SearchInput(
       unfocusedIndicatorColor = Color.Transparent,
       disabledIndicatorColor = Color.Transparent
     ),
-    placeholder = { Text(text = "Placeholder") },
+    placeholder = { Text(text = "Search...") },
     trailingIcon = {
-      if (!query.isEmpty()) {
+      if (query.isEmpty()) {
+        Icon(
+          modifier = Modifier.size(24.dp),
+          imageVector = Icons.Default.Search,
+          contentDescription = null,
+          tint = Color(0xff4caf50)
+        )
+      } else {
         IconButton(onClick = { query = "" }) {
           Icon(
-            modifier = Modifier.size(32.dp),
+            modifier = Modifier.size(24.dp),
             imageVector = Icons.Default.Close,
-            contentDescription = "SearchInput",
-            tint = Color.Green
+            contentDescription = null,
+            tint = Color(0xff4caf50)
           )
         }
       }
@@ -59,7 +67,7 @@ fun SearchInput(
 
 @Composable
 @Preview(showBackground = true)
-fun SearchInputPreview() {
+private fun SearchInputPreview() {
   SearchInput {
 
   }

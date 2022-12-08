@@ -42,6 +42,6 @@ fun RoundButton(
 
 @Composable
 @Preview()
-fun RoundButtonPreview() {
+private fun RoundButtonPreview() {
   RoundButton(icon = Icons.Default.Add, onClick = {})
 }

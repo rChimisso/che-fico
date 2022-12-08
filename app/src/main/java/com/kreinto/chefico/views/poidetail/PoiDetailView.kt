@@ -1,4 +1,4 @@
-package com.kreinto.chefico.components.views.poidetail
+package com.kreinto.chefico.views.poidetail
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
@@ -12,7 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.kreinto.chefico.components.frames.SimpleFrame
-import com.kreinto.chefico.components.views.poidetail.*
+import com.kreinto.chefico.views.poidetail.*
 
 
 @ExperimentalMaterialApi
@@ -44,6 +44,6 @@ fun PoiDetailView() {
 @ExperimentalPagerApi
 @Composable
 @Preview
-fun PoiDetailPreviw() {
+private fun PoiDetailPreviw() {
   PoiDetailView()
 }

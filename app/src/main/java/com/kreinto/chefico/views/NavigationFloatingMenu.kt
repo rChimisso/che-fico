@@ -1,4 +1,4 @@
-package com.kreinto.chefico.components.views
+package com.kreinto.chefico.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

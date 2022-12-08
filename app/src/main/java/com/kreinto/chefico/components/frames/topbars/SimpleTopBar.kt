@@ -36,6 +36,6 @@ fun SimpleTopBar() {
 @ExperimentalMaterial3Api
 @Composable
 @Preview
-fun SimpleTopBarPreview() {
+private fun SimpleTopBarPreview() {
   SimpleTopBar()
 }

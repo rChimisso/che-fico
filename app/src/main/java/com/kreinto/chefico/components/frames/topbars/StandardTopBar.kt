@@ -75,6 +75,6 @@ fun StandardTopBar(
 @ExperimentalMaterial3Api
 @Composable
 @Preview
-fun StandardTopBarPreview() {
+private fun StandardTopBarPreview() {
   StandardTopBar {}
 }

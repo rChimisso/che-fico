@@ -40,6 +40,6 @@ fun SimpleFrame(
 @ExperimentalMaterial3Api
 @Composable
 @Preview
-fun SimpleFramePreview() {
+private fun SimpleFramePreview() {
   SimpleFrame {}
 }

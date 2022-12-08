@@ -1,4 +1,4 @@
-package com.kreinto.chefico.components.views.poidetail
+package com.kreinto.chefico.views.poidetail
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape

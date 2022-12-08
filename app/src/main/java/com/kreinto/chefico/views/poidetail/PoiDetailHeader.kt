@@ -1,4 +1,4 @@
-package com.kreinto.chefico.components.views.poidetail
+package com.kreinto.chefico.views.poidetail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

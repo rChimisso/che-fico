@@ -9,6 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 import com.kreinto.chefico.components.frames.topbars.StandardTopBar
 
 /**
@@ -17,6 +18,7 @@ import com.kreinto.chefico.components.frames.topbars.StandardTopBar
  * @param showBackAction Whether to show the [IconButton] to go back.
  * @param showSettingsAction Whether to show the [IconButton] to go open the app settings.
  * @param title [Composable] to show at [StandardTopBar] center.
+ * @param bottomBar Optional overlayed [SimpleBottomBar] to display.
  * @param content [Composable] to display as main content.
  */
 @ExperimentalMaterial3Api
@@ -25,6 +27,7 @@ fun StandardFrame(
   showBackAction: Boolean = true,
   showSettingsAction: Boolean = false,
   title: @Composable () -> Unit,
+  bottomBar: @Composable () -> Unit = {},
   content: @Composable (ColumnScope.() -> Unit)
 ) {
   Scaffold(
@@ -35,10 +38,10 @@ fun StandardFrame(
         title = title
       )
     },
-    bottomBar = {},
+    bottomBar = bottomBar,
     content = {
       Column(
-        modifier = Modifier.padding(it),
+        modifier = Modifier.padding(top = it.calculateTopPadding()),
         content = content
       )
     }
@@ -51,6 +54,6 @@ fun StandardFrame(
 @ExperimentalMaterial3Api
 @Composable
 @Preview
-fun StandardFramePreview() {
+private fun StandardFramePreview() {
   StandardFrame(title = {}) {}
 }

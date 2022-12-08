@@ -1,4 +1,4 @@
-package com.kreinto.chefico.components.views.maps
+package com.kreinto.chefico.views.maps
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
@@ -52,6 +52,6 @@ fun MapsView() {
 @ExperimentalMaterial3Api
 @Composable
 @Preview
-fun MapsViewPreviw() {
+private fun MapsViewPreviw() {
   MapsView()
 }

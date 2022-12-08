@@ -107,7 +107,7 @@ fun SimpleBottomBar(
 @ExperimentalMaterial3Api
 @Composable
 @Preview
-fun SimpleBottomBarPreview() {
+private fun SimpleBottomBarPreview() {
   SimpleBottomBar(
     leftIcon = Icons.Default.List,
     leftAction = {},
