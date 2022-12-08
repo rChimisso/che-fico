@@ -1,4 +1,4 @@
-package com.kreinto.chefico.components.views
+package com.kreinto.chefico.components.views.poidetail
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
@@ -14,7 +14,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.kreinto.chefico.components.views.poidetail.*
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@ExperimentalMaterialApi
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
 @ExperimentalPagerApi
@@ -44,6 +44,7 @@ fun PoiDetailView() {
   )
 }
 
+@ExperimentalMaterialApi
 @ExperimentalMaterial3Api
 @ExperimentalPagerApi
 @Composable
