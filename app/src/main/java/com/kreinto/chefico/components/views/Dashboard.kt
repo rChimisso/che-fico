@@ -37,7 +37,7 @@ fun DashboardButton() {
   }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@ExperimentalMaterialApi
 @Composable
 fun DashboardView() {
   AppScaffold(
