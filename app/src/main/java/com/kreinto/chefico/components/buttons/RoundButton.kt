@@ -1,15 +1,14 @@
 package com.kreinto.chefico.components.buttons
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,19 +23,20 @@ fun RoundButton(
   onClick: () -> Unit,
   color: Color = Color.White,
 ) {
-  IconButton(
-    modifier = modifier
-      .clip(CircleShape)
-      .background(color)
-      .size(40.dp),
-    onClick = onClick,
+  Surface(
+    shape = CircleShape,
+    shadowElevation = 12.dp
   ) {
-    Icon(
-      imageVector = icon,
-      contentDescription = contentDescriptor,
-      tint = tint,
-
+    IconButton(
+      onClick = onClick,
+      modifier = Modifier.size(40.dp)
+    ) {
+      Icon(
+        imageVector = icon,
+        contentDescription = contentDescriptor,
+        tint = tint,
       )
+    }
   }
 }
 

@@ -31,7 +31,7 @@ data class NotificationData(
 @Composable
 fun Notification(notificationData: NotificationData) {
   val swipeableState = rememberSwipeableState(initialValue = 0)
-  SwipeableListItem(
+  Swipeable(
     swipeableState = swipeableState,
     modifier = Modifier
       .fillMaxWidth()
@@ -39,7 +39,7 @@ fun Notification(notificationData: NotificationData) {
     elevation = 12.dp,
     swipeOffset = 96.dp,
     shape = RoundedCornerShape(10.dp),
-    buttons = {
+    actions = {
       val scale by animateFloatAsState(
         targetValue = if (swipeableState.offset.value == 0f) swipeableState.offset.value else 1f
       )

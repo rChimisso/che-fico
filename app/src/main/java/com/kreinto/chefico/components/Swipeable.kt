@@ -18,14 +18,14 @@ import kotlin.math.roundToInt
 
 @ExperimentalMaterialApi
 @Composable
-fun SwipeableListItem(
+fun Swipeable(
   swipeableState: SwipeableState<Int>,
   modifier: Modifier = Modifier,
   swipeOffset: Dp,
   elevation: Dp = 12.dp,
   threshold: Float = 1.5f,
   shape: RoundedCornerShape = RoundedCornerShape(12.dp),
-  buttons: @Composable () -> Unit,
+  actions: @Composable () -> Unit,
   content: @Composable () -> Unit,
 ) {
   val offsetPx = with(LocalDensity.current) { swipeOffset.toPx() }
@@ -48,7 +48,7 @@ fun SwipeableListItem(
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.End,
     ) {
-      buttons()
+      actions()
     }
     Surface(
       shape = shape,
