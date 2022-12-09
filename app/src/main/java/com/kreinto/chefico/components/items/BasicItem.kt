@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -17,17 +18,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+@ExperimentalMaterial3Api
 @Composable
 fun BasicItem(
   icon: ImageVector,
   text: String,
   modifier: Modifier = Modifier,
-  tint: Color = Color(0xff4caf50)
+  tint: Color = Color(0xff4caf50),
+  onClick: () -> Unit
 ) {
   Surface(
     modifier = modifier.fillMaxWidth(),
     shadowElevation = 12.dp,
-    shape = RoundedCornerShape(10.dp)
+    shape = RoundedCornerShape(10.dp),
+    onClick = onClick
   ) {
     Row(
       modifier = Modifier
@@ -53,8 +57,9 @@ fun BasicItem(
   }
 }
 
+@ExperimentalMaterial3Api
 @Composable
 @Preview
 private fun BasicItemPreview() {
-  BasicItem(icon = Icons.Default.ShoppingCart, text = "Basic item")
+  BasicItem(icon = Icons.Default.ShoppingCart, text = "Basic item") {}
 }

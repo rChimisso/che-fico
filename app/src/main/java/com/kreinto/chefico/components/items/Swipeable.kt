@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,13 +25,15 @@ import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.components.buttons.SimpleButton
 import kotlin.math.roundToInt
 
+@ExperimentalMaterial3Api
 @ExperimentalMaterialApi
 @Composable
 fun Swipeable(
   icon: ImageVector,
   text: String,
   tint: Color = Color(0xff4caf50),
-  actions: Array<@Composable () -> Unit> = arrayOf()
+  actions: Array<@Composable () -> Unit> = arrayOf(),
+  onClick: () -> Unit
 ) {
   val state = rememberSwipeableState(initialValue = 0)
   val offsetPx = with(LocalDensity.current) { (actions.size * 40).dp.toPx() }
@@ -67,7 +70,8 @@ fun Swipeable(
       icon = icon,
       text = text,
       tint = tint,
-      modifier = Modifier.offset { IntOffset(x = state.offset.value.roundToInt(), y = 0) }
+      modifier = Modifier.offset { IntOffset(x = state.offset.value.roundToInt(), y = 0) },
+      onClick = onClick
     )
   }
 }
@@ -75,6 +79,7 @@ fun Swipeable(
 /**
  * [Preview] for [Swipeable].
  */
+@ExperimentalMaterial3Api
 @ExperimentalMaterialApi
 @Composable
 @Preview
@@ -86,5 +91,5 @@ private fun SwipeablePreview() {
       { SimpleButton(icon = Icons.Default.Warning, contentDescriptor = "Snooze") {} },
       { SimpleButton(icon = Icons.Default.Delete, contentDescriptor = "Delete") {} }
     )
-  )
+  ) {}
 }
