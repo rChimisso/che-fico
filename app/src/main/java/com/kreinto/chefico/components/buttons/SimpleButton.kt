@@ -1,18 +1,19 @@
 package com.kreinto.chefico.components.buttons
 
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 /**
- * Round button.
+ * Simple transparent button.
  *
  * @param icon [Icon][ImageVector] to display.
  * @param tint Icon color.
@@ -22,30 +23,32 @@ import androidx.compose.ui.unit.dp
  * @param onClick Function called when this button is clicked.
  */
 @Composable
-fun RoundButton(
+fun SimpleButton(
   icon: ImageVector,
   tint: Color = Color(0xff4caf50),
-  contentDescriptor: String = "",
+  contentDescriptor: String,
   onClick: () -> Unit
 ) {
-  Surface(
-    shape = CircleShape,
-    shadowElevation = 12.dp
+  IconButton(
+    modifier = Modifier.size(40.dp),
+    onClick = onClick
   ) {
-    SimpleButton(
-      icon = icon,
+    Icon(
+      imageVector = icon,
       tint = tint,
-      contentDescriptor = contentDescriptor,
-      onClick = onClick
+      contentDescription = contentDescriptor
     )
   }
 }
 
 /**
- * [Preview] for [RoundButton].
+ * [Preview] for [SimpleButton].
  */
 @Composable
-@Preview()
-private fun RoundButtonPreview() {
-  RoundButton(icon = Icons.Default.Add, onClick = {})
+@Preview
+private fun SimpleButtonPreview() {
+  SimpleButton(
+    icon = Icons.Default.Add,
+    contentDescriptor = "Simple button"
+  ) {}
 }
