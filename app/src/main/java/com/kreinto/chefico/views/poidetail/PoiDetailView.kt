@@ -1,6 +1,7 @@
 package com.kreinto.chefico.views.poidetail
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.filled.*
@@ -15,6 +16,7 @@ import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.views.poidetail.*
 
 
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
@@ -39,6 +41,7 @@ fun PoiDetailView() {
   }
 }
 
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
 @ExperimentalPagerApi

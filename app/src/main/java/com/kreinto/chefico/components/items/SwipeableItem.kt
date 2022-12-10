@@ -1,5 +1,6 @@
 package com.kreinto.chefico.components.items
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -7,7 +8,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
@@ -25,10 +26,11 @@ import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.components.buttons.SimpleButton
 import kotlin.math.roundToInt
 
+@ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
 @Composable
-fun Swipeable(
+fun SwipeableItem(
   icon: ImageVector,
   text: String,
   tint: Color = Color(0xff4caf50),
@@ -67,26 +69,27 @@ fun Swipeable(
       }
     }
     BasicItem(
+      modifier = Modifier.offset { IntOffset(x = state.offset.value.roundToInt(), y = 0) },
       icon = icon,
       text = text,
       tint = tint,
-      modifier = Modifier.offset { IntOffset(x = state.offset.value.roundToInt(), y = 0) },
       onClick = onClick
     )
   }
 }
 
 /**
- * [Preview] for [Swipeable].
+ * [Preview] for [SwipeableItem].
  */
+@ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
 @Composable
 @Preview
-private fun SwipeablePreview() {
-  Swipeable(
-    icon = Icons.Default.ShoppingCart,
-    text = "Swipeable",
+private fun SwipeableItemPreview() {
+  SwipeableItem(
+    icon = Icons.Default.Star,
+    text = "Swipeable item",
     actions = arrayOf(
       { SimpleButton(icon = Icons.Default.Warning, contentDescriptor = "Snooze") {} },
       { SimpleButton(icon = Icons.Default.Delete, contentDescriptor = "Delete") {} }
