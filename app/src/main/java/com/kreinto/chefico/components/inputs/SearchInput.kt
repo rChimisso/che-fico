@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.components.buttons.SimpleButton
+import com.kreinto.chefico.components.data.ButtonData
 
 @Composable
 fun SearchInput(onValueChange: (query: String) -> Unit) {
@@ -49,7 +50,12 @@ fun SearchInput(onValueChange: (query: String) -> Unit) {
           tint = Color(0xff4caf50)
         )
       } else {
-        SimpleButton(icon = Icons.Default.Close, contentDescription = "Empty query") { query = "" }
+        SimpleButton(
+          ButtonData(
+            icon = Icons.Default.Close,
+            contentDescription = "Empty query"
+          ) { query = "" }
+        )
       }
     },
     modifier = Modifier.fillMaxWidth()

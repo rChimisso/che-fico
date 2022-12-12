@@ -24,6 +24,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.RoundButton
+import com.kreinto.chefico.components.data.ButtonData
 import com.kreinto.chefico.components.utils.HorizontalPagerSlider
 
 @ExperimentalPagerApi
@@ -62,7 +63,7 @@ fun PoiDetailHeader() {
             .offset(y = 20.dp)
         ) {
           items(icons.size) { index ->
-            RoundButton(icon = icons[index], contentDescription = "", onClick = {})
+            RoundButton(ButtonData(icon = icons[index], contentDescription = "") {})
             Spacer(modifier = Modifier.width(8.dp))
           }
         }
@@ -75,7 +76,6 @@ fun PoiDetailHeader() {
           count = 10
         )
       }
-
       Text(
         text = "Nome pianta lunghissimo",
         maxLines = 1,
@@ -88,9 +88,6 @@ fun PoiDetailHeader() {
         color = Color(0xff4caf50),
         overflow = TextOverflow.Ellipsis
       )
-
     }
-
-
   }
 }

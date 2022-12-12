@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kreinto.chefico.AppRoute
 import com.kreinto.chefico.components.buttons.SimpleButton
+import com.kreinto.chefico.components.data.ButtonData
 import com.kreinto.chefico.components.frames.StandardFrame
 import com.kreinto.chefico.components.items.SwipeableItem
 
@@ -24,9 +25,7 @@ import com.kreinto.chefico.components.items.SwipeableItem
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
 @Composable
-fun DashboardView(
-  onNavigate: (id: String) -> Unit
-) {
+fun DashboardView(onNavigate: (id: String) -> Unit) {
   StandardFrame(
     title = { Text(text = "Che fico!", fontSize = 24.sp) },
     isDashboard = true,
@@ -41,8 +40,22 @@ fun DashboardView(
         icon = Icons.Default.Star,
         text = "Notification Name $i",
         actions = arrayOf(
-          { SimpleButton(icon = Icons.Default.Warning, contentDescription = "Snooze") {} },
-          { SimpleButton(icon = Icons.Default.Delete, contentDescription = "Delete") {} }
+          {
+            SimpleButton(
+              ButtonData(
+                icon = Icons.Default.Warning,
+                contentDescription = "Snooze"
+              ) {}
+            )
+          },
+          {
+            SimpleButton(
+              ButtonData(
+                icon = Icons.Default.Delete,
+                contentDescription = "Delete"
+              ) {}
+            )
+          }
         )
       ) {}
       Spacer(modifier = Modifier.height(16.dp))

@@ -15,24 +15,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
+import com.kreinto.chefico.components.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 
 @ExperimentalMaterial3Api
 @Composable
-fun MapsView(
-  onNavigate: (id: String) -> Unit
-) {
+fun MapsView(onNavigate: (id: String) -> Unit) {
   SimpleFrame(
     onClick = { onNavigate("dashboard") },
     bottomBar = {
       SimpleBottomBar(
-        leftIcon = Icons.Default.List,
-        leftAction = {},
-        centerIcon = Icons.Default.Search,
-        centerAction = {},
-        rightIcon = Icons.Default.Place,
-        rightAction = {}
+        leftButtonData = ButtonData(
+          icon = Icons.Default.List,
+          contentDescription = "Go to POI list",
+        ) {},
+        centerButtonData = ButtonData(
+          icon = Icons.Default.Search,
+          contentDescription = "Open Plant Recognition",
+        ) {},
+        rightButtonData = ButtonData(
+          icon = Icons.Default.Place,
+          contentDescription = "Create new POI",
+        ) {}
       )
     }
   ) {

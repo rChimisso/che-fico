@@ -16,6 +16,7 @@ import com.kreinto.chefico.components.frames.topbars.SimpleTopBar
 /**
  * Simple Frame following Material3 guidelines.
  *
+ * @param onClick Function called when the top bar button is clicked.
  * @param bottomBar Optional overlayed [SimpleBottomBar] to display.
  * @param content [Composable] to display as main content.
  */

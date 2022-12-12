@@ -7,9 +7,7 @@ import com.kreinto.chefico.components.frames.StandardFrame
 
 @ExperimentalMaterial3Api
 @Composable
-fun SettinsView(
-  onNavigate: (route: String) -> Unit
-) {
+fun SettinsView(onNavigate: (route: String) -> Unit) {
   StandardFrame(
     onClick = { onNavigate(AppRoute.Dashboard.route) },
     title = { /*TODO*/ }

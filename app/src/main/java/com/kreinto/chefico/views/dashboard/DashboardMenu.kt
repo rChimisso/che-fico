@@ -15,11 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.AppRoute
 import com.kreinto.chefico.components.buttons.RoundButton
+import com.kreinto.chefico.components.data.ButtonData
 
 @Composable
-fun DashboardMenu(
-  onNavigate: (id: String) -> Unit,
-) {
+fun DashboardMenu(onNavigate: (id: String) -> Unit) {
   Surface(
     elevation = 12.dp,
     modifier = Modifier
@@ -30,15 +29,27 @@ fun DashboardMenu(
       horizontalArrangement = Arrangement.SpaceEvenly,
       verticalAlignment = Alignment.CenterVertically,
     ) {
-      RoundButton(icon = Icons.Default.Share, contentDescription = "") {
-        onNavigate(AppRoute.PoiList.route)
-      }
-      RoundButton(icon = Icons.Default.Add, contentDescription = "") {
-        onNavigate(AppRoute.Maps.route)
-      }
-      RoundButton(icon = Icons.Default.CheckCircle, contentDescription = "") {
-        onNavigate(AppRoute.Camera.route)
-      }
+      RoundButton(
+        ButtonData(
+          icon = Icons.Default.Share,
+          contentDescription = "",
+          onClick = { onNavigate(AppRoute.PoiList.route) }
+        )
+      )
+      RoundButton(
+        ButtonData(
+          icon = Icons.Default.Add,
+          contentDescription = "",
+          onClick = { onNavigate(AppRoute.Maps.route) }
+        )
+      )
+      RoundButton(
+        ButtonData(
+          icon = Icons.Default.CheckCircle,
+          contentDescription = "",
+          onClick = { onNavigate(AppRoute.Camera.route) }
+        )
+      )
     }
   }
 }

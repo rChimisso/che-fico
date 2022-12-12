@@ -9,25 +9,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.kreinto.chefico.components.buttons.RoundButton
+import com.kreinto.chefico.components.data.ButtonData
 
 /**
  * Simple Top Bar following Material3 guidelines.
  *
  * Transparent [TopAppBar] with just a [RoundButton] to go back.
+ *
+ * @param onClick Function called when the back button is clicked.
  */
 @ExperimentalMaterial3Api
 @Composable
-fun SimpleTopBar(
-  onClick: () -> Unit
-) {
+fun SimpleTopBar(onClick: () -> Unit) {
   TopAppBar(
     scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
     navigationIcon = {
-      RoundButton(icon = Icons.Default.ArrowBack, contentDescription = "Go back", onClick = onClick)
+      RoundButton(
+        ButtonData(
+          icon = Icons.Default.ArrowBack,
+          contentDescription = "Go back",
+          onClick = onClick
+        )
+      )
     },
-    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-      containerColor = Color.Transparent
-    ),
+    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Color.Transparent),
     title = {}
   )
 }

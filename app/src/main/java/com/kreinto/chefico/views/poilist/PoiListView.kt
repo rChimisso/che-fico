@@ -14,18 +14,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.AppRoute
+import com.kreinto.chefico.components.data.ButtonData
 import com.kreinto.chefico.components.frames.StandardFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 import com.kreinto.chefico.components.inputs.SearchInput
 import com.kreinto.chefico.components.items.SelectableItem
 
-
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @Composable
-fun PoiListView(
-  onNavigate: (route: String) -> Unit,
-) {
+fun PoiListView(onNavigate: (route: String) -> Unit) {
   var selectables by remember { mutableStateOf(0) }
   StandardFrame(
     onClick = { onNavigate(AppRoute.Dashboard.route) },
@@ -33,10 +31,14 @@ fun PoiListView(
     bottomBar = {
       if (selectables > 0) {
         SimpleBottomBar(
-          leftIcon = Icons.Default.Delete,
-          leftAction = {},
-          rightIcon = Icons.Default.Share,
-          rightAction = {}
+          leftButtonData = ButtonData(
+            icon = Icons.Default.Delete,
+            contentDescription = "Delete selected",
+          ) {},
+          rightButtonData = ButtonData(
+            icon = Icons.Default.Share,
+            contentDescription = "Share selected",
+          ) {}
         )
       }
     }

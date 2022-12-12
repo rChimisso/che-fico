@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.components.buttons.SimpleButton
+import com.kreinto.chefico.components.data.ButtonData
 import kotlin.math.roundToInt
 
 @ExperimentalFoundationApi
@@ -91,8 +92,8 @@ private fun SwipeableItemPreview() {
     icon = Icons.Default.Star,
     text = "Swipeable item",
     actions = arrayOf(
-      { SimpleButton(icon = Icons.Default.Warning, contentDescription = "Snooze") {} },
-      { SimpleButton(icon = Icons.Default.Delete, contentDescription = "Delete") {} }
+      { SimpleButton(ButtonData(icon = Icons.Default.Warning, contentDescription = "Snooze") {}) },
+      { SimpleButton(ButtonData(icon = Icons.Default.Delete, contentDescription = "Delete") {}) }
     )
   ) {}
 }

@@ -29,43 +29,23 @@ fun BasicItem(
   text: String,
   modifier: Modifier = Modifier,
   tint: Color = Color(0xff4caf50),
-  color: Color = Color.White,
   onLongClick: (() -> Unit)? = null,
   onClick: () -> Unit
 ) {
-  Surface(
-    modifier = modifier
-      .fillMaxWidth()
-      .combinedClickable(
-        onClick = onClick,
-        onLongClick = onLongClick
-      ),
-    shadowElevation = 12.dp,
-    shape = RoundedCornerShape(10.dp),
-    color = color
-  ) {
-    Row(
-      modifier = Modifier
-        .padding(4.dp)
-        .height(40.dp),
-      verticalAlignment = Alignment.CenterVertically,
-      horizontalArrangement = Arrangement.Start
-    ) {
+  BasicItem(
+    icon = {
       Icon(
-        modifier = Modifier.padding(horizontal = 8.dp),
+        modifier = it,
         imageVector = icon,
         contentDescription = "",
         tint = tint
       )
-      Text(
-        modifier = Modifier.padding(horizontal = 8.dp),
-        text = text,
-        overflow = TextOverflow.Ellipsis,
-        maxLines = 1,
-        fontSize = 18.sp
-      )
-    }
-  }
+    },
+    text = text,
+    modifier = modifier,
+    onLongClick = onLongClick,
+    onClick = onClick
+  )
 }
 
 @ExperimentalFoundationApi
@@ -83,10 +63,7 @@ fun BasicItem(
   Surface(
     modifier = modifier
       .fillMaxWidth()
-      .combinedClickable(
-        onClick = onClick,
-        onLongClick = onLongClick
-      ),
+      .combinedClickable(onClick = onClick, onLongClick = onLongClick),
     shadowElevation = 12.dp,
     shape = RoundedCornerShape(10.dp),
     color = color,

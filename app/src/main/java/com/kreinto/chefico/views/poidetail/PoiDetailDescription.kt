@@ -21,11 +21,7 @@ fun PoiDetailDescription() {
     modifier = Modifier.padding(16.dp),
     shape = RoundedCornerShape(10.dp)
   ) {
-
-
     Column {
-
-
       var value by remember { mutableStateOf("Nota dell'utente, magari con indicazioni o altro. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut...") }
       TextField(
         modifier = Modifier
@@ -60,5 +56,4 @@ fun PoiDetailDescription() {
       }
     }
   }
-
 }
