@@ -20,17 +20,22 @@ import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 
 @ExperimentalMaterial3Api
 @Composable
-fun MapsView() {
-  SimpleFrame(bottomBar = {
-    SimpleBottomBar(
-      leftIcon = Icons.Default.List,
-      leftAction = {},
-      centerIcon = Icons.Default.Search,
-      centerAction = {},
-      rightIcon = Icons.Default.Place,
-      rightAction = {}
-    )
-  }) {
+fun MapsView(
+  onNavigate: (id: String) -> Unit
+) {
+  SimpleFrame(
+    onClick = { onNavigate("dashboard") },
+    bottomBar = {
+      SimpleBottomBar(
+        leftIcon = Icons.Default.List,
+        leftAction = {},
+        centerIcon = Icons.Default.Search,
+        centerAction = {},
+        rightIcon = Icons.Default.Place,
+        rightAction = {}
+      )
+    }
+  ) {
     val mapProperties by remember {
       mutableStateOf(
         MapProperties(maxZoomPreference = 10f, minZoomPreference = 5f)
@@ -53,5 +58,5 @@ fun MapsView() {
 @Composable
 @Preview
 private fun MapsViewPreviw() {
-  MapsView()
+  MapsView {}
 }

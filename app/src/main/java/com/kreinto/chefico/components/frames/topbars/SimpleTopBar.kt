@@ -17,11 +17,13 @@ import com.kreinto.chefico.components.buttons.RoundButton
  */
 @ExperimentalMaterial3Api
 @Composable
-fun SimpleTopBar() {
+fun SimpleTopBar(
+  onClick: () -> Unit
+) {
   TopAppBar(
     scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
     navigationIcon = {
-      RoundButton(icon = Icons.Default.ArrowBack, contentDescriptor = "Go back", onClick = {})
+      RoundButton(icon = Icons.Default.ArrowBack, contentDescriptor = "Go back", onClick = onClick)
     },
     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
       containerColor = Color.Transparent
@@ -37,5 +39,5 @@ fun SimpleTopBar() {
 @Composable
 @Preview
 private fun SimpleTopBarPreview() {
-  SimpleTopBar()
+  SimpleTopBar {}
 }

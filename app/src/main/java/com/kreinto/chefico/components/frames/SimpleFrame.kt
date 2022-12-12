@@ -23,11 +23,12 @@ import com.kreinto.chefico.components.frames.topbars.SimpleTopBar
 @ExperimentalMaterial3Api
 @Composable
 fun SimpleFrame(
+  onClick: () -> Unit,
   bottomBar: @Composable () -> Unit = {},
   content: @Composable (ColumnScope.() -> Unit)
 ) {
   Scaffold(
-    topBar = { SimpleTopBar() },
+    topBar = { SimpleTopBar(onClick = onClick) },
     bottomBar = bottomBar,
     content = {
       Column(
@@ -45,5 +46,5 @@ fun SimpleFrame(
 @Composable
 @Preview
 private fun SimpleFramePreview() {
-  SimpleFrame {}
+  SimpleFrame(onClick = {}) {}
 }

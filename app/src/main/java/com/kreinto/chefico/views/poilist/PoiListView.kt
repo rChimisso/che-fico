@@ -13,17 +13,22 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kreinto.chefico.AppRoute
 import com.kreinto.chefico.components.frames.StandardFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 import com.kreinto.chefico.components.inputs.SearchInput
 import com.kreinto.chefico.components.items.SelectableItem
 
+
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @Composable
-fun PoiListView() {
+fun PoiListView(
+  onNavigate: (route: String) -> Unit,
+) {
   var selectables by remember { mutableStateOf(0) }
   StandardFrame(
+    onClick = { onNavigate(AppRoute.Dashboard.route) },
     title = { SearchInput(onValueChange = {}) },
     bottomBar = {
       if (selectables > 0) {
@@ -46,7 +51,7 @@ fun PoiListView() {
         icon = Icons.Default.Star,
         text = "POI Name $i",
         selectable = selectables > 0,
-        onClick = {},
+        onClick = { onNavigate(AppRoute.PoiDetail.route) },
         onLongClick = { selectables++ },
         onCheckedChange = {
           if (it) {
@@ -70,5 +75,5 @@ fun PoiListView() {
 @Composable
 @Preview
 private fun PoiListViewPreview() {
-  PoiListView()
+  PoiListView {}
 }

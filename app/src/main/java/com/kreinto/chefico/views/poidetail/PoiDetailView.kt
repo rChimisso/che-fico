@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.kreinto.chefico.AppRoute
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.views.poidetail.*
 
@@ -22,8 +23,12 @@ import com.kreinto.chefico.views.poidetail.*
 @ExperimentalMaterial3Api
 @ExperimentalPagerApi
 @Composable
-fun PoiDetailView() {
-  SimpleFrame {
+fun PoiDetailView(
+  onNavigate: (route: String) -> Unit
+) {
+  SimpleFrame(
+    onClick = { onNavigate(AppRoute.PoiList.route) }
+  ) {
     PoiDetailHeader()
     PoiDetailDescription()
     Column(
@@ -48,5 +53,5 @@ fun PoiDetailView() {
 @Composable
 @Preview
 private fun PoiDetailPreviw() {
-  PoiDetailView()
+  PoiDetailView {}
 }

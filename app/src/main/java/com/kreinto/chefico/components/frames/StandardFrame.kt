@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 import com.kreinto.chefico.components.frames.topbars.StandardTopBar
 
@@ -26,8 +27,8 @@ import com.kreinto.chefico.components.frames.topbars.StandardTopBar
 @ExperimentalMaterial3Api
 @Composable
 fun StandardFrame(
-  showBackAction: Boolean = true,
-  showSettingsAction: Boolean = false,
+  isDashboard: Boolean = false,
+  onClick: () -> Unit,
   title: @Composable () -> Unit,
   bottomBar: @Composable () -> Unit = {},
   content: @Composable (ColumnScope.() -> Unit)
@@ -35,16 +36,19 @@ fun StandardFrame(
   Scaffold(
     topBar = {
       StandardTopBar(
-        showBackAction = showBackAction,
-        showSettingsAction = showSettingsAction,
-        title = title
+        isDashboard = isDashboard,
+        title = title,
+        onClick = onClick
       )
     },
     bottomBar = bottomBar,
     content = {
       Column(
         modifier = Modifier
-          .padding(top = it.calculateTopPadding())
+          .padding(
+            top = it.calculateTopPadding(),
+            bottom = if (isDashboard) it.calculateBottomPadding() else 0.dp
+          )
           .verticalScroll(rememberScrollState()),
         content = content
       )
@@ -59,5 +63,5 @@ fun StandardFrame(
 @Composable
 @Preview
 private fun StandardFramePreview() {
-  StandardFrame(title = {}) {}
+  StandardFrame(title = {}, onClick = {}) {}
 }
