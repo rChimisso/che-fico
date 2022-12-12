@@ -2,7 +2,7 @@
   * Mappa integrata
   * POI
   * Geolocalizzazione (Coarse & Fine)
-  * Intent per aprire Maps (indicazioni)
+  * Intent per aprire Maps (indicazioni, percorsi con tappe)
 - Plant Recognition
   * ML Kit
   * Riconosce la pianta
