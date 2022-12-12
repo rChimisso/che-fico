@@ -30,7 +30,6 @@ fun BasicItem(
   modifier: Modifier = Modifier,
   tint: Color = Color(0xff4caf50),
   color: Color = Color.White,
-  border: BorderStroke? = null,
   onLongClick: (() -> Unit)? = null,
   onClick: () -> Unit
 ) {
@@ -43,8 +42,7 @@ fun BasicItem(
       ),
     shadowElevation = 12.dp,
     shape = RoundedCornerShape(10.dp),
-    color = color,
-    border = border
+    color = color
   ) {
     Row(
       modifier = Modifier

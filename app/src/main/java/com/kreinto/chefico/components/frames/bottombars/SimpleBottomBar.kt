@@ -48,7 +48,7 @@ fun SimpleBottomBar(
     horizontalArrangement = Arrangement.SpaceBetween,
     verticalAlignment = Alignment.CenterVertically
   ) {
-    RoundButton(icon = leftIcon, onClick = leftAction)
+    RoundButton(icon = leftIcon, contentDescription = "", onClick = leftAction)
     Surface(
       shape = RoundedCornerShape(40.dp),
       shadowElevation = 12.dp
@@ -66,7 +66,7 @@ fun SimpleBottomBar(
         )
       }
     }
-    RoundButton(icon = rightIcon, onClick = rightAction)
+    RoundButton(icon = rightIcon, contentDescription = "", onClick = rightAction)
   }
 }
 
@@ -96,8 +96,8 @@ fun SimpleBottomBar(
     horizontalArrangement = Arrangement.SpaceBetween,
     verticalAlignment = Alignment.CenterVertically
   ) {
-    RoundButton(icon = leftIcon, onClick = leftAction)
-    RoundButton(icon = rightIcon, onClick = rightAction)
+    RoundButton(icon = leftIcon, contentDescription = "", onClick = leftAction)
+    RoundButton(icon = rightIcon, contentDescription = "", onClick = rightAction)
   }
 }
 

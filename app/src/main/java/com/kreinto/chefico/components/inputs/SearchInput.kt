@@ -9,7 +9,6 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,11 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kreinto.chefico.components.buttons.SimpleButton
 
 @Composable
-fun SearchInput(
-  onValueChange: (query: String) -> Unit
-) {
+fun SearchInput(onValueChange: (query: String) -> Unit) {
   var query: String by rememberSaveable { mutableStateOf("") }
   TextField(
     value = query,
@@ -47,18 +45,11 @@ fun SearchInput(
         Icon(
           modifier = Modifier.size(24.dp),
           imageVector = Icons.Default.Search,
-          contentDescription = null,
+          contentDescription = "Search",
           tint = Color(0xff4caf50)
         )
       } else {
-        IconButton(onClick = { query = "" }) {
-          Icon(
-            modifier = Modifier.size(24.dp),
-            imageVector = Icons.Default.Close,
-            contentDescription = null,
-            tint = Color(0xff4caf50)
-          )
-        }
+        SimpleButton(icon = Icons.Default.Close, contentDescription = "Empty query") { query = "" }
       }
     },
     modifier = Modifier.fillMaxWidth()
@@ -68,7 +59,5 @@ fun SearchInput(
 @Composable
 @Preview(showBackground = true)
 private fun SearchInputPreview() {
-  SearchInput {
-
-  }
+  SearchInput {}
 }

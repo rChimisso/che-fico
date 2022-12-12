@@ -23,7 +23,7 @@ fun SimpleTopBar(
   TopAppBar(
     scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
     navigationIcon = {
-      RoundButton(icon = Icons.Default.ArrowBack, contentDescriptor = "Go back", onClick = onClick)
+      RoundButton(icon = Icons.Default.ArrowBack, contentDescription = "Go back", onClick = onClick)
     },
     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
       containerColor = Color.Transparent

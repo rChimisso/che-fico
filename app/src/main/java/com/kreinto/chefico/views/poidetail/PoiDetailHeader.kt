@@ -62,7 +62,7 @@ fun PoiDetailHeader() {
             .offset(y = 20.dp)
         ) {
           items(icons.size) { index ->
-            RoundButton(icon = icons[index], onClick = { })
+            RoundButton(icon = icons[index], contentDescription = "", onClick = {})
             Spacer(modifier = Modifier.width(8.dp))
           }
         }

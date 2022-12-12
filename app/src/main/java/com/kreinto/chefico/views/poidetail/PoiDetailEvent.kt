@@ -18,6 +18,6 @@ fun PoiDetailEvent() {
   SwipeableItem(
     icon = Icons.Default.CheckCircle,
     text = "Evento 1",
-    actions = arrayOf({ SimpleButton(icon = Icons.Default.Delete, contentDescriptor = "") {} })
+    actions = arrayOf({ SimpleButton(icon = Icons.Default.Delete, contentDescription = "") {} })
   ) {}
 }

@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
  *
  * @param icon [Icon][ImageVector] to display.
  * @param tint Icon color.
- * @param contentDescriptor Text used by accessibility services to describe what this icon
+ * @param contentDescription Text used by accessibility services to describe what this icon
  * represents. This should always be provided unless this icon is used for decorative purposes,
  * and does not represent a meaningful action that a user can take. This text should be localized.
  * @param onClick Function called when this button is clicked.
@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 fun SimpleButton(
   icon: ImageVector,
   tint: Color = Color(0xff4caf50),
-  contentDescriptor: String,
+  contentDescription: String,
   onClick: () -> Unit
 ) {
   IconButton(
@@ -36,7 +36,7 @@ fun SimpleButton(
     Icon(
       imageVector = icon,
       tint = tint,
-      contentDescription = contentDescriptor
+      contentDescription = contentDescription
     )
   }
 }
@@ -49,6 +49,6 @@ fun SimpleButton(
 private fun SimpleButtonPreview() {
   SimpleButton(
     icon = Icons.Default.Add,
-    contentDescriptor = "Simple button"
+    contentDescription = "Simple button"
   ) {}
 }

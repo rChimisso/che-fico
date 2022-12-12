@@ -91,8 +91,8 @@ private fun SwipeableItemPreview() {
     icon = Icons.Default.Star,
     text = "Swipeable item",
     actions = arrayOf(
-      { SimpleButton(icon = Icons.Default.Warning, contentDescriptor = "Snooze") {} },
-      { SimpleButton(icon = Icons.Default.Delete, contentDescriptor = "Delete") {} }
+      { SimpleButton(icon = Icons.Default.Warning, contentDescription = "Snooze") {} },
+      { SimpleButton(icon = Icons.Default.Delete, contentDescription = "Delete") {} }
     )
   ) {}
 }

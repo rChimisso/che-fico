@@ -41,8 +41,8 @@ fun DashboardView(
         icon = Icons.Default.Star,
         text = "Notification Name $i",
         actions = arrayOf(
-          { SimpleButton(icon = Icons.Default.Warning, contentDescriptor = "Snooze") {} },
-          { SimpleButton(icon = Icons.Default.Delete, contentDescriptor = "Delete") {} }
+          { SimpleButton(icon = Icons.Default.Warning, contentDescription = "Snooze") {} },
+          { SimpleButton(icon = Icons.Default.Delete, contentDescription = "Delete") {} }
         )
       ) {}
       Spacer(modifier = Modifier.height(16.dp))

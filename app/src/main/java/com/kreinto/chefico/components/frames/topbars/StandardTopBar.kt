@@ -37,7 +37,7 @@ fun StandardTopBar(
           SimpleButton(
             onClick = onClick,
             icon = Icons.Default.ArrowBack,
-            contentDescriptor = "Go back",
+            contentDescription = "Go back",
           )
         }
       },
@@ -47,7 +47,7 @@ fun StandardTopBar(
           SimpleButton(
             onClick = onClick,
             icon = Icons.Default.Settings,
-            contentDescriptor = "Settings"
+            contentDescription = "Settings"
           )
         }
       }

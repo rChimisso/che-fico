@@ -30,13 +30,13 @@ fun DashboardMenu(
       horizontalArrangement = Arrangement.SpaceEvenly,
       verticalAlignment = Alignment.CenterVertically,
     ) {
-      RoundButton(icon = Icons.Default.Share) {
+      RoundButton(icon = Icons.Default.Share, contentDescription = "") {
         onNavigate(AppRoute.PoiList.route)
       }
-      RoundButton(icon = Icons.Default.Add) {
+      RoundButton(icon = Icons.Default.Add, contentDescription = "") {
         onNavigate(AppRoute.Maps.route)
       }
-      RoundButton(icon = Icons.Default.CheckCircle) {
+      RoundButton(icon = Icons.Default.CheckCircle, contentDescription = "") {
         onNavigate(AppRoute.Camera.route)
       }
     }
