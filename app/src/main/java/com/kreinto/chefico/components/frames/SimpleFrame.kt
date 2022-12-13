@@ -10,14 +10,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 import com.kreinto.chefico.components.frames.topbars.SimpleTopBar
 
 /**
  * Simple Frame following Material3 guidelines.
  *
  * @param onClick Function called when the top bar button is clicked.
- * @param bottomBar Optional overlayed [SimpleBottomBar] to display.
+ * @param bottomBar Optional overlayed bottom bar to display.
  * @param content [Composable] to display as main content.
  */
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

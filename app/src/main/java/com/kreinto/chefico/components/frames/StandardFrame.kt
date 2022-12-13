@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 import com.kreinto.chefico.components.frames.topbars.StandardTopBar
 
 /**
@@ -21,7 +20,7 @@ import com.kreinto.chefico.components.frames.topbars.StandardTopBar
  * "Go back" icon or the "Settings" icon.
  * @param onClick Function called when the top bar button is clicked.
  * @param title [Composable] to show at [StandardTopBar] center.
- * @param bottomBar Optional overlayed [SimpleBottomBar] to display.
+ * @param bottomBar Optional overlayed bottom bar to display.
  * @param content [Composable] to display as main content.
  */
 @ExperimentalMaterial3Api

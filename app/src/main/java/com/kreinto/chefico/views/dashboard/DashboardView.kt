@@ -30,9 +30,7 @@ fun DashboardView(onNavigate: (id: String) -> Unit) {
     title = { Text(text = "Che fico!", fontSize = 24.sp) },
     isDashboard = true,
     onClick = { onNavigate(AppRoute.Settings.route) },
-    bottomBar = {
-      DashboardMenu(onNavigate = onNavigate)
-    }
+    bottomBar = { DashboardMenu(onNavigate = onNavigate) }
   ) {
     Spacer(modifier = Modifier.height(16.dp))
     for (i in 0..20) {
@@ -63,18 +61,11 @@ fun DashboardView(onNavigate: (id: String) -> Unit) {
   }
 }
 
-@Composable
-fun DashboardMenu() {
-  TODO("Not yet implemented")
-}
-
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
 @Composable
 @Preview
 private fun DashboardViewPreview() {
-  DashboardView {
-
-  }
+  DashboardView {}
 }

@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.AppRoute
@@ -34,6 +35,7 @@ fun PoiListView(onNavigate: (route: String) -> Unit) {
           leftButtonData = ButtonData(
             icon = Icons.Default.Delete,
             contentDescription = "Delete selected",
+            tint = Color.Red
           ) {},
           rightButtonData = ButtonData(
             icon = Icons.Default.Share,
