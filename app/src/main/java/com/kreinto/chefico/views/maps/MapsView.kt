@@ -48,7 +48,7 @@ fun MapsView(onNavigate: (id: String) -> Unit) {
     }
     val mapUiSettings by remember {
       mutableStateOf(
-        MapUiSettings(mapToolbarEnabled = true)
+        MapUiSettings(mapToolbarEnabled = false)
       )
     }
     GoogleMap(
