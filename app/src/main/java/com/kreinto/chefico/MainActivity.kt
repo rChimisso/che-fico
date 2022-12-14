@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.ui.theme.CheFicoTheme
 import com.kreinto.chefico.views.dashboard.DashboardView
 import com.kreinto.chefico.views.maps.MapsView
@@ -35,7 +36,10 @@ class MainActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
     setContent {
       CheFicoTheme {
+        val viewModel = CheFicoViewModel(application)
+
         val navController = rememberNavController()
+
         NavHost(
           navController = navController,
           startDestination = AppRoute.Dashboard.route,
@@ -50,7 +54,7 @@ class MainActivity : ComponentActivity() {
             SettinsView(onNavigate = { navController.navigate(it) })
           }
           composable(AppRoute.PoiList.route) {
-            PoiListView(onNavigate = { navController.navigate(it) })
+            PoiListView(viewModel = viewModel, onNavigate = { navController.navigate(it) })
           }
           composable(AppRoute.PoiDetail.route) {
             PoiDetailView(onNavigate = { navController.navigate(it) })

@@ -33,7 +33,6 @@ fun PoiDetailView(
     PoiDetailDescription()
     Column(
       modifier = Modifier
-        .weight(1f)
         .padding(16.dp),
       verticalArrangement = Arrangement.spacedBy(8.dp),
       horizontalAlignment = Alignment.CenterHorizontally
