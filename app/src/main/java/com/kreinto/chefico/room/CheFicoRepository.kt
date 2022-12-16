@@ -25,6 +25,12 @@ class CheFicoRepository(private val notificationDao: NotificationDao, private va
     return poiDao.selectPoi(id)
   }
 
+  fun updatePoi(poi: Poi) {
+    coroutineScope.launch(Dispatchers.IO) {
+      poiDao.updatePoi(poi)
+    }
+  }
+
   fun selectNotification(id: Int): Flow<Notification> {
     return notificationDao.selectNotification(id)
   }

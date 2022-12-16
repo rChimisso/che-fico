@@ -35,6 +35,20 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     }
   }
 
+  fun updatePoi(poi: Poi) {
+    viewModelScope.launch(Dispatchers.IO) {
+      repository.updatePoi(poi)
+    }
+  }
+
+  fun getPoi(id: Int): Flow<Poi> {
+    return repository.selectPoi(id)
+  }
+
+  fun getNotification(id: Int): Flow<Notification> {
+    return repository.selectNotification(id)
+  }
+
   fun getPois(): Flow<List<Poi>> {
     return pois
   }

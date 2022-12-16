@@ -6,11 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.kreinto.chefico.room.CheFicoViewModel
+import com.kreinto.chefico.room.Poi
 import com.kreinto.chefico.ui.theme.CheFicoTheme
 import com.kreinto.chefico.views.dashboard.DashboardView
 import com.kreinto.chefico.views.maps.MapsView
@@ -18,13 +21,13 @@ import com.kreinto.chefico.views.poidetail.PoiDetailView
 import com.kreinto.chefico.views.poilist.PoiListView
 import com.kreinto.chefico.views.settings.SettinsView
 
-sealed class AppRoute(val route: String) {
+sealed class AppRoute(val route: String, val arg: String = "") {
   object Dashboard : AppRoute("dashboard")
   object Settings : AppRoute("settings")
   object Maps : AppRoute("maps")
   object Camera : AppRoute("camera")
   object PoiList : AppRoute("poilist")
-  object PoiDetail : AppRoute("poidetail")
+  object PoiDetail : AppRoute("poidetail/{poiId}", "poiId")
 }
 
 @ExperimentalFoundationApi
@@ -37,7 +40,11 @@ class MainActivity : ComponentActivity() {
     setContent {
       CheFicoTheme {
         val viewModel = CheFicoViewModel(application)
-
+        viewModel.addPoi(
+          Poi(
+            "poi 1", "descr"
+          )
+        )
         val navController = rememberNavController()
 
         NavHost(
@@ -56,8 +63,19 @@ class MainActivity : ComponentActivity() {
           composable(AppRoute.PoiList.route) {
             PoiListView(viewModel = viewModel, onNavigate = { navController.navigate(it) })
           }
-          composable(AppRoute.PoiDetail.route) {
-            PoiDetailView(onNavigate = { navController.navigate(it) })
+          composable(
+            AppRoute.PoiDetail.route,
+            arguments = listOf(
+              navArgument(AppRoute.PoiDetail.arg) {
+                type = NavType.StringType
+              }
+            )
+          ) { backStackEntry ->
+            PoiDetailView(
+              onNavigate = { navController.navigate(it) },
+              poiId = backStackEntry.arguments?.getString(AppRoute.PoiDetail.arg),
+              viewModel = viewModel
+            )
           }
         }
       }

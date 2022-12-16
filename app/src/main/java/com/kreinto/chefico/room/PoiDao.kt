@@ -3,6 +3,7 @@ package com.kreinto.chefico.room
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -21,4 +22,7 @@ interface PoiDao {
 
   @Query("SELECT * FROM pois")
   fun selectPois(): Flow<List<Poi>>
+
+  @Update
+  fun updatePoi(poi: Poi)
 }
