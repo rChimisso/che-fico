@@ -16,7 +16,6 @@ import com.kreinto.chefico.AppRoute
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.views.poidetail.*
 
-
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -33,7 +32,6 @@ fun PoiDetailView(
     PoiDetailDescription()
     Column(
       modifier = Modifier
-        .weight(1f)
         .padding(16.dp),
       verticalArrangement = Arrangement.spacedBy(8.dp),
       horizontalAlignment = Alignment.CenterHorizontally

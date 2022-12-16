@@ -1,16 +1,10 @@
 package com.kreinto.chefico.components.frames
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.components.frames.topbars.StandardTopBar
 
 /**
@@ -30,7 +24,7 @@ fun StandardFrame(
   onClick: () -> Unit,
   title: @Composable () -> Unit,
   bottomBar: @Composable () -> Unit = {},
-  content: @Composable (ColumnScope.() -> Unit)
+  content: @Composable ((PaddingValues) -> Unit)
 ) {
   Scaffold(
     topBar = {
@@ -41,17 +35,7 @@ fun StandardFrame(
       )
     },
     bottomBar = bottomBar,
-    content = {
-      Column(
-        modifier = Modifier
-          .padding(
-            top = it.calculateTopPadding(),
-            bottom = if (isDashboard) it.calculateBottomPadding() else 0.dp
-          )
-          .verticalScroll(rememberScrollState()),
-        content = content
-      )
-    }
+    content = content
   )
 }
 

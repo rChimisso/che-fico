@@ -11,6 +11,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -41,6 +42,7 @@ sealed class AppRoute(val route: String) {
 class MainActivity : ComponentActivity() {
   private lateinit var fusedLocationClient: FusedLocationProviderClient
   private lateinit var locationSettingsClient: SettingsClient
+  private lateinit var navController: NavHostController
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -49,7 +51,7 @@ class MainActivity : ComponentActivity() {
     val requestPermissionLauncher =
       registerForActivityResult(ActivityResultContracts.RequestPermission()) {
         if (it) {
-          // navController.navigate(AppRoute.Maps.route)
+          navController.navigate(AppRoute.Maps.route)
         } else {
           // Explain to the user that the feature is unavailable because the
           // feature requires a permission that the user has denied. At the
@@ -61,8 +63,7 @@ class MainActivity : ComponentActivity() {
 
     setContent {
       CheFicoTheme {
-        val navController = rememberNavController()
-
+        navController = rememberNavController()
         val onNavigate: (route: String) -> Unit = {
           if (it == AppRoute.Maps.route && ContextCompat.checkSelfPermission(
               this,

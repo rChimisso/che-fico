@@ -21,16 +21,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.kreinto.chefico.AppRoute
 import com.kreinto.chefico.components.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
-
 
 @SuppressLint("MissingPermission")
 @ExperimentalMaterial3Api
@@ -85,8 +86,17 @@ fun MapsView(
     }*/
 
     var isMapLoaded by remember { mutableStateOf(false) }
+    var cameraPosition: CameraPosition? by remember { mutableStateOf(null) }
     val mapProperties by remember { mutableStateOf(MapProperties(isMyLocationEnabled = true)) }
-    // val mapUiSettings by remember { mutableStateOf(MapUiSettings(mapToolbarEnabled = true)) }
+    val mapUiSettings by remember {
+      mutableStateOf(
+        MapUiSettings(
+          compassEnabled = false,
+          myLocationButtonEnabled = false,
+          zoomControlsEnabled = false
+        )
+      )
+    }
     val cameraPositionState = rememberCameraPositionState {
       fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
         .addOnSuccessListener {
@@ -94,6 +104,7 @@ fun MapsView(
             .builder()
             .target(LatLng(it.latitude, it.longitude))
             .bearing(it.bearing)
+            .zoom(16f)
             .build()
         }
     }
@@ -107,21 +118,22 @@ fun MapsView(
       fusedLocationClient.requestLocationUpdates(
         locationRequest,
         {
-          val cameraPosition =
-            CameraPosition.builder().target(LatLng(it.latitude, it.longitude)).bearing(it.bearing)
-              .build()
-          // cameraPositionState.animate(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000)
+          cameraPosition = CameraPosition
+            .builder()
+            .target(LatLng(it.latitude, it.longitude))
+            .bearing(it.bearing)
+            .zoom(cameraPositionState.position.zoom)
+            .build()
+          println("lrcp: $cameraPosition")
         },
         Looper.getMainLooper()
       )
     }
     task.addOnFailureListener {
       if (it is ResolvableApiException) {
-        // Location settings are not satisfied, but this can be fixed
-        // by showing the user a dialog.
+        // Location settings are not satisfied, but this can be fixed by showing the user a dialog.
         try {
-          // Show the dialog by calling startResolutionForResult(),
-          // and check the result in onActivityResult().
+          // Show the dialog by calling startResolutionForResult(), and check the result in onActivityResult().
           /*it.startResolutionForResult(
             this@MainActivity,
             REQUEST_CHECK_SETTINGS
@@ -132,25 +144,22 @@ fun MapsView(
       }
     }
 
-
-    // Update blue dot and camera when the location changes
-    /*LaunchedEffect(locationState.value) {
-      // locationSource.onLocationChanged(locationState.value)
-
-      val cameraPosition =
-        CameraPosition.builder().target(LatLng(it.latitude, it.longitude)).bearing(it.bearing)
-          .build()
-      cameraPositionState.animate(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000)
+    LaunchedEffect(cameraPosition) {
+      println("cp: $cameraPosition")
+      if (cameraPosition != null) {
+        cameraPositionState.animate(
+          CameraUpdateFactory.newCameraPosition(cameraPosition!!),
+          1000
+        )
+      }
     }
-*/
+
     GoogleMap(
       modifier = Modifier.fillMaxSize(),
       cameraPositionState = cameraPositionState,
-      onMapLoaded = {
-        isMapLoaded = true
-      },
-      // locationSource = locationSource,
-      properties = mapProperties
+      onMapLoaded = { isMapLoaded = true },
+      properties = mapProperties,
+      uiSettings = mapUiSettings
     )
     if (!isMapLoaded) {
       AnimatedVisibility(
