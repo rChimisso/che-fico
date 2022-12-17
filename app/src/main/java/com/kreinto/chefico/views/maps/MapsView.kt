@@ -1,6 +1,9 @@
 package com.kreinto.chefico.views.maps
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.IntentSender
 import android.os.Looper
 import androidx.compose.animation.AnimatedVisibility
@@ -17,7 +20,9 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -33,13 +38,18 @@ import com.kreinto.chefico.components.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 
+fun Context.getActivity(): Activity = when (this) {
+  is Activity -> this
+  is ContextWrapper -> baseContext.getActivity()
+  else -> throw IllegalStateException("Permissions should be called in the context of an Activity")
+}
+
 @SuppressLint("MissingPermission")
 @ExperimentalMaterial3Api
 @Composable
 fun MapsView(
   fusedLocationClient: FusedLocationProviderClient,
   locationSettingsClient: SettingsClient,
-  /*activity: ComponentActivity,*/
   onNavigate: (id: String) -> Unit
 ) {
   SimpleFrame(
@@ -61,34 +71,11 @@ fun MapsView(
       )
     }
   ) {
-    /*
-    task.addOnCompleteListener {
-      try {
-        val response = it.getResult(ApiException::class.java)
-        // All location settings are satisfied. The client can initialize location requests here.
-      } catch (exception: ApiException) {
-        // if (exception is ResolvableApiException) {}
-        when (exception.statusCode) {
-          LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
-            // Location settings are not satisfied. But could be fixed by showing the user a dialog.
-            try {
-              val resolvable = exception as ResolvableApiException
-              val intentSenderRequest = IntentSenderRequest.Builder(resolvable.resolution).build()
-              settingResultRequest.launch(intentSenderRequest)
-            } catch (_: IntentSender.SendIntentException) {
-
-            } catch (_: ClassCastException) {
-
-            }
-          }
-        }
-      }
-    }*/
-
+    val activity = LocalContext.current.getActivity()
     var isMapLoaded by remember { mutableStateOf(false) }
-    var cameraPosition: CameraPosition? by remember { mutableStateOf(null) }
-    val mapProperties by remember { mutableStateOf(MapProperties(isMyLocationEnabled = true)) }
-    val mapUiSettings by remember {
+    var cameraPosition: CameraPosition? by rememberSaveable { mutableStateOf(null) }
+    val properties by remember { mutableStateOf(MapProperties(isMyLocationEnabled = true)) }
+    val uiSettings by remember {
       mutableStateOf(
         MapUiSettings(
           compassEnabled = false,
@@ -98,54 +85,48 @@ fun MapsView(
       )
     }
     val cameraPositionState = rememberCameraPositionState {
-      fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
-        .addOnSuccessListener {
-          position = CameraPosition
-            .builder()
-            .target(LatLng(it.latitude, it.longitude))
-            .bearing(it.bearing)
-            .zoom(16f)
-            .build()
-        }
+      position = CameraPosition.builder().target(LatLng(0.0, 0.0)).zoom(16f).build()
     }
-
-    val locationRequest = LocationRequest
-      .Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000)
-      .build()
-    val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
-    val task = locationSettingsClient.checkLocationSettings(builder.build())
-    task.addOnSuccessListener {
-      fusedLocationClient.requestLocationUpdates(
-        locationRequest,
-        {
-          cameraPosition = CameraPosition
-            .builder()
-            .target(LatLng(it.latitude, it.longitude))
-            .bearing(it.bearing)
-            .zoom(cameraPositionState.position.zoom)
-            .build()
-          println("lrcp: $cameraPosition")
-        },
-        Looper.getMainLooper()
-      )
-    }
-    task.addOnFailureListener {
-      if (it is ResolvableApiException) {
-        // Location settings are not satisfied, but this can be fixed by showing the user a dialog.
-        try {
-          // Show the dialog by calling startResolutionForResult(), and check the result in onActivityResult().
-          /*it.startResolutionForResult(
-            this@MainActivity,
-            REQUEST_CHECK_SETTINGS
-          )*/
-        } catch (sendEx: IntentSender.SendIntentException) {
-          // Ignore the error.
+    LaunchedEffect(Unit) {
+      val locationRequest = LocationRequest
+        .Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000)
+        .build()
+      val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+      val task = locationSettingsClient.checkLocationSettings(builder.build())
+      task.addOnSuccessListener {
+        fusedLocationClient.requestLocationUpdates(
+          locationRequest,
+          {
+            if (
+              cameraPosition == null ||
+              it.latitude != cameraPosition!!.target.latitude ||
+              it.longitude != cameraPosition!!.target.longitude
+            ) {
+              cameraPosition = CameraPosition
+                .builder()
+                .target(LatLng(it.latitude, it.longitude))
+                .bearing(it.bearing)
+                .zoom(cameraPositionState.position.zoom)
+                .tilt(cameraPositionState.position.tilt)
+                .build()
+            }
+            println("updating location...")
+          },
+          Looper.getMainLooper()
+        )
+      }
+      task.addOnFailureListener {
+        if (it is ResolvableApiException) {
+          println("Settings not satified")
+          try {
+            // Show the dialog by calling startResolutionForResult(), and check the result in onActivityResult().
+            // it.startResolutionForResult(activity, 0x1)
+          } catch (_: IntentSender.SendIntentException) {
+          }
         }
       }
     }
-
     LaunchedEffect(cameraPosition) {
-      println("cp: $cameraPosition")
       if (cameraPosition != null) {
         cameraPositionState.animate(
           CameraUpdateFactory.newCameraPosition(cameraPosition!!),
@@ -158,13 +139,13 @@ fun MapsView(
       modifier = Modifier.fillMaxSize(),
       cameraPositionState = cameraPositionState,
       onMapLoaded = { isMapLoaded = true },
-      properties = mapProperties,
-      uiSettings = mapUiSettings
+      properties = properties,
+      uiSettings = uiSettings
     )
-    if (!isMapLoaded) {
+    if (!isMapLoaded || cameraPosition == null) {
       AnimatedVisibility(
         modifier = Modifier.fillMaxSize(),
-        visible = !isMapLoaded,
+        visible = !isMapLoaded || cameraPosition == null,
         enter = EnterTransition.None,
         exit = fadeOut()
       ) {

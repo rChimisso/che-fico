@@ -81,6 +81,7 @@ class MainActivity : ComponentActivity() {
               requestPermissionLauncher.launch(ACCESS_FINE_LOCATION)
             }
           } else {
+//            fusedLocationClient.removeLocationUpdates {}
             navController.navigate(it)
           }
         }
@@ -95,7 +96,6 @@ class MainActivity : ComponentActivity() {
             MapsView(
               fusedLocationClient = fusedLocationClient,
               locationSettingsClient = locationSettingsClient,
-              /*activity = this@MainActivity,*/
               onNavigate = onNavigate
             )
           }
