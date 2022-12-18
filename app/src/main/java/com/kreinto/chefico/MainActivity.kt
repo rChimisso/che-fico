@@ -1,8 +1,12 @@
 package com.kreinto.chefico
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,7 +17,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.kreinto.chefico.room.CheFicoViewModel
-import com.kreinto.chefico.room.Poi
 import com.kreinto.chefico.ui.theme.CheFicoTheme
 import com.kreinto.chefico.views.dashboard.DashboardView
 import com.kreinto.chefico.views.maps.MapsView
@@ -39,12 +42,7 @@ class MainActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
     setContent {
       CheFicoTheme {
-        val viewModel = CheFicoViewModel(application)
-        viewModel.addPoi(
-          Poi(
-            "poi 1", "descr"
-          )
-        )
+        val viewModel by viewModels<CheFicoViewModel>()
         val navController = rememberNavController()
 
         NavHost(
@@ -83,4 +81,9 @@ class MainActivity : ComponentActivity() {
   }
 }
 
+fun Context.getActivity(): Activity = when (this) {
+  is Activity -> this
+  is ContextWrapper -> baseContext.getActivity()
+  else -> throw IllegalStateException("Permissions should be called in the context of an Activity")
+}
 

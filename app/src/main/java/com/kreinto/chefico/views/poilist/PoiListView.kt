@@ -12,6 +12,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kreinto.chefico.AppRoute
 import com.kreinto.chefico.components.data.ButtonData
 import com.kreinto.chefico.components.frames.StandardFrame
@@ -20,6 +22,7 @@ import com.kreinto.chefico.components.inputs.SearchInput
 import com.kreinto.chefico.components.items.SelectableItem
 import com.kreinto.chefico.room.CheFicoViewModel
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @Composable
@@ -27,9 +30,11 @@ fun PoiListView(
   viewModel: CheFicoViewModel,
   onNavigate: (route: String) -> Unit
 ) {
+
   var selectedPoi = remember { mutableStateListOf<Int>() }
-  var pois = viewModel.getPois().collectAsState(initial = listOf())
+  var pois = viewModel.getPois().collectAsStateWithLifecycle(initialValue = emptyList())
   var filter: String by remember { mutableStateOf("") }
+
 
   StandardFrame(
     onClick = { onNavigate(AppRoute.Dashboard.route) },
@@ -110,4 +115,5 @@ fun PoiListView(
 @Composable
 @Preview
 private fun PoiListViewPreview() {
+
 }

@@ -7,21 +7,25 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.kreinto.chefico.AppRoute
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.room.CheFicoViewModel
-import com.kreinto.chefico.room.Poi
+import com.kreinto.chefico.room.entities.Poi
 
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
@@ -32,14 +36,21 @@ fun PoiDetailView(
   viewModel: CheFicoViewModel,
   onNavigate: (route: String) -> Unit
 ) {
+  println("CAZZO")
+  var poi: State<Poi?>? = null
+  if (poiId != null) {
+    poi = viewModel.getPoi(poiId.toInt()).collectAsStateWithLifecycle(initialValue = null)
+  }
   SimpleFrame(
     onClick = {
       onNavigate(AppRoute.PoiList.route)
     },
   ) { padding ->
     Column(Modifier.padding(top = 0.dp, bottom = padding.calculateBottomPadding())) {
-      if (poiId != null) {
-        val poi = viewModel.getPoi(poiId.toInt()).collectAsState(Poi(""))
+      if (poiId != null && poi != null && poi.value != null) {
+
+        var name by rememberSaveable { mutableStateOf(poi.value!!.name) }
+
         Surface(
           shadowElevation = 12.dp,
           modifier = Modifier.fillMaxWidth(),
@@ -47,17 +58,20 @@ fun PoiDetailView(
           Column {
             PoiDetailSlideShow()
             TextField(
-              value = poi.value.name,
+              value = name,
               maxLines = 1,
               modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .onFocusChanged {
+                  poi.value!!.name = name
+                  viewModel.updatePoi(poi.value!!)
+                },
               colors = TextFieldDefaults.textFieldColors(
                 textColor = Color(0xff4caf50)
               ),
               onValueChange = {
-                poi.value.name = it
-                viewModel.updatePoi(poi.value)
+                name = it
               }
             )
           }
@@ -105,12 +119,6 @@ fun PoiDetailView(
               )
             }
           }
-        }
-        Button(onClick = {
-          viewModel.updatePoi(poi.value)
-
-        }) {
-
         }
       }
     }
