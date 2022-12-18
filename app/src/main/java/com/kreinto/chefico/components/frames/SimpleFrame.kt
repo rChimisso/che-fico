@@ -15,7 +15,6 @@ import com.kreinto.chefico.components.frames.topbars.SimpleTopBar
  * @param bottomBar Optional overlayed bottom bar to display.
  * @param content [Composable] to display as main content.
  */
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
 @Composable
 fun SimpleFrame(

@@ -2,23 +2,30 @@ package com.kreinto.chefico
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.pm.PackageManager
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.SettingsClient
+import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.ui.theme.CheFicoTheme
 import com.kreinto.chefico.views.dashboard.DashboardView
 import com.kreinto.chefico.views.maps.MapsView
@@ -26,13 +33,13 @@ import com.kreinto.chefico.views.poidetail.PoiDetailView
 import com.kreinto.chefico.views.poilist.PoiListView
 import com.kreinto.chefico.views.settings.SettinsView
 
-sealed class AppRoute(val route: String) {
+sealed class AppRoute(val route: String, val arg: String = "") {
   object Dashboard : AppRoute("dashboard")
   object Settings : AppRoute("settings")
   object Maps : AppRoute("maps")
   object Camera : AppRoute("camera")
   object PoiList : AppRoute("poilist")
-  object PoiDetail : AppRoute("poidetail")
+  object PoiDetail : AppRoute("poidetail/{poiId}", "poiId")
 }
 
 @ExperimentalFoundationApi
@@ -85,6 +92,9 @@ class MainActivity : ComponentActivity() {
             navController.navigate(it)
           }
         }
+        val viewModel by viewModels<CheFicoViewModel>()
+        val navController = rememberNavController()
+
         NavHost(
           navController = navController,
           startDestination = AppRoute.Dashboard.route,
@@ -103,10 +113,21 @@ class MainActivity : ComponentActivity() {
             SettinsView(onNavigate = onNavigate)
           }
           composable(AppRoute.PoiList.route) {
-            PoiListView(onNavigate = onNavigate)
+            PoiListView(viewModel = viewModel, onNavigate = onNavigate)
           }
-          composable(AppRoute.PoiDetail.route) {
-            PoiDetailView(onNavigate = onNavigate)
+          composable(
+            AppRoute.PoiDetail.route,
+            arguments = listOf(
+              navArgument(AppRoute.PoiDetail.arg) {
+                type = NavType.StringType
+              }
+            )
+          ) { backStackEntry ->
+            PoiDetailView(
+              onNavigate = onNavigate,
+              poiId = backStackEntry.arguments?.getString(AppRoute.PoiDetail.arg),
+              viewModel = viewModel
+            )
           }
         }
       }
@@ -114,4 +135,9 @@ class MainActivity : ComponentActivity() {
   }
 }
 
+fun Context.getActivity(): Activity = when (this) {
+  is Activity -> this
+  is ContextWrapper -> baseContext.getActivity()
+  else -> throw IllegalStateException("Permissions should be called in the context of an Activity")
+}
 
