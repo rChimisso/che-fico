@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
@@ -50,6 +51,8 @@ fun PoiDetailView(
       if (poiId != null && poi != null && poi.value != null) {
 
         var name by rememberSaveable { mutableStateOf(poi.value!!.name) }
+        var description by rememberSaveable { mutableStateOf(poi.value!!.description) }
+        var type by rememberSaveable { mutableStateOf(poi.value!!.type) }
 
         Surface(
           shadowElevation = 12.dp,
@@ -61,14 +64,23 @@ fun PoiDetailView(
               value = name,
               maxLines = 1,
               modifier = Modifier
-                .padding(16.dp)
+                .padding(8.dp)
                 .fillMaxWidth()
                 .onFocusChanged {
                   poi.value!!.name = name
                   viewModel.updatePoi(poi.value!!)
                 },
+              textStyle = TextStyle(
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+              ),
+
               colors = TextFieldDefaults.textFieldColors(
-                textColor = Color(0xff4caf50)
+                textColor = Color(0xff4caf50),
+                containerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
               ),
               onValueChange = {
                 name = it
@@ -85,7 +97,11 @@ fun PoiDetailView(
             TextField(
               modifier = Modifier
                 .fillMaxWidth()
-                .requiredHeight(128.dp),
+                .requiredHeight(128.dp)
+                .onFocusChanged {
+                  poi.value!!.description = description
+                  viewModel.updatePoi(poi.value!!)
+                },
               textStyle = TextStyle(
                 fontSize = 18.sp
               ),
@@ -97,8 +113,9 @@ fun PoiDetailView(
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent
               ),
-              value = "",
+              value = description,
               onValueChange = {
+                description = it
               }
             )
 
@@ -110,11 +127,27 @@ fun PoiDetailView(
             ) {
               Spacer(modifier = Modifier.width(16.dp))
               Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "")
-              Spacer(modifier = Modifier.width(32.dp))
+              Spacer(modifier = Modifier.width(16.dp))
 
               TextField(
-                value = "",
+                modifier = Modifier.onFocusChanged {
+                  poi.value!!.type = type
+                  viewModel.updatePoi(poi.value!!)
+                },
+                value = type,
+                textStyle = TextStyle(
+                  fontSize = 18.sp
+                ),
+                colors = TextFieldDefaults.textFieldColors(
+                  textColor = Color.Black,
+                  cursorColor = Color.Black,
+                  containerColor = Color.Transparent,
+                  focusedIndicatorColor = Color.Transparent,
+                  unfocusedIndicatorColor = Color.Transparent,
+                  disabledIndicatorColor = Color.Transparent
+                ),
                 onValueChange = {
+                  type = it
                 }
               )
             }
