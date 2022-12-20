@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,9 +33,8 @@ fun PoiListView(
 ) {
 
   var selectedPoi = remember { mutableStateListOf<Int>() }
-  var pois = viewModel.getPois().collectAsStateWithLifecycle(initialValue = emptyList())
-  var filter: String by remember { mutableStateOf("") }
-
+  var pois = viewModel.getPois().collectAsStateWithLifecycle(emptyList())
+  var filter: String by rememberSaveable { mutableStateOf("") }
 
   StandardFrame(
     onClick = { onNavigate(AppRoute.Dashboard.route) },

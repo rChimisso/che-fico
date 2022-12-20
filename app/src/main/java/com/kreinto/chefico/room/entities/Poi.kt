@@ -26,4 +26,9 @@ class Poi(
   var latitude: Double = latitude
 
   var longitude: Double = longitude
+
+  companion object {
+    val NullPoi = Poi("")
+  }
 }
+
