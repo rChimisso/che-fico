@@ -1,10 +1,7 @@
 package com.kreinto.chefico.views.maps
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Activity.RESULT_OK
-import android.content.Context
-import android.content.ContextWrapper
 import android.content.IntentSender
 import android.os.Looper
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -27,32 +24,28 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MapUiSettings
-import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.SphericalUtil
+import com.google.maps.android.compose.*
 import com.kreinto.chefico.AppRoute
 import com.kreinto.chefico.components.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
+import com.kreinto.chefico.room.CheFicoViewModel
 
-fun Context.getActivity(): Activity = when (this) {
-  is Activity -> this
-  is ContextWrapper -> baseContext.getActivity()
-  else -> throw IllegalStateException("Permissions should be called in the context of an Activity")
-}
-
+@ExperimentalLifecycleComposeApi
 @SuppressLint("MissingPermission")
 @ExperimentalMaterial3Api
 @Composable
 fun MapsView(
   fusedLocationClient: FusedLocationProviderClient,
   locationSettingsClient: SettingsClient,
+  viewModel: CheFicoViewModel,
   onNavigate: (id: String) -> Unit
 ) {
   SimpleFrame(
@@ -76,6 +69,8 @@ fun MapsView(
   ) {
     var isMapLoaded by remember { mutableStateOf(false) }
     var cameraPosition: CameraPosition? by rememberSaveable { mutableStateOf(null) }
+    /*var poisWithin =
+      viewModel.selectPoisWithin(centerLocation, radius).collectAsStateWithLifecycle(emptyList())*/
     val properties by remember { mutableStateOf(MapProperties(isMyLocationEnabled = true)) }
     val uiSettings by remember {
       mutableStateOf(
@@ -120,6 +115,13 @@ fun MapsView(
           println("Settings denied")
         }
       }
+    val refreshMarkers = {
+      val centerLocation = cameraPositionState.position.target
+      val topLeftLocation = cameraPositionState.projection?.visibleRegion?.farLeft
+        ?: cameraPositionState.position.target
+      val radius = SphericalUtil.computeDistanceBetween(topLeftLocation, centerLocation)
+    }
+
     LaunchedEffect(Unit) {
       val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
       val task = locationSettingsClient.checkLocationSettings(builder.build())
@@ -147,14 +149,24 @@ fun MapsView(
         )
       }
     }
+    LaunchedEffect(cameraPositionState.isMoving) {
+      if (!cameraPositionState.isMoving) {
+        refreshMarkers()
+      }
+    }
 
     GoogleMap(
       modifier = Modifier.fillMaxSize(),
       cameraPositionState = cameraPositionState,
-      onMapLoaded = { isMapLoaded = true },
+      onMapLoaded = {
+        isMapLoaded = true
+        refreshMarkers()
+      },
       properties = properties,
       uiSettings = uiSettings
-    )
+    ) {
+//      poisWithin.value.forEach { Marker(MarkerState(LatLng(it.latitude, it.longitude))) }
+    }
     if (!isMapLoaded || cameraPosition == null) {
       AnimatedVisibility(
         modifier = Modifier.fillMaxSize(),

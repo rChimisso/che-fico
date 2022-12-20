@@ -1,10 +1,10 @@
 package com.kreinto.chefico
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
-import android.content.pm.PackageManager
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,8 +15,8 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.navigation.NavHostController
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -107,6 +107,7 @@ class MainActivity : ComponentActivity() {
             MapsView(
               fusedLocationClient = fusedLocationClient,
               locationSettingsClient = locationSettingsClient,
+              viewModel = viewModel,
               onNavigate = onNavigate
             )
           }

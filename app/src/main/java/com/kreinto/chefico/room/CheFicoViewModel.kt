@@ -3,6 +3,7 @@ package com.kreinto.chefico.room
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.maps.model.LatLng
 import com.kreinto.chefico.room.entities.Notification
 import com.kreinto.chefico.room.entities.Poi
 import kotlinx.coroutines.Dispatchers
@@ -62,6 +63,10 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
 
   fun deleteNotifications() = launch {
     repository.deleteNotifications()
+  }
+
+  fun selectPoisWithin(center: LatLng, radius: Double): Flow<List<Poi>> {
+    return repository.selectPoisWithin(center.latitude, center.longitude, radius)
   }
 
   private fun launch(block: suspend () -> Unit) {
