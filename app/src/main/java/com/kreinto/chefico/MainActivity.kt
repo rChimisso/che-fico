@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -33,6 +34,7 @@ sealed class AppRoute(val route: String, val arg: String = "") {
   object PoiDetail : AppRoute("poidetail/{poiId}", "poiId")
 }
 
+@ExperimentalLifecycleComposeApi
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
@@ -44,7 +46,6 @@ class MainActivity : ComponentActivity() {
       CheFicoTheme {
         val viewModel by viewModels<CheFicoViewModel>()
         val navController = rememberNavController()
-
         NavHost(
           navController = navController,
           startDestination = AppRoute.Dashboard.route,

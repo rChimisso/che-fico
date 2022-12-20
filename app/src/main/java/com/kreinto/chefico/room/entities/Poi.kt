@@ -13,7 +13,7 @@ class Poi(
   longitude: Double = 0.0,
 ) {
   @PrimaryKey(autoGenerate = true)
-  var id: Int = -1
+  var id: Int = 0
 
   var name: String = name
 
@@ -29,13 +29,6 @@ class Poi(
 
   companion object {
     val NullPoi = Poi("")
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is Poi) return false
-    if (id != other.id) return false
-    return true
   }
 }
 

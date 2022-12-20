@@ -7,8 +7,11 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
@@ -26,7 +29,7 @@ import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.room.entities.Poi
 
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
+@ExperimentalLifecycleComposeApi
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
@@ -41,11 +44,10 @@ fun PoiDetailView(
     onClick = {
       onNavigate(AppRoute.PoiList.route)
     },
-  ) { padding ->
+  ) {
     if (poiId != null) {
-      var poi =
-        viewModel.getPoi(poiId.toInt()).collectAsStateWithLifecycle(initialValue = Poi.NullPoi)
-      Column(Modifier.padding(top = 0.dp, bottom = padding.calculateBottomPadding())) {
+      var poi = viewModel.getPoi(poiId.toInt()).collectAsStateWithLifecycle(Poi.NullPoi)
+      Column {
         if (poi.value != Poi.NullPoi) {
           var name by rememberSaveable { mutableStateOf(poi.value.name) }
           var description by rememberSaveable { mutableStateOf(poi.value.description) }
