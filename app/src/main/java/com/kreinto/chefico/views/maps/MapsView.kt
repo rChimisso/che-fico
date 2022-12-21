@@ -25,6 +25,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -37,6 +38,8 @@ import com.kreinto.chefico.components.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 import com.kreinto.chefico.room.CheFicoViewModel
+import com.kreinto.chefico.room.entities.Poi
+import kotlinx.coroutines.flow.*
 
 @ExperimentalLifecycleComposeApi
 @SuppressLint("MissingPermission")
@@ -48,6 +51,66 @@ fun MapsView(
   viewModel: CheFicoViewModel,
   onNavigate: (id: String) -> Unit
 ) {
+  var isMapLoaded by remember { mutableStateOf(false) }
+  var cameraPosition: CameraPosition? by rememberSaveable { mutableStateOf(null) }
+  val poisWithin = viewModel.poisWithin.collectAsStateWithLifecycle(emptyList())
+  val properties by remember { mutableStateOf(MapProperties(isMyLocationEnabled = true)) }
+  val uiSettings by remember {
+    mutableStateOf(
+      MapUiSettings(
+        compassEnabled = false,
+        myLocationButtonEnabled = false,
+        zoomControlsEnabled = false
+      )
+    )
+  }
+  val cameraPositionState = rememberCameraPositionState {
+    position = CameraPosition.builder().target(LatLng(0.0, 0.0)).zoom(20f).build()
+  }
+  val locationRequest = LocationRequest
+    .Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000)
+    .build()
+  val locationListener = LocationListener {
+    if (
+      cameraPosition == null ||
+      it.latitude != cameraPosition!!.target.latitude ||
+      it.longitude != cameraPosition!!.target.longitude
+    ) {
+      cameraPosition = CameraPosition
+        .builder()
+        .target(LatLng(it.latitude, it.longitude))
+        .bearing(it.bearing)
+        .zoom(cameraPositionState.position.zoom)
+        .tilt(cameraPositionState.position.tilt)
+        .build()
+    }
+    println("Updating location...")
+  }
+  val settingResultRequest =
+    rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+      if (it.resultCode == RESULT_OK) {
+        fusedLocationClient.requestLocationUpdates(
+          locationRequest,
+          locationListener,
+          Looper.getMainLooper()
+        )
+      } else {
+        println("Settings denied")
+      }
+    }
+  val refreshMarkers = {
+    val target = cameraPositionState.position.target
+    val farLeft = cameraPositionState.projection?.visibleRegion?.farLeft
+    if (farLeft != null) {
+      viewModel.setMapBoundaries(
+        MapBoundaries.compute(
+          target,
+          SphericalUtil.computeDistanceBetween(farLeft, target)
+        )
+      )
+    }
+  }
+
   SimpleFrame(
     onClick = { onNavigate(AppRoute.Dashboard.route) },
     bottomBar = {
@@ -63,65 +126,21 @@ fun MapsView(
         rightButtonData = ButtonData(
           icon = Icons.Default.Place,
           contentDescription = "Create new POI",
-        ) {}
+        ) {
+          viewModel.addPoi(
+            Poi(
+              "",
+              "",
+              "",
+              "",
+              cameraPosition!!.target.latitude + 10,
+              cameraPosition!!.target.longitude
+            )
+          )
+        }
       )
     }
   ) {
-    var isMapLoaded by remember { mutableStateOf(false) }
-    var cameraPosition: CameraPosition? by rememberSaveable { mutableStateOf(null) }
-    /*var poisWithin =
-      viewModel.selectPoisWithin(centerLocation, radius).collectAsStateWithLifecycle(emptyList())*/
-    val properties by remember { mutableStateOf(MapProperties(isMyLocationEnabled = true)) }
-    val uiSettings by remember {
-      mutableStateOf(
-        MapUiSettings(
-          compassEnabled = false,
-          myLocationButtonEnabled = false,
-          zoomControlsEnabled = false
-        )
-      )
-    }
-    val cameraPositionState = rememberCameraPositionState {
-      position = CameraPosition.builder().target(LatLng(0.0, 0.0)).zoom(16f).build()
-    }
-    val locationRequest = LocationRequest
-      .Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000)
-      .build()
-    val locationListener = LocationListener {
-      if (
-        cameraPosition == null ||
-        it.latitude != cameraPosition!!.target.latitude ||
-        it.longitude != cameraPosition!!.target.longitude
-      ) {
-        cameraPosition = CameraPosition
-          .builder()
-          .target(LatLng(it.latitude, it.longitude))
-          .bearing(it.bearing)
-          .zoom(cameraPositionState.position.zoom)
-          .tilt(cameraPositionState.position.tilt)
-          .build()
-      }
-      println("Updating location...")
-    }
-    val settingResultRequest =
-      rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
-        if (it.resultCode == RESULT_OK) {
-          fusedLocationClient.requestLocationUpdates(
-            locationRequest,
-            locationListener,
-            Looper.getMainLooper()
-          )
-        } else {
-          println("Settings denied")
-        }
-      }
-    val refreshMarkers = {
-      val centerLocation = cameraPositionState.position.target
-      val topLeftLocation = cameraPositionState.projection?.visibleRegion?.farLeft
-        ?: cameraPositionState.position.target
-      val radius = SphericalUtil.computeDistanceBetween(topLeftLocation, centerLocation)
-    }
-
     LaunchedEffect(Unit) {
       val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
       val task = locationSettingsClient.checkLocationSettings(builder.build())
@@ -155,6 +174,10 @@ fun MapsView(
       }
     }
 
+    LaunchedEffect(poisWithin.value) {
+      println(poisWithin.value.size)
+    }
+
     GoogleMap(
       modifier = Modifier.fillMaxSize(),
       cameraPositionState = cameraPositionState,
@@ -165,7 +188,7 @@ fun MapsView(
       properties = properties,
       uiSettings = uiSettings
     ) {
-//      poisWithin.value.forEach { Marker(MarkerState(LatLng(it.latitude, it.longitude))) }
+      poisWithin.value.forEach { Marker(MarkerState(LatLng(it.latitude, it.longitude))) }
     }
     if (!isMapLoaded || cameraPosition == null) {
       AnimatedVisibility(

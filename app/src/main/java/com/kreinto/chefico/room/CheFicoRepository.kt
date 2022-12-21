@@ -55,7 +55,7 @@ class CheFicoRepository(
     notificationDao.deleteAll()
   }
 
-  fun selectPoisWithin(latitude: Double, longitude: Double, radius: Double): Flow<List<Poi>> {
-    return poiDao.selectWithin(latitude, longitude, radius)
+  fun selectPoisWithin(top: Double, right: Double, bottom: Double, left: Double): Flow<List<Poi>> {
+    return poiDao.selectWithin(top, right, bottom, left)
   }
 }

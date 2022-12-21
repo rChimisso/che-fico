@@ -3,15 +3,19 @@ package com.kreinto.chefico.room
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.model.LatLng
 import com.kreinto.chefico.room.entities.Notification
 import com.kreinto.chefico.room.entities.Poi
+import com.kreinto.chefico.views.maps.MapBoundaries
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
 class CheFicoViewModel(application: Application) : AndroidViewModel(application) {
   private val repository: CheFicoRepository
+  private val mapBoundariesFlow = MutableStateFlow(MapBoundaries(0.0, 0.0, 0.0, 0.0))
+  val poisWithin = mapBoundariesFlow.flatMapLatest { selectPoisWithin(it) }
 
   init {
     var database = CheFicoDatabase.getInstance(application)
@@ -20,6 +24,7 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
       database.poiDao()
     )
   }
+
 
   fun addPoi(poi: Poi) = launch {
     repository.insertPoi(poi)
@@ -65,8 +70,17 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     repository.deleteNotifications()
   }
 
-  fun selectPoisWithin(center: LatLng, radius: Double): Flow<List<Poi>> {
-    return repository.selectPoisWithin(center.latitude, center.longitude, radius)
+  fun selectPoisWithin(mapBoundaries: MapBoundaries): Flow<List<Poi>> {
+    return repository.selectPoisWithin(
+      mapBoundaries.top,
+      mapBoundaries.right,
+      mapBoundaries.bottom,
+      mapBoundaries.left
+    )
+  }
+
+  fun setMapBoundaries(mapBoundaries: MapBoundaries) {
+    mapBoundariesFlow.value = mapBoundaries
   }
 
   private fun launch(block: suspend () -> Unit) {

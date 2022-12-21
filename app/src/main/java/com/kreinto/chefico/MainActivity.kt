@@ -95,7 +95,6 @@ class MainActivity : ComponentActivity() {
           }
         }
         val viewModel by viewModels<CheFicoViewModel>()
-        val navController = rememberNavController()
         NavHost(
           navController = navController,
           startDestination = AppRoute.Dashboard.route,
