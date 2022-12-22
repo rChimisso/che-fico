@@ -25,7 +25,6 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     )
   }
 
-
   fun addPoi(poi: Poi) = launch {
     repository.insertPoi(poi)
   }
@@ -71,6 +70,7 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
   }
 
   fun selectPoisWithin(mapBoundaries: MapBoundaries): Flow<List<Poi>> {
+    // FIXME
     return repository.selectPoisWithin(
       mapBoundaries.top,
       mapBoundaries.right,
