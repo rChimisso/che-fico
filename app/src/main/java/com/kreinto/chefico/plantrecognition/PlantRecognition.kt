@@ -16,6 +16,7 @@ class PlantRecognition {
     fun recognize(file: File) {
       val client = OkHttpClient()
       val formBody = MultipartBody.Builder()
+        .setType(MultipartBody.FORM)
         .addFormDataPart(
           "images",
           file.name,
@@ -23,12 +24,12 @@ class PlantRecognition {
         )
         .build()
 
-      println(file.asRequestBody("image/jpeg".toMediaType()))
+      println(file.name)
       println(file.asRequestBody("image/jpeg".toMediaType()).contentLength())
       println(file.asRequestBody("image/jpeg".toMediaType()).contentType())
 
       val request = Request.Builder()
-        .header("Content-Type", "multipart/form-data")
+        .header("content-type", "multipart/form-data;")
         .url(apiUrl)
         .post(formBody)
         .build()
@@ -41,10 +42,7 @@ class PlantRecognition {
         }
 
         override fun onResponse(call: Call, response: Response) {
-
           println(response.body!!.string())
-
-
         }
       })
     }

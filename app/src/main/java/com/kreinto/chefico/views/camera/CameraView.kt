@@ -5,10 +5,7 @@ import android.graphics.*
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.Preview
+import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Box
@@ -46,8 +43,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-
-@androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
+@ExperimentalGetImage
 @RequiresApi(Build.VERSION_CODES.P)
 @ExperimentalMaterial3Api
 @Composable
@@ -74,15 +70,9 @@ fun CameraView(
     preview.setSurfaceProvider(previewView.surfaceProvider)
   }
   val coroutineScope = rememberCoroutineScope()
-  SimpleFrame(onClick = { onNavigate(AppRoute.Dashboard.route) },
-    bottomBar = {
-
-    }) {
+  SimpleFrame(onClick = { onNavigate(AppRoute.Dashboard.route) }) {
     Box {
-      AndroidView({ previewView }, modifier = Modifier.fillMaxSize()) {
-
-      }
-
+      AndroidView({ previewView }, modifier = Modifier.fillMaxSize()) {}
       Button(
         shape = CircleShape,
         colors = ButtonDefaults.buttonColors(
@@ -111,34 +101,33 @@ suspend fun ImageCapture.takePicture(executor: Executor): File {
   val photoFile = withContext(Dispatchers.IO) {
     kotlin.runCatching {
       File.createTempFile("image", ".jpg")
-    }.getOrElse { ex ->
-      Log.e("TakePicture", "Failed to create temporary file", ex)
+    }.getOrElse {
+      Log.e("TakePicture", "Failed to create temporary file", it)
       File("/dev/null")
     }
   }
 
-  return suspendCoroutine { continuation ->
+  return suspendCoroutine {
     val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
     takePicture(outputOptions, executor, object : ImageCapture.OnImageSavedCallback {
       override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-        continuation.resume(photoFile)
+        it.resume(photoFile)
       }
 
-      override fun onError(ex: ImageCaptureException) {
-        Log.e("TakePicture", "Image capture failed", ex)
-        continuation.resumeWithException(ex)
+      override fun onError(e: ImageCaptureException) {
+        Log.e("TakePicture", "Image capture failed", e)
+        it.resumeWithException(e)
       }
     })
   }
 }
 
-suspend fun Context.getCameraProvider(): ProcessCameraProvider = suspendCoroutine { continuation ->
+suspend fun Context.getCameraProvider(): ProcessCameraProvider = suspendCoroutine {
   ProcessCameraProvider.getInstance(this).also { future ->
     future.addListener({
-      continuation.resume(future.get())
+      it.resume(future.get())
     }, executor)
   }
 }
 
-val Context.executor: Executor
-  get() = ContextCompat.getMainExecutor(this)
+val Context.executor: Executor get() = ContextCompat.getMainExecutor(this)
