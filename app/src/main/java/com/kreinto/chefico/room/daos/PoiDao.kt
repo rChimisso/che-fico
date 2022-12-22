@@ -21,9 +21,6 @@ interface PoiDao {
   @Query("SELECT * FROM pois")
   fun selectAll(): Flow<List<Poi>>
 
-  @Query("SELECT * FROM pois WHERE latitude BETWEEN :bottom AND :top AND longitude BETWEEN :left AND :right")
-  fun selectWithin(top: Double, right: Double, bottom: Double, left: Double): Flow<List<Poi>>
-
   @Update
   fun update(poi: Poi)
 }

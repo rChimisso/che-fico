@@ -54,8 +54,4 @@ class CheFicoRepository(
   fun deleteNotifications() {
     notificationDao.deleteAll()
   }
-
-  fun selectPoisWithin(top: Double, right: Double, bottom: Double, left: Double): Flow<List<Poi>> {
-    return poiDao.selectWithin(top, right, bottom, left)
-  }
 }

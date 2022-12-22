@@ -1,6 +1,12 @@
 package com.kreinto.chefico.views.maps
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.IntentSender
+import android.os.Looper
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.fadeOut
@@ -19,7 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
@@ -28,6 +36,7 @@ import com.kreinto.chefico.components.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 import com.kreinto.chefico.room.CheFicoViewModel
+import com.kreinto.chefico.room.entities.Poi
 import kotlinx.coroutines.flow.*
 
 @ExperimentalLifecycleComposeApi
@@ -158,22 +167,98 @@ fun MapsView(
       )
     }
   ) {
-    Map(
-      cameraPosition = cameraPosition,
-      cameraPositionState = cameraPositionState,
-      poisWithin = poisWithin,
-      fusedLocationClient = fusedLocationClient,
-      locationSettingsClient = locationSettingsClient,
-      onMapLoaded = { isMapLoaded = true },
-      locationListener = locationListener,
-      onBoundariesChange = { viewModel.setMapBoundaries(it) },
-      shouldFollow = shouldFollow,
-      onMapMoved = {
-        if (it == CameraMoveStartedReason.GESTURE) {
-          shouldFollow = false
+    val properties by remember { mutableStateOf(MapProperties(isMyLocationEnabled = true)) }
+    val uiSettings by remember {
+      mutableStateOf(
+        MapUiSettings(
+          compassEnabled = false,
+          myLocationButtonEnabled = false,
+          mapToolbarEnabled = false,
+          zoomControlsEnabled = false
+        )
+      )
+    }
+    val locationRequest = LocationRequest
+      .Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000)
+      .build()
+    val settingResultRequest =
+      rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+          fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationListener,
+            Looper.getMainLooper()
+          )
+        } else {
+          println("Settings denied")
         }
       }
-    )
+    val refreshMarkers = {
+      val latLngBounds = cameraPositionState.projection?.visibleRegion?.latLngBounds
+      if (latLngBounds != null) {
+        viewModel.setLatLngBounds(latLngBounds)
+      }
+    }
+
+    suspend fun moveCamera() {
+      cameraPositionState.animate(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000)
+    }
+
+    LaunchedEffect(shouldFollow) {
+      if (shouldFollow) {
+        fusedLocationClient.removeLocationUpdates(locationListener)
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+        val task = locationSettingsClient.checkLocationSettings(builder.build())
+        task.addOnSuccessListener {
+          fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationListener,
+            Looper.getMainLooper()
+          )
+        }
+        task.addOnFailureListener {
+          if (it is ResolvableApiException) {
+            try {
+              settingResultRequest.launch(IntentSenderRequest.Builder(it.resolution).build())
+            } catch (_: IntentSender.SendIntentException) {
+            }
+          }
+        }
+        moveCamera()
+      } else {
+        fusedLocationClient.removeLocationUpdates(locationListener)
+      }
+    }
+    LaunchedEffect(cameraPosition) {
+      if (shouldFollow) {
+        moveCamera()
+      }
+    }
+    LaunchedEffect(cameraPositionState.isMoving) {
+      if (cameraPositionState.cameraMoveStartedReason == CameraMoveStartedReason.GESTURE) {
+        shouldFollow = false
+      }
+      if (!cameraPositionState.isMoving) {
+        refreshMarkers()
+      }
+    }
+
+    GoogleMap(
+      modifier = Modifier.fillMaxSize(),
+      properties = properties,
+      uiSettings = uiSettings,
+      cameraPositionState = cameraPositionState,
+      onMapLoaded = {
+        isMapLoaded = true
+        refreshMarkers()
+      },
+      onMapLongClick = {
+        viewModel.addPoi(Poi(name = "", latitude = it.latitude, longitude = it.longitude))
+      }
+    ) {
+      // For clustering: https://github.com/googlemaps/android-maps-compose/issues/44
+      poisWithin.value.forEach { Marker(MarkerState(LatLng(it.latitude, it.longitude))) }
+    }
     if (!isMapLoaded) {
       AnimatedVisibility(
         modifier = Modifier.fillMaxSize(),
