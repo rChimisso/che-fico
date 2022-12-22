@@ -1,6 +1,7 @@
 package com.kreinto.chefico
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.Manifest.permission.CAMERA
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
@@ -28,6 +29,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.SettingsClient
 import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.ui.theme.CheFicoTheme
+import com.kreinto.chefico.views.camera.CameraView
 import com.kreinto.chefico.views.dashboard.DashboardView
 import com.kreinto.chefico.views.maps.MapsView
 import com.kreinto.chefico.views.poidetail.PoiDetailView
@@ -57,10 +59,23 @@ class MainActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     locationSettingsClient = LocationServices.getSettingsClient(this)
-    val requestPermissionLauncher =
+    val requestLocationPermissionLauncher =
       registerForActivityResult(ActivityResultContracts.RequestPermission()) {
         if (it) {
           navController.navigate(AppRoute.Maps.route)
+        } else {
+          // Explain to the user that the feature is unavailable because the
+          // feature requires a permission that the user has denied. At the
+          // same time, respect the user's decision. Don't link to system
+          // settings in an effort to convince the user to change their
+          // decision.
+        }
+      }
+
+    val requestCameraPermissionLauncher =
+      registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+        if (it) {
+          navController.navigate(AppRoute.Camera.route)
         } else {
           // Explain to the user that the feature is unavailable because the
           // feature requires a permission that the user has denied. At the
@@ -87,7 +102,22 @@ class MainActivity : ComponentActivity() {
               // using your app without granting the permission.
               // showInContextUI(...)
             } else {
-              requestPermissionLauncher.launch(ACCESS_FINE_LOCATION)
+              requestLocationPermissionLauncher.launch(ACCESS_FINE_LOCATION)
+            }
+          } else if (it == AppRoute.Camera.route && ContextCompat.checkSelfPermission(
+              this,
+              CAMERA
+            ) == PackageManager.PERMISSION_DENIED
+          ) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, CAMERA)) {
+              // In an educational UI, explain to the user why your app requires this
+              // permission for a specific feature to behave as expected, and what
+              // features are disabled if it's declined. In this UI, include a
+              // "cancel" or "no thanks" button that lets the user continue
+              // using your app without granting the permission.
+              // showInContextUI(...)
+            } else {
+              requestLocationPermissionLauncher.launch(CAMERA)
             }
           } else {
 //            fusedLocationClient.removeLocationUpdates {}
@@ -95,7 +125,6 @@ class MainActivity : ComponentActivity() {
           }
         }
         val viewModel by viewModels<CheFicoViewModel>()
-        val navController = rememberNavController()
         NavHost(
           navController = navController,
           startDestination = AppRoute.Dashboard.route,
@@ -130,6 +159,9 @@ class MainActivity : ComponentActivity() {
               poiId = backStackEntry.arguments?.getString(AppRoute.PoiDetail.arg),
               viewModel = viewModel
             )
+          }
+          composable(AppRoute.Camera.route) {
+            CameraView(onNavigate = onNavigate)
           }
         }
       }
