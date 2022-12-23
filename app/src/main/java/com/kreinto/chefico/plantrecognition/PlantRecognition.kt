@@ -1,5 +1,7 @@
 package com.kreinto.chefico.plantrecognition
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -9,11 +11,15 @@ import java.io.IOException
 
 class PlantRecognition {
 
+  class PlantResult {
+    val commonNames: List<String> = emptyList()
+  }
+
   companion object {
     const val apiUrl =
-      "https://my-api.plantnet.org/v2/identify/all?api-key=2b10sKsQmbu8L0oorDT3I09UO"
+      "https://my-api.plantnet.org/v2/identify/all?api-key=2b10sKsQmbu8L0oorDT3I09UO&lang=it"
 
-    fun recognize(file: File) {
+    fun recognize(file: File, onResult: (result: Map<String, Any>) -> Unit) {
       val client = OkHttpClient()
       val formBody = MultipartBody.Builder()
         .setType(MultipartBody.FORM)
@@ -42,7 +48,9 @@ class PlantRecognition {
         }
 
         override fun onResponse(call: Call, response: Response) {
-          println(response.body!!.string())
+          val gson = Gson()
+          response.body?.string()
+            ?.let { onResult(gson.fromJson(it, object : TypeToken<Map<String, Any>>() {}.type)) }
         }
       })
     }

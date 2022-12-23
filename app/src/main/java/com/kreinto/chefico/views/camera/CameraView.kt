@@ -1,5 +1,6 @@
 package com.kreinto.chefico.views.camera
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.os.Build
@@ -15,14 +16,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,6 +38,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
+@SuppressLint("RememberReturnType")
 @ExperimentalGetImage
 @RequiresApi(Build.VERSION_CODES.P)
 @ExperimentalMaterial3Api
@@ -70,28 +66,43 @@ fun CameraView(
     preview.setSurfaceProvider(previewView.surfaceProvider)
   }
   val coroutineScope = rememberCoroutineScope()
+  val show = remember { mutableStateOf(false) }
+  val text = remember {
+    mutableStateOf("")
+  }
   SimpleFrame(onClick = { onNavigate(AppRoute.Dashboard.route) }) {
-    Box {
-      AndroidView({ previewView }, modifier = Modifier.fillMaxSize()) {}
-      Button(
-        shape = CircleShape,
-        colors = ButtonDefaults.buttonColors(
-          containerColor = Color.White,
-          contentColor = Color.Green
-        ),
-        modifier = Modifier
-          .padding(bottom = 64.dp)
-          .size(80.dp)
-          .align(Alignment.BottomCenter),
-        onClick = {
-          coroutineScope.launch {
-            imageCapture.takePicture(context.executor).let {
-              PlantRecognition.recognize(it)
-              onNavigate(AppRoute.Dashboard.route)
+    if (show.value) {
+      Surface {
+        Text(text = text.value)
+      }
+    } else {
+      Box {
+        AndroidView({ previewView }, modifier = Modifier.fillMaxSize()) {}
+        Button(
+          shape = CircleShape,
+          colors = ButtonDefaults.buttonColors(
+            containerColor = Color.White,
+            contentColor = Color.Green
+          ),
+          modifier = Modifier
+            .padding(bottom = 64.dp)
+            .size(80.dp)
+            .align(Alignment.BottomCenter),
+          onClick = {
+            coroutineScope.launch {
+              imageCapture.takePicture(context.executor).let {
+                PlantRecognition.recognize(it) { result ->
+                  result.get("bestMatch").let {
+                    text.value = it.toString()
+                    show.value = true
+                  }
+                }
+
+              }
             }
-          }
-        }) {
-        Icon(imageVector = Icons.Default.Home, contentDescription = "")
+          }) {
+          Icon(imageVector = Icons.Default.Home, contentDescription = "")
+        }
       }
     }
   }
