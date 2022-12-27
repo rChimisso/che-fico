@@ -46,7 +46,7 @@ fun MapsView(
   fusedLocationClient: FusedLocationProviderClient,
   locationSettingsClient: SettingsClient,
   viewModel: CheFicoViewModel,
-  onNavigate: (id: String) -> Unit
+  onNavigate: (String) -> Unit
 ) {
   var isMapLoaded by remember { mutableStateOf(false) }
   var shouldFollow by rememberSaveable { mutableStateOf(true) }
@@ -100,7 +100,7 @@ fun MapsView(
   }
 
   SimpleFrame(
-    onClick = { onNavigate(AppRoute.Dashboard.route) },
+    onBackPressed = onNavigate,
     bottomBar = {
       SimpleBottomBar(
         leftButtonData = ButtonData(

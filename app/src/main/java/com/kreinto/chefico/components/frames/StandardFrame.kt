@@ -12,7 +12,7 @@ import com.kreinto.chefico.components.frames.topbars.StandardTopBar
  *
  * @param isDashboard Whether this top bar is for the dashboard. Controls whether to show the
  * "Go back" icon or the "Settings" icon.
- * @param onClick Function called when the top bar button is clicked.
+ * @param onNavPressed Function called when the top bar navigation button is clicked.
  * @param title [Composable] to show at [StandardTopBar] center.
  * @param bottomBar Optional overlayed bottom bar to display.
  * @param content [Composable] to display as main content.
@@ -21,7 +21,7 @@ import com.kreinto.chefico.components.frames.topbars.StandardTopBar
 @Composable
 fun StandardFrame(
   isDashboard: Boolean = false,
-  onClick: () -> Unit,
+  onNavPressed: (String) -> Unit,
   title: @Composable () -> Unit,
   bottomBar: @Composable () -> Unit = {},
   content: @Composable ((PaddingValues) -> Unit)
@@ -31,7 +31,7 @@ fun StandardFrame(
       StandardTopBar(
         isDashboard = isDashboard,
         title = title,
-        onClick = onClick
+        onNavPressed = onNavPressed
       )
     },
     bottomBar = bottomBar,
@@ -46,5 +46,5 @@ fun StandardFrame(
 @Composable
 @Preview
 private fun StandardFramePreview() {
-  StandardFrame(title = {}, onClick = {}) {}
+  StandardFrame(title = {}, onNavPressed = {}) {}
 }

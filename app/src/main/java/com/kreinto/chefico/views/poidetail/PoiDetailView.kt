@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.kreinto.chefico.AppRoute
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.room.entities.Poi
@@ -38,15 +37,13 @@ import com.kreinto.chefico.room.entities.Poi
 fun PoiDetailView(
   poiId: String?,
   viewModel: CheFicoViewModel,
-  onNavigate: (route: String) -> Unit
+  onNavigate: (String) -> Unit
 ) {
   SimpleFrame(
-    onClick = {
-      onNavigate(AppRoute.PoiList.route)
-    },
+    onBackPressed = onNavigate,
   ) {
     if (poiId != null) {
-      var poi = viewModel.getPoi(poiId.toInt()).collectAsStateWithLifecycle(Poi.NullPoi)
+      val poi = viewModel.getPoi(poiId.toInt()).collectAsStateWithLifecycle(Poi.NullPoi)
       Column {
         if (poi.value != Poi.NullPoi) {
           var name by rememberSaveable { mutableStateOf(poi.value.name) }

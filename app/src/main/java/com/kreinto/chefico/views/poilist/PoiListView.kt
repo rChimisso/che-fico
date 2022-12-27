@@ -23,21 +23,21 @@ import com.kreinto.chefico.components.inputs.SearchInput
 import com.kreinto.chefico.components.items.SelectableItem
 import com.kreinto.chefico.room.CheFicoViewModel
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
+@ExperimentalLifecycleComposeApi
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @Composable
 fun PoiListView(
   viewModel: CheFicoViewModel,
-  onNavigate: (route: String) -> Unit
+  onNavigate: (String) -> Unit
 ) {
 
-  var selectedPoi = remember { mutableStateListOf<Int>() }
-  var pois = viewModel.getPois().collectAsStateWithLifecycle(emptyList())
+  val selectedPoi = remember { mutableStateListOf<Int>() }
+  val pois = viewModel.getPois().collectAsStateWithLifecycle(emptyList())
   var filter: String by rememberSaveable { mutableStateOf("") }
 
   StandardFrame(
-    onClick = { onNavigate(AppRoute.Dashboard.route) },
+    onNavPressed = onNavigate,
     title = {
       SearchInput(onValueChange = { query -> filter = query })
     },
@@ -88,7 +88,7 @@ fun PoiListView(
           )
         }
       } else {
-        var filteredPoi = pois.value.filter { poi -> poi.name.contains(filter) }
+        val filteredPoi = pois.value.filter { poi -> poi.name.contains(filter) }
         items(filteredPoi.size) { index ->
           SelectableItem(
             icon = Icons.Default.Star,

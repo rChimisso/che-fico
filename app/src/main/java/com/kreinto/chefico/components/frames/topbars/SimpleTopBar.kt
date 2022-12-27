@@ -8,6 +8,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.kreinto.chefico.AppRoute
 import com.kreinto.chefico.components.buttons.RoundButton
 import com.kreinto.chefico.components.data.ButtonData
 
@@ -16,11 +17,11 @@ import com.kreinto.chefico.components.data.ButtonData
  *
  * Transparent [TopAppBar] with just a [RoundButton] to go back.
  *
- * @param onClick Function called when the back button is clicked.
+ * @param onBackPressed Function called when the back button is clicked.
  */
 @ExperimentalMaterial3Api
 @Composable
-fun SimpleTopBar(onClick: () -> Unit) {
+fun SimpleTopBar(onBackPressed: (String) -> Unit) {
   TopAppBar(
     scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
     navigationIcon = {
@@ -28,7 +29,7 @@ fun SimpleTopBar(onClick: () -> Unit) {
         ButtonData(
           icon = Icons.Default.ArrowBack,
           contentDescription = "Go back",
-          onClick = onClick
+          onClick = { onBackPressed(AppRoute.Back.route) }
         )
       )
     },
