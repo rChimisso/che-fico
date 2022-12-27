@@ -3,6 +3,7 @@ package com.kreinto.chefico.views.maps
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.IntentSender
+import android.location.Location
 import android.os.Looper
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -19,10 +20,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.common.api.ResolvableApiException
@@ -57,21 +56,23 @@ fun MapsView(
       CameraPosition
         .builder()
         .target(LatLng(0.0, 0.0))
-        .zoom(18f)
+        .zoom(19f)
         .build()
     )
   }
   val poisWithin = viewModel.poisWithin.collectAsStateWithLifecycle(emptyList())
+  fun buildCameraPosition(location: Location) = CameraPosition
+    .builder()
+    .target(LatLng(location.latitude, location.longitude))
+    .bearing(location.bearing)
+    .zoom(18f)
+    .build()
+
   val cameraPositionState = rememberCameraPositionState {
     position = cameraPosition
     fusedLocationClient.lastLocation.addOnSuccessListener {
       if (it != null) {
-        position = CameraPosition
-          .builder()
-          .target(LatLng(it.latitude, it.longitude))
-          .bearing(it.bearing)
-          .zoom(18f)
-          .build()
+        position = buildCameraPosition(it)
         cameraPosition = position
       }
     }
@@ -80,71 +81,36 @@ fun MapsView(
       null
     ).addOnSuccessListener {
       if (it != null) {
-        position = CameraPosition
-          .builder()
-          .target(LatLng(it.latitude, it.longitude))
-          .bearing(it.bearing)
-          .zoom(18f)
-          .build()
+        position = buildCameraPosition(it)
         cameraPosition = position
       }
     }
   }
 
-  val LocationListenerSaver: Saver<LocationListener, Int> = Saver(
-    save = { 0 },
-    restore = {
-      LocationListener {
-        if (shouldFollow) {
-          cameraPosition = CameraPosition
-            .builder()
-            .target(LatLng(it.latitude, it.longitude))
-            .bearing(it.bearing)
-            .zoom(cameraPositionState.position.zoom)
-            .tilt(cameraPositionState.position.tilt)
-            .build()
-        }
-        println("Updating location...")
-      }
+  val locationListener = rememberLocationListener {
+    if (shouldFollow) {
+      cameraPosition = CameraPosition
+        .builder()
+        .target(LatLng(it.latitude, it.longitude))
+        .bearing(it.bearing)
+        .zoom(cameraPositionState.position.zoom)
+        .tilt(cameraPositionState.position.tilt)
+        .build()
     }
-  )
-
-  @Composable
-  fun rememberLocationListener(): LocationListener =
-    rememberSaveable(saver = LocationListenerSaver) {
-      LocationListener {
-        if (shouldFollow) {
-          cameraPosition = CameraPosition
-            .builder()
-            .target(LatLng(it.latitude, it.longitude))
-            .bearing(it.bearing)
-            .zoom(cameraPositionState.position.zoom)
-            .tilt(cameraPositionState.position.tilt)
-            .build()
-        }
-        println("Updating location...")
-      }
-    }
-
-  val locationListener = rememberLocationListener()
-
-  fun navigation(id: String) {
-    fusedLocationClient.removeLocationUpdates(locationListener)
-    onNavigate(id)
   }
 
   SimpleFrame(
-    onClick = { navigation(AppRoute.Dashboard.route) },
+    onClick = { onNavigate(AppRoute.Dashboard.route) },
     bottomBar = {
       SimpleBottomBar(
         leftButtonData = ButtonData(
           icon = Icons.Default.List,
           contentDescription = "Go to POI list",
-        ) { navigation(AppRoute.PoiList.route) },
+        ) { onNavigate(AppRoute.PoiList.route) },
         centerButtonData = ButtonData(
           icon = Icons.Default.Search,
           contentDescription = "Open Plant Recognition",
-        ) { navigation(AppRoute.Camera.route) },
+        ) { onNavigate(AppRoute.Camera.route) },
         rightButtonData = ButtonData(
           icon = if (shouldFollow) Icons.Default.AccountCircle else Icons.Default.AccountBox,
           contentDescription = "Center camera",
@@ -159,7 +125,7 @@ fun MapsView(
                 .builder()
                 .target(LatLng(it.latitude, it.longitude))
                 .bearing(it.bearing)
-                .zoom(if (cameraPositionState.position.zoom < 15f) 18f else cameraPositionState.position.zoom)
+                .zoom(if (cameraPositionState.position.zoom < 15f) 19f else cameraPositionState.position.zoom)
                 .build()
             }
           }
@@ -242,6 +208,11 @@ fun MapsView(
         refreshMarkers()
       }
     }
+    DisposableEffect(Unit) {
+      onDispose {
+        fusedLocationClient.removeLocationUpdates(locationListener)
+      }
+    }
 
     GoogleMap(
       modifier = Modifier.fillMaxSize(),
@@ -274,11 +245,4 @@ fun MapsView(
       }
     }
   }
-}
-
-@ExperimentalMaterial3Api
-@Composable
-@Preview
-private fun MapsViewPreviw() {
-  // MapsView() {}
 }
