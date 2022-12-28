@@ -9,21 +9,28 @@ import androidx.annotation.RequiresApi
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.kreinto.chefico.AppRoute
@@ -70,10 +77,78 @@ fun CameraView(
   val text = remember {
     mutableStateOf("")
   }
-  SimpleFrame(onClick = { onNavigate(AppRoute.Dashboard.route) }) {
+  val imagePath = remember { mutableStateOf("") }
+  val isResultReady = remember { mutableStateOf(false) }
+  SimpleFrame(onClick = {
+    if (isResultReady.value) {
+      onNavigate(AppRoute.Camera.route)
+    } else {
+      onNavigate(AppRoute.Dashboard.route)
+
+    }
+  }) {
     if (show.value) {
-      Surface {
-        Text(text = text.value)
+      AnimatedVisibility(
+        modifier = Modifier.fillMaxSize(),
+        visible = !isResultReady.value,
+        enter = EnterTransition.None,
+        exit = fadeOut()
+      ) {
+        CircularProgressIndicator(
+          modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .wrapContentSize()
+        )
+      }
+      if (isResultReady.value) {
+
+        Column(
+          modifier = Modifier
+            .padding(it)
+            .fillMaxSize(),
+          horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+          val image = File(imagePath.value)
+          val imgBitmap = BitmapFactory.decodeFile(image.absolutePath)
+          Surface(
+            shadowElevation = 12.dp,
+            shape = RoundedCornerShape(8.dp),
+          ) {
+            Image(
+              bitmap = imgBitmap.asImageBitmap(),
+              contentDescription = "",
+              contentScale = ContentScale.FillBounds,
+              modifier = Modifier
+                .rotate(90f)
+                .width(300.dp)
+                .height(300.dp)
+            )
+          }
+
+          Surface(
+            shadowElevation = 12.dp,
+            shape = RoundedCornerShape(8.dp),
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(16.dp)
+          ) {
+
+            Column(modifier = Modifier.fillMaxSize()) {
+
+
+              Text(
+                modifier = Modifier
+                  .padding(16.dp)
+                  .fillMaxWidth(),
+                text = text.value,
+                fontSize = 18.sp,
+                color = Color(0xff4caf50)
+              )
+              Divider(modifier = Modifier.height(2.dp))
+
+            }
+          }
+        }
       }
     } else {
       Box {
@@ -91,10 +166,12 @@ fun CameraView(
           onClick = {
             coroutineScope.launch {
               imageCapture.takePicture(context.executor).let {
+                show.value = true
+                imagePath.value = it.path
                 PlantRecognition.recognize(it) { result ->
                   result.get("bestMatch").let {
                     text.value = it.toString()
-                    show.value = true
+                    isResultReady.value = true
                   }
                 }
 
