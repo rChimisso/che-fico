@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kreinto.chefico.AppRoute
 import com.kreinto.chefico.components.buttons.SimpleButton
 import com.kreinto.chefico.components.data.ButtonData
 import com.kreinto.chefico.components.frames.StandardFrame
@@ -25,11 +24,11 @@ import com.kreinto.chefico.components.items.SwipeableItem
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
 @Composable
-fun DashboardView(onNavigate: (id: String) -> Unit) {
+fun DashboardView(onNavigate: (String) -> Unit) {
   StandardFrame(
     title = { Text(text = "Che fico!", fontSize = 24.sp) },
     isDashboard = true,
-    onClick = { onNavigate(AppRoute.Settings.route) },
+    onNavPressed = onNavigate,
     bottomBar = { DashboardMenu(onNavigate = onNavigate) }
   ) {
     Spacer(modifier = Modifier.height(16.dp))

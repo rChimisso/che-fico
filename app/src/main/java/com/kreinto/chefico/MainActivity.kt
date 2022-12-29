@@ -37,6 +37,7 @@ import com.kreinto.chefico.views.poilist.PoiListView
 import com.kreinto.chefico.views.settings.SettinsView
 
 sealed class AppRoute(val route: String, val arg: String = "") {
+  object Back : AppRoute("back")
   object Dashboard : AppRoute("dashboard")
   object Settings : AppRoute("settings")
   object Maps : AppRoute("maps")
@@ -89,7 +90,9 @@ class MainActivity : ComponentActivity() {
       CheFicoTheme {
         navController = rememberNavController()
         val onNavigate: (route: String) -> Unit = {
-          if (it == AppRoute.Maps.route && ContextCompat.checkSelfPermission(
+          if (it == AppRoute.Back.route) {
+            navController.popBackStack()
+          } else if (it == AppRoute.Maps.route && ContextCompat.checkSelfPermission(
               this,
               ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_DENIED

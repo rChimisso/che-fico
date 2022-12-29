@@ -21,9 +21,6 @@ interface PoiDao {
   @Query("SELECT * FROM pois")
   fun selectAll(): Flow<List<Poi>>
 
-  @Query("SELECT * FROM pois WHERE latitude BETWEEN (:latitude - :radius) AND (:latitude + :radius) AND longitude BETWEEN (:longitude - :radius) AND (:longitude + :radius)")
-  fun selectWithin(latitude: Double, longitude: Double, radius: Double): Flow<List<Poi>>
-
   @Update
   fun update(poi: Poi)
 }

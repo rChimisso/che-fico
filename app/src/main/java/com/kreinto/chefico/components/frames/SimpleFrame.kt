@@ -1,6 +1,5 @@
 package com.kreinto.chefico.components.frames
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -11,19 +10,19 @@ import com.kreinto.chefico.components.frames.topbars.SimpleTopBar
 /**
  * Simple Frame following Material3 guidelines.
  *
- * @param onClick Function called when the top bar button is clicked.
+ * @param onBackPressed Function called when back button is clicked.
  * @param bottomBar Optional overlayed bottom bar to display.
  * @param content [Composable] to display as main content.
  */
 @ExperimentalMaterial3Api
 @Composable
 fun SimpleFrame(
-  onClick: () -> Unit,
+  onBackPressed: (String) -> Unit,
   bottomBar: @Composable () -> Unit = {},
   content: @Composable ((PaddingValues) -> Unit)
 ) {
   Scaffold(
-    topBar = { SimpleTopBar(onClick = onClick) },
+    topBar = { SimpleTopBar(onBackPressed = onBackPressed) },
     bottomBar = bottomBar,
     content = content
   )
@@ -36,5 +35,5 @@ fun SimpleFrame(
 @Composable
 @Preview
 private fun SimpleFramePreview() {
-  SimpleFrame(onClick = {}) {}
+  SimpleFrame(onBackPressed = {}) {}
 }
