@@ -33,6 +33,7 @@ import com.kreinto.chefico.ui.theme.CheFicoTheme
 import com.kreinto.chefico.views.camera.CameraView
 import com.kreinto.chefico.views.dashboard.DashboardView
 import com.kreinto.chefico.views.maps.MapsView
+import com.kreinto.chefico.views.poicreation.PoiCreationView
 import com.kreinto.chefico.views.poidetail.PoiDetailView
 import com.kreinto.chefico.views.poilist.PoiListView
 import com.kreinto.chefico.views.settings.SettinsView
@@ -46,6 +47,7 @@ sealed class AppRoute(val route: String, val arg: String = "") {
   object Camera : AppRoute("camera")
   object PoiList : AppRoute("poilist")
   object PoiDetail : AppRoute("poidetail/{poiId}", "poiId")
+  object PoiCreation : AppRoute("poicreation")
 }
 
 @ExperimentalLifecycleComposeApi
@@ -76,7 +78,6 @@ class MainActivity : ComponentActivity() {
           // decision.
         }
       }
-
     val requestCameraPermissionLauncher =
       registerForActivityResult(ActivityResultContracts.RequestPermission()) {
         if (it) {
@@ -127,7 +128,6 @@ class MainActivity : ComponentActivity() {
               requestCameraPermissionLauncher.launch(CAMERA)
             }
           } else {
-//            fusedLocationClient.removeLocationUpdates {}
             navController.navigate(it)
           }
         }
@@ -169,6 +169,9 @@ class MainActivity : ComponentActivity() {
           }
           composable(AppRoute.Camera.route) {
             CameraView(onNavigate = onNavigate)
+          }
+          composable(AppRoute.PoiCreation.route) {
+            PoiCreationView(onNavigate = onNavigate)
           }
         }
       }

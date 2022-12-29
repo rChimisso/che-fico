@@ -13,6 +13,17 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+/**
+ * Item that can be selected, handling the state change.
+ *
+ * @param icon Icon to display.
+ * @param text Text to display.
+ * @param tint Optional icon color, defaults to green.
+ * @param selectable Whether this item can be selected.
+ * @param onClick Function called when the item is tapped.
+ * @param onLongClick Optional function called when the item is selected. Won't be called if the item is already [selectable].
+ * @param onCheckedChange Function called when the item goes from selected to unselected and vice versa.
+ */
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @Composable
