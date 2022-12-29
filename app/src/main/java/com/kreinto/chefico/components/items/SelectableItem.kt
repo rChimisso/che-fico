@@ -61,6 +61,7 @@ fun SelectableItem(
       onLongClick = onLongClickAction
     )
   } else {
+    selected = false
     BasicItem(
       icon = icon,
       text = text,

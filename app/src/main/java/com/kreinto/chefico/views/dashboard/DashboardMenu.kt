@@ -26,25 +26,6 @@ fun DashboardMenu(onNavigate: (id: String) -> Unit) {
     shadowElevation = 12.dp,
     color = Color.White
   ) {
-    /*Surface(
-      shape = RoundedCornerShape(40.dp),
-      shadowElevation = 12.dp,
-      modifier = Modifier.offset(y = 0.dp),
-      color = Color.White
-    ) {
-      IconButton(
-        modifier = Modifier
-          .width(80.dp)
-          .height(28.dp),
-        onClick = {}
-      ) {
-        Icon(
-          imageVector = Icons.Default.ArrowDropDown,
-          contentDescription = "Hide menu",
-          tint = Color.Black
-        )
-      }
-    }*/
     Column(
       verticalArrangement = Arrangement.SpaceEvenly,
       horizontalAlignment = Alignment.CenterHorizontally,

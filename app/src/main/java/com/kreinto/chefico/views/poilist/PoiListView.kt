@@ -1,6 +1,7 @@
 package com.kreinto.chefico.views.poilist
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -31,44 +32,45 @@ fun PoiListView(
   viewModel: CheFicoViewModel,
   onNavigate: (String) -> Unit
 ) {
-
-  val selectedPoi = remember { mutableStateListOf<Int>() }
   val pois = viewModel.getPois().collectAsStateWithLifecycle(emptyList())
+  val selectedPois = remember { mutableStateListOf<Int>() }
   var filter: String by rememberSaveable { mutableStateOf("") }
 
   StandardFrame(
     onNavPressed = onNavigate,
-    title = {
-      SearchInput(onValueChange = { query -> filter = query })
-    },
+    title = { SearchInput(onValueChange = { query -> filter = query }) },
     bottomBar = {
-      if (selectedPoi.size > 0) {
+      if (selectedPois.size > 0) {
         SimpleBottomBar(
           leftButtonData = ButtonData(
             icon = Icons.Default.Delete,
             contentDescription = "Delete selected",
             tint = Color.Red
           ) {
-            selectedPoi.forEach { id ->
-              viewModel.deletePoi(id)
-            }
-            selectedPoi.clear()
+            selectedPois.forEach { id -> viewModel.deletePoi(id) }
+            selectedPois.clear()
           },
           rightButtonData = ButtonData(
             icon = Icons.Default.Share,
             contentDescription = "Share selected",
-          ) {}
+          ) {
+            selectedPois.clear()
+          }
         )
       }
     }
   ) {
-    LazyColumn(modifier = Modifier.padding(it)) {
+    LazyColumn(
+      modifier = Modifier
+        .padding(top = it.calculateTopPadding())
+        .fillMaxHeight()
+    ) {
       if (filter.isEmpty()) {
         items(pois.value.size) { index ->
           SelectableItem(
             icon = Icons.Default.Star,
             text = pois.value[index].name,
-            selectable = selectedPoi.size > 0,
+            selectable = selectedPois.size > 0,
             onClick = {
               onNavigate(
                 AppRoute.PoiDetail.route.replace(
@@ -77,12 +79,12 @@ fun PoiListView(
                 )
               )
             },
-            onLongClick = { selectedPoi.add(pois.value[index].id) },
+            onLongClick = { selectedPois.add(pois.value[index].id) },
             onCheckedChange = { checked ->
               if (checked) {
-                selectedPoi.add(pois.value[index].id)
+                selectedPois.add(pois.value[index].id)
               } else {
-                selectedPoi.removeIf { id -> id == pois.value[index].id }
+                selectedPois.removeIf { id -> id == pois.value[index].id }
               }
             }
           )
@@ -93,14 +95,14 @@ fun PoiListView(
           SelectableItem(
             icon = Icons.Default.Star,
             text = filteredPoi[index].name,
-            selectable = selectedPoi.size > 0,
+            selectable = selectedPois.size > 0,
             onClick = { onNavigate(AppRoute.PoiDetail.route) },
-            onLongClick = { selectedPoi.add(filteredPoi[index].id) },
+            onLongClick = { selectedPois.add(filteredPoi[index].id) },
             onCheckedChange = { checked ->
               if (checked) {
-                selectedPoi.add(filteredPoi[index].id)
+                selectedPois.add(filteredPoi[index].id)
               } else {
-                selectedPoi.removeIf { id -> id == filteredPoi[index].id }
+                selectedPois.removeIf { id -> id == filteredPoi[index].id }
               }
             }
           )
