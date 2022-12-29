@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.kreinto.chefico.room.entities.Notification
 import com.kreinto.chefico.room.entities.Poi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -22,10 +23,12 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
       LatLng(0.0, 0.0)
     )
   )
+
+  @ExperimentalCoroutinesApi
   val poisWithin = mapBoundariesFlow.flatMapLatest { selectPoisWithin(it) }
 
   init {
-    var database = CheFicoDatabase.getInstance(application)
+    val database = CheFicoDatabase.getInstance(application)
     repository = CheFicoRepository(
       database.notificationDao(),
       database.poiDao()
@@ -80,6 +83,7 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     mapBoundariesFlow.value = latLngBounds
   }
 
+  @ExperimentalCoroutinesApi
   private fun selectPoisWithin(latLngBounds: LatLngBounds): Flow<List<Poi>> {
     return getPois().mapLatest {
       it.filter { poi -> latLngBounds.contains(LatLng(poi.latitude, poi.longitude)) }

@@ -36,10 +36,12 @@ import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.room.entities.Poi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
 @ExperimentalLifecycleComposeApi
 @SuppressLint("MissingPermission")
+@ExperimentalCoroutinesApi
 @ExperimentalMaterial3Api
 @Composable
 fun MapsView(

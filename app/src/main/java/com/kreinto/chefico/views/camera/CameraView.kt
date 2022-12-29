@@ -1,11 +1,8 @@
 package com.kreinto.chefico.views.camera
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.*
-import android.os.Build
+import android.graphics.BitmapFactory
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -35,7 +32,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.kreinto.chefico.AppRoute
 import com.kreinto.chefico.components.frames.SimpleFrame
-import com.kreinto.chefico.plantrecognition.PlantRecognition
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -45,10 +41,8 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-@SuppressLint("RememberReturnType")
-@ExperimentalGetImage
-@RequiresApi(Build.VERSION_CODES.P)
 @ExperimentalMaterial3Api
+@ExperimentalGetImage
 @Composable
 fun CameraView(
   onNavigate: (route: String) -> Unit
@@ -79,12 +73,12 @@ fun CameraView(
   }
   val imagePath = remember { mutableStateOf("") }
   val isResultReady = remember { mutableStateOf(false) }
-  SimpleFrame(onClick = {
+  SimpleFrame(onBackPressed = {
+    // TODO: create new view for result
     if (isResultReady.value) {
       onNavigate(AppRoute.Camera.route)
     } else {
       onNavigate(AppRoute.Dashboard.route)
-
     }
   }) {
     if (show.value) {
@@ -101,7 +95,6 @@ fun CameraView(
         )
       }
       if (isResultReady.value) {
-
         Column(
           modifier = Modifier
             .padding(it)
@@ -165,16 +158,15 @@ fun CameraView(
             .align(Alignment.BottomCenter),
           onClick = {
             coroutineScope.launch {
-              imageCapture.takePicture(context.executor).let {
+              imageCapture.takePicture(context.executor).let { file ->
                 show.value = true
-                imagePath.value = it.path
-                PlantRecognition.recognize(it) { result ->
-                  result.get("bestMatch").let {
-                    text.value = it.toString()
+                imagePath.value = file.path
+                PlantRecognition.recognize(file) { result ->
+                  result["bestMatch"].let { match ->
+                    text.value = match.toString()
                     isResultReady.value = true
                   }
                 }
-
               }
             }
           }) {
@@ -213,6 +205,7 @@ suspend fun ImageCapture.takePicture(executor: Executor): File {
 suspend fun Context.getCameraProvider(): ProcessCameraProvider = suspendCoroutine {
   ProcessCameraProvider.getInstance(this).also { future ->
     future.addListener({
+      // FIXME
       it.resume(future.get())
     }, executor)
   }

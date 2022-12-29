@@ -11,6 +11,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,6 +36,7 @@ import com.kreinto.chefico.views.maps.MapsView
 import com.kreinto.chefico.views.poidetail.PoiDetailView
 import com.kreinto.chefico.views.poilist.PoiListView
 import com.kreinto.chefico.views.settings.SettinsView
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 sealed class AppRoute(val route: String, val arg: String = "") {
   object Back : AppRoute("back")
@@ -47,10 +49,12 @@ sealed class AppRoute(val route: String, val arg: String = "") {
 }
 
 @ExperimentalLifecycleComposeApi
+@ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
 @ExperimentalPagerApi
+@ExperimentalGetImage
 class MainActivity : ComponentActivity() {
   private lateinit var fusedLocationClient: FusedLocationProviderClient
   private lateinit var locationSettingsClient: SettingsClient
@@ -120,7 +124,7 @@ class MainActivity : ComponentActivity() {
               // using your app without granting the permission.
               // showInContextUI(...)
             } else {
-              requestLocationPermissionLauncher.launch(CAMERA)
+              requestCameraPermissionLauncher.launch(CAMERA)
             }
           } else {
 //            fusedLocationClient.removeLocationUpdates {}

@@ -1,4 +1,4 @@
-package com.kreinto.chefico.plantrecognition
+package com.kreinto.chefico.views.camera
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -10,13 +10,11 @@ import java.io.IOException
 
 
 class PlantRecognition {
-
-  class PlantResult {
-    val commonNames: List<String> = emptyList()
-  }
-
+  //  class PlantResult {
+  //    val commonNames: List<String> = emptyList()
+  //  }
   companion object {
-    const val apiUrl =
+    private const val apiUrl =
       "https://my-api.plantnet.org/v2/identify/all?api-key=2b10sKsQmbu8L0oorDT3I09UO&lang=it"
 
     fun recognize(file: File, onResult: (result: Map<String, Any>) -> Unit) {
@@ -29,19 +27,12 @@ class PlantRecognition {
           file.asRequestBody("image/jpeg".toMediaType())
         )
         .build()
-
-      println(file.name)
-      println(file.asRequestBody("image/jpeg".toMediaType()).contentLength())
-      println(file.asRequestBody("image/jpeg".toMediaType()).contentType())
-
       val request = Request.Builder()
         .header("content-type", "multipart/form-data;")
         .url(apiUrl)
         .post(formBody)
         .build()
-
       val call = client.newCall(request)
-
       call.enqueue(object : Callback {
         override fun onFailure(call: Call, e: IOException) {
           e.printStackTrace()
@@ -49,8 +40,9 @@ class PlantRecognition {
 
         override fun onResponse(call: Call, response: Response) {
           val gson = Gson()
-          response.body?.string()
-            ?.let { onResult(gson.fromJson(it, object : TypeToken<Map<String, Any>>() {}.type)) }
+          response.body?.string()?.let {
+            onResult(gson.fromJson(it, object : TypeToken<Map<String, Any>>() {}.type))
+          }
         }
       })
     }
