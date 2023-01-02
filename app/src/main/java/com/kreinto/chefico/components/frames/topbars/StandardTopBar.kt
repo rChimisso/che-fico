@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kreinto.chefico.AppRoute
 import com.kreinto.chefico.components.buttons.SimpleButton
 import com.kreinto.chefico.components.data.ButtonData
 
@@ -19,14 +20,14 @@ import com.kreinto.chefico.components.data.ButtonData
  *
  * @param isDashboard Whether this top bar is for the dashboard. Controls whether to show the
  * "Go back" icon or the "Settings" icon.
- * @param onClick Function called when the top bar button is clicked.
+ * @param onNavPressed Function called when the top bar navigation button is clicked.
  * @param title [Composable] to show at the center.
  */
 @ExperimentalMaterial3Api
 @Composable
 fun StandardTopBar(
   isDashboard: Boolean = false,
-  onClick: () -> Unit,
+  onNavPressed: (String) -> Unit,
   title: @Composable () -> Unit
 ) {
   Surface(shadowElevation = 12.dp) {
@@ -39,7 +40,7 @@ fun StandardTopBar(
             ButtonData(
               icon = Icons.Default.ArrowBack,
               contentDescription = "Go back",
-              onClick = onClick,
+              onClick = { onNavPressed(AppRoute.Back.route) },
             )
           )
         }
@@ -51,7 +52,7 @@ fun StandardTopBar(
             ButtonData(
               icon = Icons.Default.Settings,
               contentDescription = "Settings",
-              onClick = onClick,
+              onClick = { onNavPressed(AppRoute.Settings.route) },
             )
           )
         }
@@ -64,5 +65,5 @@ fun StandardTopBar(
 @Composable
 @Preview
 private fun StandardTopBarPreview() {
-  StandardTopBar(onClick = {}) {}
+  StandardTopBar(onNavPressed = {}) {}
 }

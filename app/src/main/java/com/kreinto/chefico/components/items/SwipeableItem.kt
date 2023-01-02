@@ -27,6 +27,15 @@ import com.kreinto.chefico.components.buttons.SimpleButton
 import com.kreinto.chefico.components.data.ButtonData
 import kotlin.math.roundToInt
 
+/**
+ * Item that can be swiped, revealing a list of actions to perform.
+ *
+ * @param icon Icon to display.
+ * @param text Text to display.
+ * @param tint Optional icon color, defaults to green.
+ * @param actions Optional array of actions to display when the item gets swiped.
+ * @param onClick Function called when the item is tapped.
+ */
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi

@@ -1,8 +1,9 @@
 package com.kreinto.chefico.views.maps
 
 import android.annotation.SuppressLint
-import android.app.Activity.RESULT_OK
+import android.app.Activity
 import android.content.IntentSender
+import android.location.Location
 import android.os.Looper
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -14,42 +15,94 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.SphericalUtil
 import com.google.maps.android.compose.*
 import com.kreinto.chefico.AppRoute
 import com.kreinto.chefico.components.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 import com.kreinto.chefico.room.CheFicoViewModel
+import com.kreinto.chefico.room.entities.Poi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 
 @ExperimentalLifecycleComposeApi
 @SuppressLint("MissingPermission")
+@ExperimentalCoroutinesApi
 @ExperimentalMaterial3Api
 @Composable
 fun MapsView(
   fusedLocationClient: FusedLocationProviderClient,
   locationSettingsClient: SettingsClient,
   viewModel: CheFicoViewModel,
-  onNavigate: (id: String) -> Unit
+  onNavigate: (String) -> Unit
 ) {
+  var isMapLoaded by remember { mutableStateOf(false) }
+  var shouldFollow by rememberSaveable { mutableStateOf(true) }
+  // TODO: Replace base coordinates with saved last location and saved zoom
+  var cameraPosition: CameraPosition by rememberSaveable {
+    mutableStateOf(
+      CameraPosition
+        .builder()
+        .target(LatLng(0.0, 0.0))
+        .zoom(19f)
+        .build()
+    )
+  }
+  val poisWithin = viewModel.poisWithin.collectAsStateWithLifecycle(emptyList())
+  fun buildCameraPosition(location: Location) = CameraPosition
+    .builder()
+    .target(LatLng(location.latitude, location.longitude))
+    .bearing(location.bearing)
+    .zoom(18f)
+    .build()
+
+  val cameraPositionState = rememberCameraPositionState {
+    position = cameraPosition
+    fusedLocationClient.lastLocation.addOnSuccessListener {
+      if (it != null) {
+        position = buildCameraPosition(it)
+        cameraPosition = position
+      }
+    }
+    fusedLocationClient.getCurrentLocation(
+      Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+      null
+    ).addOnSuccessListener {
+      if (it != null) {
+        position = buildCameraPosition(it)
+        cameraPosition = position
+      }
+    }
+  }
+
+  val locationListener = rememberLocationListener {
+    if (shouldFollow) {
+      cameraPosition = CameraPosition
+        .builder()
+        .target(LatLng(it.latitude, it.longitude))
+        .bearing(it.bearing)
+        .zoom(cameraPositionState.position.zoom)
+        .tilt(cameraPositionState.position.tilt)
+        .build()
+    }
+  }
+
   SimpleFrame(
-    onClick = { onNavigate(AppRoute.Dashboard.route) },
+    onBackPressed = onNavigate,
     bottomBar = {
       SimpleBottomBar(
         leftButtonData = ButtonData(
@@ -61,51 +114,44 @@ fun MapsView(
           contentDescription = "Open Plant Recognition",
         ) { onNavigate(AppRoute.Camera.route) },
         rightButtonData = ButtonData(
-          icon = Icons.Default.Place,
-          contentDescription = "Create new POI",
-        ) {}
+          icon = if (shouldFollow) Icons.Default.AccountCircle else Icons.Default.AccountBox,
+          contentDescription = "Center camera",
+        ) {
+          shouldFollow = true
+          fusedLocationClient.getCurrentLocation(
+            Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+            null
+          ).addOnSuccessListener {
+            if (it != null) {
+              cameraPosition = CameraPosition
+                .builder()
+                .target(LatLng(it.latitude, it.longitude))
+                .bearing(it.bearing)
+                .zoom(if (cameraPositionState.position.zoom < 15f) 19f else cameraPositionState.position.zoom)
+                .build()
+            }
+          }
+        }
       )
     }
   ) {
-    var isMapLoaded by remember { mutableStateOf(false) }
-    var cameraPosition: CameraPosition? by rememberSaveable { mutableStateOf(null) }
-    /*var poisWithin =
-      viewModel.selectPoisWithin(centerLocation, radius).collectAsStateWithLifecycle(emptyList())*/
     val properties by remember { mutableStateOf(MapProperties(isMyLocationEnabled = true)) }
     val uiSettings by remember {
       mutableStateOf(
         MapUiSettings(
           compassEnabled = false,
           myLocationButtonEnabled = false,
+          mapToolbarEnabled = false,
           zoomControlsEnabled = false
         )
       )
     }
-    val cameraPositionState = rememberCameraPositionState {
-      position = CameraPosition.builder().target(LatLng(0.0, 0.0)).zoom(16f).build()
-    }
     val locationRequest = LocationRequest
       .Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000)
       .build()
-    val locationListener = LocationListener {
-      if (
-        cameraPosition == null ||
-        it.latitude != cameraPosition!!.target.latitude ||
-        it.longitude != cameraPosition!!.target.longitude
-      ) {
-        cameraPosition = CameraPosition
-          .builder()
-          .target(LatLng(it.latitude, it.longitude))
-          .bearing(it.bearing)
-          .zoom(cameraPositionState.position.zoom)
-          .tilt(cameraPositionState.position.tilt)
-          .build()
-      }
-      println("Updating location...")
-    }
     val settingResultRequest =
       rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
-        if (it.resultCode == RESULT_OK) {
+        if (it.resultCode == Activity.RESULT_OK) {
           fusedLocationClient.requestLocationUpdates(
             locationRequest,
             locationListener,
@@ -116,61 +162,80 @@ fun MapsView(
         }
       }
     val refreshMarkers = {
-      val centerLocation = cameraPositionState.position.target
-      val topLeftLocation = cameraPositionState.projection?.visibleRegion?.farLeft
-        ?: cameraPositionState.position.target
-      val radius = SphericalUtil.computeDistanceBetween(topLeftLocation, centerLocation)
+      val latLngBounds = cameraPositionState.projection?.visibleRegion?.latLngBounds
+      if (latLngBounds != null) {
+        viewModel.setLatLngBounds(latLngBounds)
+      }
     }
 
-    LaunchedEffect(Unit) {
-      val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
-      val task = locationSettingsClient.checkLocationSettings(builder.build())
-      task.addOnSuccessListener {
-        fusedLocationClient.requestLocationUpdates(
-          locationRequest,
-          locationListener,
-          Looper.getMainLooper()
-        )
-      }
-      task.addOnFailureListener {
-        if (it is ResolvableApiException) {
-          try {
-            settingResultRequest.launch(IntentSenderRequest.Builder(it.resolution).build())
-          } catch (_: IntentSender.SendIntentException) {
+    suspend fun moveCamera() {
+      cameraPositionState.animate(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000)
+    }
+
+    LaunchedEffect(shouldFollow) {
+      if (shouldFollow) {
+        fusedLocationClient.removeLocationUpdates(locationListener)
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+        val task = locationSettingsClient.checkLocationSettings(builder.build())
+        task.addOnSuccessListener {
+          fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationListener,
+            Looper.getMainLooper()
+          )
+        }
+        task.addOnFailureListener {
+          if (it is ResolvableApiException) {
+            try {
+              settingResultRequest.launch(IntentSenderRequest.Builder(it.resolution).build())
+            } catch (_: IntentSender.SendIntentException) {
+            }
           }
         }
+        moveCamera()
+      } else {
+        fusedLocationClient.removeLocationUpdates(locationListener)
       }
     }
     LaunchedEffect(cameraPosition) {
-      if (cameraPosition != null) {
-        cameraPositionState.animate(
-          CameraUpdateFactory.newCameraPosition(cameraPosition!!),
-          1000
-        )
+      if (shouldFollow) {
+        moveCamera()
       }
     }
     LaunchedEffect(cameraPositionState.isMoving) {
+      if (cameraPositionState.cameraMoveStartedReason == CameraMoveStartedReason.GESTURE) {
+        shouldFollow = false
+      }
       if (!cameraPositionState.isMoving) {
         refreshMarkers()
+      }
+    }
+    DisposableEffect(Unit) {
+      onDispose {
+        fusedLocationClient.removeLocationUpdates(locationListener)
       }
     }
 
     GoogleMap(
       modifier = Modifier.fillMaxSize(),
+      properties = properties,
+      uiSettings = uiSettings,
       cameraPositionState = cameraPositionState,
       onMapLoaded = {
         isMapLoaded = true
         refreshMarkers()
       },
-      properties = properties,
-      uiSettings = uiSettings
+      onMapLongClick = {
+        viewModel.addPoi(Poi(name = "", latitude = it.latitude, longitude = it.longitude))
+      }
     ) {
-//      poisWithin.value.forEach { Marker(MarkerState(LatLng(it.latitude, it.longitude))) }
+      // For clustering: https://github.com/googlemaps/android-maps-compose/issues/44
+      poisWithin.value.forEach { Marker(MarkerState(LatLng(it.latitude, it.longitude))) }
     }
-    if (!isMapLoaded || cameraPosition == null) {
+    if (!isMapLoaded) {
       AnimatedVisibility(
         modifier = Modifier.fillMaxSize(),
-        visible = !isMapLoaded || cameraPosition == null,
+        visible = !isMapLoaded,
         enter = EnterTransition.None,
         exit = fadeOut()
       ) {
@@ -182,11 +247,4 @@ fun MapsView(
       }
     }
   }
-}
-
-@ExperimentalMaterial3Api
-@Composable
-@Preview
-private fun MapsViewPreviw() {
-  // MapsView() {}
 }
