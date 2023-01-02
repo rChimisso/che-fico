@@ -1,64 +1,61 @@
 package com.kreinto.chefico.room
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.kreinto.chefico.room.daos.NotificationDao
+import com.kreinto.chefico.room.daos.PoiDao
+import com.kreinto.chefico.room.entities.Notification
+import com.kreinto.chefico.room.entities.Poi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 
-class CheFicoRepository(private val notificationDao: NotificationDao, private val poiDao: PoiDao) {
-
-  private val coroutineScope = CoroutineScope(Dispatchers.Main)
+class CheFicoRepository(
+  private val notificationDao: NotificationDao,
+  private val poiDao: PoiDao
+) {
 
   fun insertPoi(poi: Poi) {
-    coroutineScope.launch(Dispatchers.IO) {
-      poiDao.insertPoi(poi)
-    }
+    poiDao.insert(poi)
   }
 
   fun insertNotification(notification: Notification) {
-    coroutineScope.launch(Dispatchers.IO) {
-      notificationDao.insertNotification(notification)
-    }
+    notificationDao.insert(notification)
   }
 
   fun selectPoi(id: Int): Flow<Poi> {
-    return poiDao.selectPoi(id)
+    return poiDao.select(id)
+  }
+
+  fun updatePoi(poi: Poi) {
+    poiDao.update(poi)
   }
 
   fun selectNotification(id: Int): Flow<Notification> {
-    return notificationDao.selectNotification(id)
+    return notificationDao.select(id)
   }
 
   fun selectPois(): Flow<List<Poi>> {
-    return poiDao.selectPois()
+    return poiDao.selectAll()
   }
 
   fun selectNotifications(): Flow<List<Notification>> {
-    return notificationDao.selectNotifications()
+    return notificationDao.selectAll()
   }
 
   fun deletePoi(id: Int) {
-    coroutineScope.launch(Dispatchers.IO) {
-      poiDao.deletePoi(id)
-    }
+    poiDao.delete(id)
   }
 
   fun deleteNotification(id: Int) {
-    coroutineScope.launch(Dispatchers.IO) {
-      notificationDao.deleteNotification(id)
-    }
+    notificationDao.delete(id)
   }
 
   fun deletePois() {
-    coroutineScope.launch(Dispatchers.IO) {
-      poiDao.deletePois()
-    }
+    poiDao.deleteAll()
   }
 
   fun deleteNotifications() {
-    coroutineScope.launch(Dispatchers.IO) {
-      notificationDao.deleteNotifications()
-    }
+    notificationDao.deleteAll()
   }
 
+  fun selectPoisWithin(latitude: Double, longitude: Double, radius: Double): Flow<List<Poi>> {
+    return poiDao.selectWithin(latitude, longitude, radius)
+  }
 }

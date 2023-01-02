@@ -4,6 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.kreinto.chefico.room.daos.NotificationDao
+import com.kreinto.chefico.room.daos.PoiDao
+import com.kreinto.chefico.room.entities.Notification
+import com.kreinto.chefico.room.entities.Poi
 
 @Database(entities = [(Notification::class), (Poi::class)], version = 1)
 abstract class CheFicoDatabase : RoomDatabase() {
@@ -19,9 +23,9 @@ abstract class CheFicoDatabase : RoomDatabase() {
       if (instance == null) {
         instance = Room
           .databaseBuilder(
-            context.applicationContext,
+            context,
             CheFicoDatabase::class.java,
-            "cheFicoDatabase"
+            "cheFicoDatabase.db"
           )
           .fallbackToDestructiveMigration()
           .build()

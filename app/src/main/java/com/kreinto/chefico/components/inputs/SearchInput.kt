@@ -54,7 +54,10 @@ fun SearchInput(onValueChange: (query: String) -> Unit) {
           ButtonData(
             icon = Icons.Default.Close,
             contentDescription = "Empty query"
-          ) { query = "" }
+          ) {
+            query = ""
+            onValueChange(query)
+          }
         )
       }
     },

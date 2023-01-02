@@ -23,7 +23,7 @@ fun RoundButton(buttonData: ButtonData) {
  * [Preview] for [RoundButton].
  */
 @Composable
-@Preview()
+@Preview
 private fun RoundButtonPreview() {
   RoundButton(ButtonData(icon = Icons.Default.Add, contentDescription = "", onClick = {}))
 }

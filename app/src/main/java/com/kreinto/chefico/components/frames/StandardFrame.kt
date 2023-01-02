@@ -24,7 +24,7 @@ fun StandardFrame(
   onClick: () -> Unit,
   title: @Composable () -> Unit,
   bottomBar: @Composable () -> Unit = {},
-  content: @Composable (padding: PaddingValues) -> Unit
+  content: @Composable ((PaddingValues) -> Unit)
 ) {
   Scaffold(
     topBar = {
