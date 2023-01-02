@@ -7,10 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +35,7 @@ fun BasicItem(
   icon: ImageVector,
   text: String,
   modifier: Modifier = Modifier,
-  tint: Color = Color(0xff4caf50),
+  tint: Color = MaterialTheme.colorScheme.primary,
   onLongClick: (() -> Unit)? = null,
   onClick: () -> Unit
 ) {
