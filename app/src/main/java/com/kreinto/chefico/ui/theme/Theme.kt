@@ -15,9 +15,9 @@ private val LightColorPalette = lightColorScheme(
 )
 
 @Composable
-fun CheFicoTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+fun CheFicoTheme(content: @Composable () -> Unit) {
   MaterialTheme(
-    colorScheme = if (darkTheme) DarkColorPalette else LightColorPalette,
+    colorScheme = if (isSystemInDarkTheme()) DarkColorPalette else LightColorPalette,
     shapes = Shapes,
     typography = Typography,
     content = content
