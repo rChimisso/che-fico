@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-  <style name="Theme.CheFico_Night" parent="android:Theme.Material.Light.NoActionBar">
-   <item name="android:statusBarColor" tools:targetApi="1">@color/background_dark</item>
-  </style>
-
   <style name="Theme.CheFico" parent="android:Theme.Material.Light.DarkActionBar">
     <item name="android:statusBarColor" tools:targetApi="1">@color/background_light</item>
   </style>
