@@ -36,12 +36,12 @@ fun BasicItem(
   icon: ImageVector,
   text: String,
   modifier: Modifier = Modifier,
-  tint: Color = MaterialTheme.colorScheme.onSecondary,
+  tint: Color = MaterialTheme.colorScheme.onPrimary, //onSecondary
   onLongClick: (() -> Unit)? = null,
   onClick: () -> Unit
 ) {
   BasicItem(
-    color = MaterialTheme.colorScheme.secondary,
+    color = MaterialTheme.colorScheme.primary, //secondary
     icon = {
       Icon(
         modifier = it,
@@ -75,7 +75,7 @@ fun BasicItem(
   icon: @Composable (Modifier) -> Unit,
   text: String,
   modifier: Modifier = Modifier,
-  color: Color = MaterialTheme.colorScheme.secondary,
+  color: Color = MaterialTheme.colorScheme.primary, //secondary
   border: BorderStroke? = null,
   onLongClick: (() -> Unit)? = null,
   onClick: () -> Unit
