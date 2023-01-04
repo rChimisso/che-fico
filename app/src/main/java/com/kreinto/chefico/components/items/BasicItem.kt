@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kreinto.chefico.ui.theme.level1
 
 /**
  * Basic item with an icon and text.
@@ -35,11 +36,12 @@ fun BasicItem(
   icon: ImageVector,
   text: String,
   modifier: Modifier = Modifier,
-  tint: Color = MaterialTheme.colorScheme.primary,
+  tint: Color = MaterialTheme.colorScheme.onSecondary,
   onLongClick: (() -> Unit)? = null,
   onClick: () -> Unit
 ) {
   BasicItem(
+    color = MaterialTheme.colorScheme.secondary,
     icon = {
       Icon(
         modifier = it,
@@ -73,7 +75,7 @@ fun BasicItem(
   icon: @Composable (Modifier) -> Unit,
   text: String,
   modifier: Modifier = Modifier,
-  color: Color = Color.White,
+  color: Color = MaterialTheme.colorScheme.secondary,
   border: BorderStroke? = null,
   onLongClick: (() -> Unit)? = null,
   onClick: () -> Unit
@@ -82,8 +84,8 @@ fun BasicItem(
     modifier = modifier
       .fillMaxWidth()
       .combinedClickable(onClick = onClick, onLongClick = onLongClick),
-    shadowElevation = 12.dp,
-    shape = RoundedCornerShape(10.dp),
+    tonalElevation = level1,
+    shape = RoundedCornerShape(16.dp),
     color = color,
     border = border
   ) {

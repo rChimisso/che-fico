@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="background_dark">#FF1A1C18</color>
-  <color name="background_light">#FFFDFDF6</color>
+  <!-- <color name="background_dark">#FF1A1C18</color>
+  <color name="background_light">#FFFDFDF6</color> -->
+
+  <color name="background_dark_test">#022cfa</color>
+  <color name="background_light_test">#fa021b</color>
 </resources>

@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.components.data.ButtonData
+import com.kreinto.chefico.components.data.ButtonLeadingData
 
 /**
  * Simple transparent button.
@@ -18,7 +19,7 @@ import com.kreinto.chefico.components.data.ButtonData
  * @param buttonData [ButtonData].
  */
 @Composable
-fun SimpleButton(buttonData: ButtonData) {
+fun LeadingButton(buttonData: ButtonLeadingData) {
   IconButton(
     modifier = Modifier.size(40.dp),
     onClick = buttonData.onClick
@@ -26,7 +27,7 @@ fun SimpleButton(buttonData: ButtonData) {
     Icon(
       imageVector = buttonData.icon,
       contentDescription = buttonData.contentDescription,
-      tint = MaterialTheme.colorScheme.primary
+      tint = MaterialTheme.colorScheme.onSurfaceVariant
     )
   }
 }
@@ -36,11 +37,11 @@ fun SimpleButton(buttonData: ButtonData) {
  */
 @Composable
 @Preview
-private fun SimpleButtonPreview() {
-  SimpleButton(
-    ButtonData(
+private fun LeadingButtonPreview() {
+  LeadingButton(
+    ButtonLeadingData(
       icon = Icons.Default.Add,
-      contentDescription = "Simple button",
+      contentDescription = "LeadingButton",
       onClick = {}
     )
   )

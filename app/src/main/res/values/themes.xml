@@ -3,6 +3,6 @@
   <style name="Theme.CheFico" parent="android:Theme.Material.Light.NoActionBar">
     <item name="android:windowTranslucentStatus">true</item>
     <item name="android:fitsSystemWindows">true</item>
-    <item name="android:statusBarColor" tools:targetApi="1">@color/background_light</item>
+    <item name="android:statusBarColor" tools:targetApi="1">@color/background_light_test</item>
   </style>
 </resources>
