@@ -1,33 +1,28 @@
 package com.kreinto.chefico.views.camera
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.kreinto.chefico.AppRoute
@@ -66,84 +61,11 @@ fun CameraView(
     )
     preview.setSurfaceProvider(previewView.surfaceProvider)
   }
+  val isLoading = remember { mutableStateOf(false) }
   val coroutineScope = rememberCoroutineScope()
-  val show = remember { mutableStateOf(false) }
-  val text = remember {
-    mutableStateOf("")
-  }
-  val imagePath = remember { mutableStateOf("") }
-  val isResultReady = remember { mutableStateOf(false) }
-  SimpleFrame(onBackPressed = {
-    // TODO: create new view for result
-    if (isResultReady.value) {
-      onNavigate(AppRoute.Camera.route)
-    } else {
-      onNavigate(AppRoute.Dashboard.route)
-    }
-  }) {
-    if (show.value) {
-      AnimatedVisibility(
-        modifier = Modifier.fillMaxSize(),
-        visible = !isResultReady.value,
-        enter = EnterTransition.None,
-        exit = fadeOut()
-      ) {
-        CircularProgressIndicator(
-          modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .wrapContentSize()
-        )
-      }
-      if (isResultReady.value) {
-        Column(
-          modifier = Modifier
-            .padding(it)
-            .fillMaxSize(),
-          horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-          val image = File(imagePath.value)
-          val imgBitmap = BitmapFactory.decodeFile(image.absolutePath)
-          Surface(
-            shadowElevation = 12.dp,
-            shape = RoundedCornerShape(8.dp),
-          ) {
-            Image(
-              bitmap = imgBitmap.asImageBitmap(),
-              contentDescription = "",
-              contentScale = ContentScale.FillBounds,
-              modifier = Modifier
-                .rotate(90f)
-                .width(300.dp)
-                .height(300.dp)
-            )
-          }
-
-          Surface(
-            shadowElevation = 12.dp,
-            shape = RoundedCornerShape(8.dp),
-            modifier = Modifier
-              .fillMaxWidth()
-              .padding(16.dp)
-          ) {
-
-            Column(modifier = Modifier.fillMaxSize()) {
-
-
-              Text(
-                modifier = Modifier
-                  .padding(16.dp)
-                  .fillMaxWidth(),
-                text = text.value,
-                fontSize = 18.sp,
-                color = Color(0xff4caf50)
-              )
-              Divider(modifier = Modifier.height(2.dp))
-
-            }
-          }
-        }
-      }
-    } else {
+  var fileName = remember { mutableStateOf("") }
+  SimpleFrame(onBackPressed = onNavigate) {
+    if (!isLoading.value) {
       Box {
         AndroidView({ previewView }, modifier = Modifier.fillMaxSize()) {}
         Button(
@@ -158,22 +80,20 @@ fun CameraView(
             .align(Alignment.BottomCenter),
           onClick = {
             coroutineScope.launch {
-              imageCapture.takePicture(context.executor).let { file ->
-                show.value = true
-                imagePath.value = file.path
-                PlantRecognition.recognize(file) { result ->
-                  result["bestMatch"].let { match ->
-                    text.value = match.toString()
-                    isResultReady.value = true
-                  }
-                }
-              }
+              imageCapture.takePicture(context.executor).let { fileName.value = it.name }
             }
           }) {
           Icon(imageVector = Icons.Default.Home, contentDescription = "")
         }
       }
     }
+  }
+  if (fileName.value != "") {
+    onNavigate(
+      AppRoute.PlantDetail.route(
+        Pair("imageName", fileName.value)
+      )
+    )
   }
 }
 

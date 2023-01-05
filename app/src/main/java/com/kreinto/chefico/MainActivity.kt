@@ -33,6 +33,7 @@ import com.kreinto.chefico.ui.theme.CheFicoTheme
 import com.kreinto.chefico.views.camera.CameraView
 import com.kreinto.chefico.views.dashboard.DashboardView
 import com.kreinto.chefico.views.maps.MapsView
+import com.kreinto.chefico.views.plantdetail.PlantDetailView
 import com.kreinto.chefico.views.poicreation.PoiCreationView
 import com.kreinto.chefico.views.poidetail.PoiDetailView
 import com.kreinto.chefico.views.poilist.PoiListView
@@ -48,6 +49,19 @@ sealed class AppRoute(val route: String, val arg: String = "") {
   object PoiList : AppRoute("poilist")
   object PoiDetail : AppRoute("poidetail/{poiId}", "poiId")
   object PoiCreation : AppRoute("poicreation")
+  object PlantDetail : AppRoute("plantdetail/{imageName}", "imageName")
+
+  fun route(vararg args: Pair<String, String>): String {
+    var routes = route
+    args.forEach { pair ->
+      routes = routes.replace(
+        "{${pair.first}}",
+        pair.second
+      )
+    }
+    println(routes)
+    return routes
+  }
 }
 
 @ExperimentalLifecycleComposeApi
@@ -97,6 +111,9 @@ class MainActivity : ComponentActivity() {
         val onNavigate: (route: String) -> Unit = {
           if (it == AppRoute.Back.route) {
             navController.popBackStack()
+            if (navController.currentDestination?.route == AppRoute.PlantDetail.route) {
+              navController.popBackStack()
+            }
           } else if (it == AppRoute.Maps.route && ContextCompat.checkSelfPermission(
               this,
               ACCESS_FINE_LOCATION
@@ -172,6 +189,19 @@ class MainActivity : ComponentActivity() {
           }
           composable(AppRoute.PoiCreation.route) {
             PoiCreationView(onNavigate = onNavigate)
+          }
+          composable(
+            AppRoute.PlantDetail.route,
+            arguments = listOf(
+              navArgument("imageName") {
+                type = NavType.StringType
+              }
+            )
+          ) { backStackEntry ->
+            PlantDetailView(
+              onNavigate = onNavigate,
+              imageName = backStackEntry.arguments?.getString("imageName")
+            )
           }
         }
       }

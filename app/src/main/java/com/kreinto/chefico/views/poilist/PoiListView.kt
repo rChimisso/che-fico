@@ -73,9 +73,11 @@ fun PoiListView(
             selectable = selectedPois.size > 0,
             onClick = {
               onNavigate(
-                AppRoute.PoiDetail.route.replace(
-                  "{${AppRoute.PoiDetail.arg}}",
-                  pois.value[index].id.toString()
+                AppRoute.PoiDetail.route(
+                  Pair(
+                    AppRoute.PoiDetail.arg,
+                    pois.value[index].id.toString()
+                  )
                 )
               )
             },
