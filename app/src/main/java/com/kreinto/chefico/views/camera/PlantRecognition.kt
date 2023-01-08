@@ -12,7 +12,21 @@ import java.util.*
 
 class PlantRecognition {
 
-  data class PlantSpeciesData(
+  private data class WikiMediaQueryData(
+    @SerializedName("query") val query: WikiMediaPages? = null
+  )
+
+  private data class WikiMediaPages(
+    @SerializedName("pages") val pages: List<PlantDescriptionData>? = null
+  )
+
+  data class PlantDescriptionData(
+    @SerializedName("fullurl") val fullUrl: String? = null,
+    @SerializedName("extract") val extract: String? = null,
+    @SerializedName("title") val title: String? = null,
+  )
+
+  class PlantSpeciesData(
     @SerializedName("scientificName") val scientificName: String? = null,
     @SerializedName("family") val family: PlantFamilyData? = null,
     @SerializedName("commonNames") val commonNames: List<String>? = null,
@@ -28,16 +42,66 @@ class PlantRecognition {
   )
 
   data class PlantRecognitionData(
-    @SerializedName("bestMatch") var bestMatch: String? = null,
     @SerializedName("results") var results: List<PlantResultsData>? = null
   ) {
-    fun isValid() = bestMatch != null && results != null
+    fun isValid() = results != null
   }
 
   companion object {
-    private const val apiUrl =
+    private const val plantNetApi =
       "https://my-api.plantnet.org/v2/identify/all?api-key=2b10sKsQmbu8L0oorDT3I09UO&lang=it"
-    val InvalidData = PlantRecognitionData(null, null)
+    val InvalidData = PlantRecognitionData(null)
+    private const val wikiMediaApi = "https://it.wikipedia.org/w/api.php"
+
+    fun fetchPlantDescription(
+      plantName: String,
+      onResult: (result: List<PlantDescriptionData>) -> Unit
+    ) {
+      OkHttpClient().newCall(
+        Request.Builder()
+          .url(wikiMediaApi)
+          .post(
+            FormBody.Builder()
+              .add("action", "query")
+              .add("format", "json")
+              .add("prop", "categoryinfo|info|extracts")
+              .add("generator", "search")
+              .add("redirects", "1")
+              .add("utf8", "1")
+              .add("formatversion", "2")
+              .add("inprop", "url")
+              .add("exsentences", "5")
+              .add("exlimit", "1")
+              .add("exintro", "1")
+              .add("explaintext", "1")
+              .add("exsectionformat", "plain")
+              .add("gsrsearch", plantName)
+              .add("gsrlimit", "1")
+              .build()
+          )
+          .build()
+      ).enqueue(object : Callback {
+        override fun onFailure(call: Call, e: IOException) {
+          e.printStackTrace()
+        }
+
+        override fun onResponse(call: Call, response: Response) {
+          val gson = Gson()
+          response.body?.string()?.let {
+            val result = gson.fromJson(
+              it,
+              WikiMediaQueryData::class.java
+            )
+
+            if (result.query?.pages != null) {
+              onResult(result.query.pages)
+            } else {
+              onResult(listOf())
+            }
+          }
+        }
+      })
+    }
 
     fun recognize(file: File, onResult: (result: PlantRecognitionData) -> Unit) {
       val client = OkHttpClient()
@@ -51,7 +115,7 @@ class PlantRecognition {
         .build()
       val request = Request.Builder()
         .header("content-type", "multipart/form-data;")
-        .url(apiUrl)
+        .url(plantNetApi)
         .post(formBody)
         .build()
       val call = client.newCall(request)

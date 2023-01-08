@@ -17,7 +17,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -37,9 +39,20 @@ fun PlantDetailView(
 ) {
   val image = File("${LocalContext.current.cacheDir}/${imageName ?: "/"}")
   val result = remember { mutableStateOf(PlantRecognition.InvalidData) }
+  var description = remember { mutableStateOf("") }
 
   LaunchedEffect(Unit) {
-    PlantRecognition.recognize(image) { result.value = it }
+    PlantRecognition.recognize(image) {
+      result.value = it
+      PlantRecognition.fetchPlantDescription(
+        result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(
+          0
+        ) ?: ""
+      ) {
+        description.value =
+          it.getOrNull(0)?.extract.toString()
+      }
+    }
   }
 
   SimpleFrame(
@@ -49,26 +62,23 @@ fun PlantDetailView(
     Column(
       modifier = Modifier
         .padding(it)
-        .fillMaxWidth(),
+        .fillMaxWidth()
+        .padding(16.dp),
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
       val imgBitmap = BitmapFactory.decodeFile(image.absolutePath)
-      Surface(
-        modifier = Modifier
-          .padding(16.dp)
-          .height(500.dp),
-        shadowElevation = 12.dp,
-        shape = RoundedCornerShape(8.dp),
-      ) {
-        Image(
-          bitmap = imgBitmap.asImageBitmap(),
-          contentDescription = "",
-          contentScale = ContentScale.FillHeight,
-          modifier = Modifier
-            .rotate(90f)
-        )
-      }
 
+      Image(
+        bitmap = imgBitmap.asImageBitmap(),
+        contentDescription = "",
+        contentScale = ContentScale.FillBounds,
+        modifier = Modifier
+          .height(350.dp)
+          .rotate(90f)
+          .clip(RoundedCornerShape(10.dp))
+          .shadow(12.dp)
+      )
+      Spacer(modifier = Modifier.height(16.dp))
       Surface(
         shadowElevation = 12.dp,
         shape = RoundedCornerShape(8.dp),
@@ -89,33 +99,35 @@ fun PlantDetailView(
               color = Color(0xff4caf50)
             )
             Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = {
-              onNavigate(AppRoute.PoiCreation.route)
-            }) {
+            IconButton(
+              colors = IconButtonDefaults.iconButtonColors(
+                contentColor = Color.Green
+              ),
+              onClick = {
+                onNavigate(AppRoute.PoiCreation.route)
+              }) {
               Icon(
                 imageVector = Icons.Rounded.Add,
                 contentDescription = ""
               )
             }
           }
-
         }
       }
       Surface {
-        Row {
-          Text("Conosciuta come:")
-          Spacer(Modifier.width(16.dp))
-          var len = result.value.results?.size ?: 0
-          result.value.results?.subList(0, len)?.forEach { result ->
-            println(result)
-            if (result != null && result.score ?: 0.0 > 0.05) {
-              Column {
-                result.species?.commonNames?.forEach { name ->
-                  Text(name)
-                }
+        Column {
+
+          Row {
+            Text("Conosciuta come:")
+            Spacer(Modifier.width(16.dp))
+            var len = result.value.results?.size ?: 0
+            result.value.results?.getOrNull(0)?.species?.commonNames?.forEach { name ->
+              if (name != null) {
+                Text(name)
               }
             }
           }
+          Text(description.value)
         }
       }
     }
