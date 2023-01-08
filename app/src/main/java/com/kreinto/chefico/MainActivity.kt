@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity() {
   private fun getPermissionLauncher(route: Route): ActivityResultLauncher<String> {
     return getPermissionLauncher {
       if (it) {
-        navController.navigate(route.route)
+        navController.navigate(route.path)
       } else {
         // Explain to the user that the feature is unavailable because the
         // feature requires a permission that the user has denied. At the
@@ -84,7 +84,7 @@ class MainActivity : ComponentActivity() {
     }
   }
 
-  private fun getNavArgs(name: String) = listOf(navArgument(name) { type = NavType.StringType })
+  private fun getNavArgs(route: Route) = listOf(navArgument(route.arg) { type = NavType.StringType })
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -109,16 +109,16 @@ class MainActivity : ComponentActivity() {
         val viewModel by viewModels<CheFicoViewModel>()
         val onNavigate: (String) -> Unit = {
           when (it) {
-            Route.Back.route -> {
+            Route.Back.path -> {
               navController.popBackStack()
-              if (navController.currentDestination?.route == Route.PlantDetail.route) {
+              if (navController.currentDestination?.route == Route.PlantDetail.path) {
                 navController.popBackStack()
               }
             }
-            Route.Maps.route -> {
+            Route.Maps.path -> {
               requestPermission(ACCESS_FINE_LOCATION, requestLocationPermissionLauncher)
             }
-            Route.Camera.route -> {
+            Route.Camera.path -> {
               requestPermission(CAMERA, requestCameraPermissionLauncher)
             }
             else -> navController.navigate(it)
@@ -129,9 +129,9 @@ class MainActivity : ComponentActivity() {
           PoiNotificationManager.createNotificationChannel(this@MainActivity)
         }
 
-        NavHost(navController, startDestination = Route.Dashboard.route) {
-          composable(Route.Dashboard.route) { DashboardView(onNavigate) }
-          composable(Route.Maps.route) {
+        NavHost(navController, startDestination = Route.Dashboard.path) {
+          composable(Route.Dashboard.path) { DashboardView(onNavigate) }
+          composable(Route.Maps.path) {
             MapsView(
               onNavigate,
               viewModel,
@@ -139,15 +139,15 @@ class MainActivity : ComponentActivity() {
               locationSettingsClient = LocationServices.getSettingsClient(this@MainActivity)
             )
           }
-          composable(Route.Settings.route) { SettinsView(onNavigate) }
-          composable(Route.PoiList.route) { PoiListView(onNavigate, viewModel) }
-          composable(Route.PoiDetail.route, getNavArgs(Route.PoiDetail.arg)) {
+          composable(Route.Settings.path) { SettinsView(onNavigate) }
+          composable(Route.PoiList.path) { PoiListView(onNavigate, viewModel) }
+          composable(Route.PoiDetail.path, getNavArgs(Route.PoiDetail)) {
             PoiDetailView(onNavigate, viewModel, poiId = it.arguments?.getString(Route.PoiDetail.arg))
           }
-          composable(Route.Camera.route) { CameraView(onNavigate) }
-          composable(Route.PoiCreation.route) { PoiCreationView(onNavigate) }
-          composable(Route.PlantDetail.route, getNavArgs("imageName")) {
-            PlantDetailView(onNavigate, imageName = it.arguments?.getString("imageName"))
+          composable(Route.Camera.path) { CameraView(onNavigate) }
+          composable(Route.PoiCreation.path) { PoiCreationView(onNavigate) }
+          composable(Route.PlantDetail.path, getNavArgs(Route.PlantDetail)) {
+            PlantDetailView(onNavigate, imageName = it.arguments?.getString(Route.PlantDetail.arg))
           }
         }
       }

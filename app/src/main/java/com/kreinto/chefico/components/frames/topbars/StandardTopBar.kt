@@ -40,7 +40,7 @@ fun StandardTopBar(
             ButtonData(
               icon = Icons.Default.ArrowBack,
               contentDescription = "Go back",
-              onClick = { onNavPressed(Route.Back.route) },
+              onClick = { onNavPressed(Route.Back.path) },
             )
           )
         }
@@ -52,7 +52,7 @@ fun StandardTopBar(
             ButtonData(
               icon = Icons.Default.Settings,
               contentDescription = "Settings",
-              onClick = { onNavPressed(Route.Settings.route) },
+              onClick = { onNavPressed(Route.Settings.path) },
             )
           )
         }

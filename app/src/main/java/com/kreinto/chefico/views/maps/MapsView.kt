@@ -108,11 +108,11 @@ fun MapsView(
         leftButtonData = ButtonData(
           icon = Icons.Default.List,
           contentDescription = "Go to POI list",
-        ) { onNavigate(Route.PoiList.route) },
+        ) { onNavigate(Route.PoiList.path) },
         centerButtonData = ButtonData(
           icon = Icons.Default.Search,
           contentDescription = "Open Plant Recognition",
-        ) { onNavigate(Route.Camera.route) },
+        ) { onNavigate(Route.Camera.path) },
         rightButtonData = ButtonData(
           icon = if (shouldFollow) Icons.Default.AccountCircle else Icons.Default.AccountBox,
           contentDescription = "Center camera",

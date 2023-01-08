@@ -103,7 +103,7 @@ fun PlantDetailView(
                 contentColor = Color.Green
               ),
               onClick = {
-                onNavigate(Route.PoiCreation.route)
+                onNavigate(Route.PoiCreation.path)
               }) {
               Icon(
                 imageVector = Icons.Rounded.Add,

@@ -1,6 +1,6 @@
 package com.kreinto.chefico
 
-sealed class Route(val route: String, val arg: String = "") {
+sealed class Route(val path: String, val arg: String = "") {
   object Back : Route("back")
   object Dashboard : Route("dashboard")
   object Settings : Route("settings")
@@ -12,6 +12,6 @@ sealed class Route(val route: String, val arg: String = "") {
   object PlantDetail : Route("plantdetail/{imageName}", "imageName")
 
   fun route(arg: String): String {
-    return route.replace("{${this.arg}}", arg)
+    return path.replace("{${this.arg}}", arg)
   }
 }

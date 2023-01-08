@@ -29,7 +29,7 @@ fun SimpleTopBar(onBackPressed: (String) -> Unit) {
         ButtonData(
           icon = Icons.Default.ArrowBack,
           contentDescription = "Go back",
-          onClick = { onBackPressed(Route.Back.route) }
+          onClick = { onBackPressed(Route.Back.path) }
         )
       )
     },

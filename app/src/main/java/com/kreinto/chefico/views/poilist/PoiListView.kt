@@ -89,7 +89,7 @@ fun PoiListView(
             icon = Icons.Default.Star,
             text = filteredPoi[index].name,
             selectable = selectedPois.size > 0,
-            onClick = { onNavigate(Route.PoiDetail.route) },
+            onClick = { onNavigate(Route.PoiDetail.path) },
             onLongClick = { selectedPois.add(filteredPoi[index].id) },
             onCheckedChange = { checked ->
               if (checked) {

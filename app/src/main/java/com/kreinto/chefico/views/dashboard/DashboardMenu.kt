@@ -31,13 +31,13 @@ fun DashboardMenu(onNavigate: (id: String) -> Unit) {
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier.padding(16.dp)
     ) {
-      BasicItem(icon = Icons.Default.List, text = "POI List") { onNavigate(Route.PoiList.route) }
+      BasicItem(icon = Icons.Default.List, text = "POI List") { onNavigate(Route.PoiList.path) }
       Spacer(modifier = Modifier.size(16.dp))
-      BasicItem(icon = Icons.Default.Place, text = "Maps") { onNavigate(Route.Maps.route) }
+      BasicItem(icon = Icons.Default.Place, text = "Maps") { onNavigate(Route.Maps.path) }
       Spacer(modifier = Modifier.size(16.dp))
-      BasicItem(icon = Icons.Default.Star, text = "Camera") { onNavigate(Route.Camera.route) }
+      BasicItem(icon = Icons.Default.Star, text = "Camera") { onNavigate(Route.Camera.path) }
       Spacer(modifier = Modifier.size(16.dp))
-      BasicItem(icon = Icons.Default.Build, text = "TODO") { onNavigate(Route.Dashboard.route) }
+      BasicItem(icon = Icons.Default.Build, text = "TODO") { onNavigate(Route.Dashboard.path) }
     }
   }
 }
