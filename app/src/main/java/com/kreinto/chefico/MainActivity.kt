@@ -51,6 +51,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class MainActivity : ComponentActivity() {
   private lateinit var navController: NavHostController
 
+  /**
+   * If the app is lacking the specified permission, requests it.
+   *
+   * @param permission permission to request.
+   * @param launcher [ActivityResultLauncher] to execute on the user decision.
+   */
   private fun requestPermission(permission: String, launcher: ActivityResultLauncher<String>) {
     if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
       if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
@@ -66,10 +72,22 @@ class MainActivity : ComponentActivity() {
     }
   }
 
+  /**
+   * Returns an [ActivityResultLauncher] for permission requests.
+   *
+   * @param callback [ActivityResultCallback] to launch when the user choose whether to grant the permission.
+   * @return [ActivityResultLauncher] for permission requests.
+   */
   private fun getPermissionLauncher(callback: ActivityResultCallback<Boolean>): ActivityResultLauncher<String> {
     return registerForActivityResult(ActivityResultContracts.RequestPermission(), callback)
   }
 
+  /**
+   * Returns an [ActivityResultLauncher] for permission requests that navigates to the given [Route] if the user grants the permission.
+   *
+   * @param route [Route] to navigate to if the user grants the permission.
+   * @return [ActivityResultLauncher] for permission requests.
+   */
   private fun getPermissionLauncher(route: Route): ActivityResultLauncher<String> {
     return getPermissionLauncher {
       if (it) {
@@ -84,6 +102,12 @@ class MainActivity : ComponentActivity() {
     }
   }
 
+  /**
+   * Returns a list of [navArguments][androidx.navigation.navArgument] for the given [Route].
+   *
+   * @param route
+   * @return list of [navArguments][androidx.navigation.navArgument].
+   */
   private fun getNavArgs(route: Route) = listOf(navArgument(route.arg) { type = NavType.StringType })
 
   override fun onCreate(savedInstanceState: Bundle?) {
