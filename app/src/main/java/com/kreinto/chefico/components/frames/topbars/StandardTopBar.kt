@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.kreinto.chefico.AppRoute
+import com.kreinto.chefico.Route
 import com.kreinto.chefico.components.buttons.SimpleButton
 import com.kreinto.chefico.components.data.ButtonData
 
@@ -40,7 +40,7 @@ fun StandardTopBar(
             ButtonData(
               icon = Icons.Default.ArrowBack,
               contentDescription = "Go back",
-              onClick = { onNavPressed(AppRoute.Back.route) },
+              onClick = { onNavPressed(Route.Back.route) },
             )
           )
         }
@@ -52,7 +52,7 @@ fun StandardTopBar(
             ButtonData(
               icon = Icons.Default.Settings,
               contentDescription = "Settings",
-              onClick = { onNavPressed(AppRoute.Settings.route) },
+              onClick = { onNavPressed(Route.Settings.route) },
             )
           )
         }

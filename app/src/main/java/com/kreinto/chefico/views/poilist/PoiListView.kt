@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kreinto.chefico.AppRoute
+import com.kreinto.chefico.Route
 import com.kreinto.chefico.components.data.ButtonData
 import com.kreinto.chefico.components.frames.StandardFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
@@ -29,8 +29,8 @@ import com.kreinto.chefico.room.CheFicoViewModel
 @ExperimentalMaterial3Api
 @Composable
 fun PoiListView(
-  viewModel: CheFicoViewModel,
-  onNavigate: (String) -> Unit
+  onNavigate: (String) -> Unit,
+  viewModel: CheFicoViewModel
 ) {
   val pois = viewModel.getPois().collectAsStateWithLifecycle(emptyList())
   val selectedPois = remember { mutableStateListOf<Int>() }
@@ -71,16 +71,7 @@ fun PoiListView(
             icon = Icons.Default.Star,
             text = pois.value[index].name,
             selectable = selectedPois.size > 0,
-            onClick = {
-              onNavigate(
-                AppRoute.PoiDetail.route(
-                  Pair(
-                    AppRoute.PoiDetail.arg,
-                    pois.value[index].id.toString()
-                  )
-                )
-              )
-            },
+            onClick = { onNavigate(Route.PoiDetail.route(pois.value[index].id.toString())) },
             onLongClick = { selectedPois.add(pois.value[index].id) },
             onCheckedChange = { checked ->
               if (checked) {
@@ -98,7 +89,7 @@ fun PoiListView(
             icon = Icons.Default.Star,
             text = filteredPoi[index].name,
             selectable = selectedPois.size > 0,
-            onClick = { onNavigate(AppRoute.PoiDetail.route) },
+            onClick = { onNavigate(Route.PoiDetail.route) },
             onLongClick = { selectedPois.add(filteredPoi[index].id) },
             onCheckedChange = { checked ->
               if (checked) {

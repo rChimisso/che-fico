@@ -26,7 +26,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kreinto.chefico.AppRoute
+import com.kreinto.chefico.Route
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.views.camera.PlantRecognition
 import java.io.File
@@ -35,11 +35,11 @@ import java.io.File
 @Composable
 fun PlantDetailView(
   onNavigate: (String) -> Unit,
-  imageName: String?,
+  imageName: String?
 ) {
   val image = File("${LocalContext.current.cacheDir}/${imageName ?: "/"}")
   val result = remember { mutableStateOf(PlantRecognition.InvalidData) }
-  var description = remember { mutableStateOf("") }
+  val description = remember { mutableStateOf("") }
 
   LaunchedEffect(Unit) {
     PlantRecognition.recognize(image) {
@@ -48,9 +48,8 @@ fun PlantDetailView(
         result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(
           0
         ) ?: ""
-      ) {
-        description.value =
-          it.getOrNull(0)?.extract.toString()
+      ) { data ->
+        description.value = data.getOrNull(0)?.extract.toString()
       }
     }
   }
@@ -104,7 +103,7 @@ fun PlantDetailView(
                 contentColor = Color.Green
               ),
               onClick = {
-                onNavigate(AppRoute.PoiCreation.route)
+                onNavigate(Route.PoiCreation.route)
               }) {
               Icon(
                 imageVector = Icons.Rounded.Add,
@@ -116,15 +115,12 @@ fun PlantDetailView(
       }
       Surface {
         Column {
-
           Row {
             Text("Conosciuta come:")
             Spacer(Modifier.width(16.dp))
             var len = result.value.results?.size ?: 0
             result.value.results?.getOrNull(0)?.species?.commonNames?.forEach { name ->
-              if (name != null) {
-                Text(name)
-              }
+              Text(name)
             }
           }
           Text(description.value)
