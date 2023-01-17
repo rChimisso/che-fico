@@ -31,6 +31,8 @@ fun DashboardMenu(onNavigate: (id: String) -> Unit) {
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier.padding(16.dp)
     ) {
+      Spacer(modifier = Modifier.size(16.dp))
+
       BasicItem(icon = Icons.Default.List, text = "POI List") { onNavigate(AppRoute.PoiList.route) }
       Spacer(modifier = Modifier.size(16.dp))
       BasicItem(icon = Icons.Default.Place, text = "Maps") { onNavigate(AppRoute.Maps.route) }
