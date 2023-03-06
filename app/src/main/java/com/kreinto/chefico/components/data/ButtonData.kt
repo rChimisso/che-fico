@@ -17,6 +17,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 data class ButtonData(
   val icon: ImageVector,
   val contentDescription: String,
-  val tint: Color = Color(0xff4caf50),
+  val tint: Color = Color(0xff4caf50), //MaterialTheme.colorScheme.primaryContainer da implementare
   val onClick: () -> Unit
 )

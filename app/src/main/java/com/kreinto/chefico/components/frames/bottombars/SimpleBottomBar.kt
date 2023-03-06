@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.components.buttons.RoundButton
 import com.kreinto.chefico.components.data.ButtonData
+import com.kreinto.chefico.ui.theme.*
 
 /**
  * Simple Bottom Bar following Material3 guidelines.
@@ -40,6 +41,7 @@ fun SimpleBottomBar(
     RoundButton(leftButtonData)
     if (centerButtonData != null) {
       Surface(
+        color = MaterialTheme.colorScheme.primaryContainer,
         shape = RoundedCornerShape(40.dp),
         shadowElevation = 12.dp
       ) {
@@ -52,7 +54,7 @@ fun SimpleBottomBar(
           Icon(
             imageVector = centerButtonData.icon,
             contentDescription = centerButtonData.contentDescription,
-            tint = centerButtonData.tint,
+            tint = MaterialTheme.colorScheme.onPrimary,
           )
         }
       }
