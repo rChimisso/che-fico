@@ -109,7 +109,8 @@ class MainActivity : ComponentActivity() {
    * @param route
    * @return list of [navArguments][androidx.navigation.navArgument].
    */
-  private fun getNavArgs(route: Route) = listOf(navArgument(route.arg) { type = NavType.StringType })
+  private fun getNavArgs(route: Route) =
+    listOf(navArgument(route.arg) { type = NavType.StringType })
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -168,7 +169,11 @@ class MainActivity : ComponentActivity() {
           composable(Route.Settings.path) { SettinsView(onNavigate) }
           composable(Route.PoiList.path) { PoiListView(onNavigate, viewModel) }
           composable(Route.PoiDetail.path, getNavArgs(Route.PoiDetail)) {
-            PoiDetailView(onNavigate, viewModel, poiId = it.arguments?.getString(Route.PoiDetail.arg))
+            PoiDetailView(
+              onNavigate,
+              viewModel,
+              poiId = it.arguments?.getString(Route.PoiDetail.arg)
+            )
           }
           composable(Route.Camera.path) { CameraView(onNavigate) }
           composable(Route.PoiCreation.path) { PoiCreationView(onNavigate) }

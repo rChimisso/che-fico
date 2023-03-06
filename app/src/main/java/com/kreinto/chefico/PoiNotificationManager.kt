@@ -72,10 +72,12 @@ class PoiNotificationManager : BroadcastReceiver() {
      */
     fun showNotification(context: Context, title: String, message: String) {
       val notification = NotificationCompat.Builder(context, channelId)
-        .setSmallIcon(R.drawable.ic_launcher_foreground)
+        .setSmallIcon(R.drawable.ic_notification)
         .setContentTitle(title)
         .setContentText(message)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        .setBadgeIconType(NotificationCompat.BADGE_ICON_LARGE)
+        .setColor(0xFF4CAF50.toInt())
         .build()
 
       with(context.getSystemService<NotificationManager>()) {
@@ -86,7 +88,7 @@ class PoiNotificationManager : BroadcastReceiver() {
 
   override fun onReceive(context: Context, intent: Intent) {
     val notification: Notification = NotificationCompat.Builder(context, channelId)
-      .setSmallIcon(R.drawable.ic_launcher_foreground)
+      .setSmallIcon(R.drawable.ic_notification)
       .setContentTitle(intent.getStringExtra(titleExtra))
       .setContentText(intent.getStringExtra(messageExtra))
       .build()
