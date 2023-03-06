@@ -18,6 +18,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
@@ -129,6 +130,7 @@ class MainActivity : ComponentActivity() {
 
     setContent {
       CheFicoTheme {
+        val context = LocalContext.current
         navController = rememberNavController()
         val viewModel by viewModels<CheFicoViewModel>()
         val onNavigate: (String) -> Unit = {
@@ -150,7 +152,7 @@ class MainActivity : ComponentActivity() {
         }
 
         LaunchedEffect(Unit) {
-          PoiNotificationManager.createNotificationChannel(this@MainActivity)
+          PoiNotificationManager.createNotificationChannel(context)
         }
 
         NavHost(navController, startDestination = Route.Dashboard.path) {

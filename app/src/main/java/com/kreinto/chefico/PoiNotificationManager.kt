@@ -7,26 +7,41 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 
+
 class PoiNotificationManager : BroadcastReceiver() {
   companion object {
     private const val channelId: String = "CheFicoChannel"
-    private const val notificationId: Int = 1
     private const val channelName: String = "Che Fico!"
     private const val channelDescription: String = "Default channel"
     private const val titleExtra = "titleExtra"
     private const val messageExtra = "messageExtra"
+    private var notificationId = 0
 
+    /**
+     * Crea il notification channel per l'applicazione.
+     *
+     * @param context
+     */
     fun createNotificationChannel(context: Context) {
       val importance = NotificationManager.IMPORTANCE_DEFAULT
 
-      val channel = NotificationChannel(channelId, channelName, importance)
-      channel.description = channelDescription
+      val channel = NotificationChannel(channelId, channelName, importance).apply {
+        description = channelDescription
+      }
 
       with(context.getSystemService<NotificationManager>()) {
         this?.createNotificationChannel(channel)
       }
     }
 
+    /**
+     * Programma una notifica.
+     *
+     * @param context
+     * @param time
+     * @param title
+     * @param message
+     */
     fun scheduleNotification(context: Context, time: Long, title: String, message: String) {
       val intent = Intent(context, PoiNotificationManager::class.java)
       intent.putExtra(titleExtra, title)
@@ -34,7 +49,7 @@ class PoiNotificationManager : BroadcastReceiver() {
 
       val pendingIntent = PendingIntent.getBroadcast(
         context,
-        notificationId,
+        0,
         intent,
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
       )
@@ -48,6 +63,13 @@ class PoiNotificationManager : BroadcastReceiver() {
       }
     }
 
+    /**
+     * Invia una notifica immediata.
+     *
+     * @param context
+     * @param title
+     * @param message
+     */
     fun showNotification(context: Context, title: String, message: String) {
       val notification = NotificationCompat.Builder(context, channelId)
         .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -57,7 +79,7 @@ class PoiNotificationManager : BroadcastReceiver() {
         .build()
 
       with(context.getSystemService<NotificationManager>()) {
-        this?.notify(1, notification)
+        this?.notify(notificationId++, notification)
       }
     }
   }
@@ -70,7 +92,7 @@ class PoiNotificationManager : BroadcastReceiver() {
       .build()
 
     with(context.getSystemService<NotificationManager>()) {
-      this?.notify(notificationId, notification)
+      this?.notify(notificationId++, notification)
     }
   }
 }
