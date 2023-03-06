@@ -1,7 +1,7 @@
 package com.kreinto.chefico.components.buttons
 
+
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -17,20 +17,16 @@ import com.kreinto.chefico.defaults.CheFicoButtonDefaults
 import com.kreinto.chefico.defaults.CheFicoIcons
 
 @Composable
-fun RoundedButton(
-  properties: CheFicoButtonDefaults.RoundedButton,
+fun TransparentButton(
+  properties: CheFicoButtonDefaults.TransparentButton,
   onClick: () -> Unit
 ) {
   Button(
     modifier = Modifier
-      .height(properties.size.height)
+      .size(properties.size.height)
       .width(properties.size.width),
     contentPadding = PaddingValues(0.dp),
     shape = CircleShape,
-    elevation = ButtonDefaults.buttonElevation(
-      defaultElevation = properties.elevation.default,
-      pressedElevation = properties.elevation.pressed,
-    ),
     colors = ButtonDefaults.buttonColors(
       contentColor = properties.color.content,
       containerColor = properties.color.container
@@ -47,12 +43,12 @@ fun RoundedButton(
 
 @Preview
 @Composable
-fun roundedButtonPreview() {
-  RoundedButton(
-    properties = CheFicoButtonDefaults.RoundedButton(
+fun TransparentButtonPreview() {
+  TransparentButton(
+    properties = CheFicoButtonDefaults.TransparentButton(
       icon = CheFicoButtonDefaults.ButtonIcon(
         description = "",
-        resource = painterResource(id = CheFicoIcons.Check)
+        resource = painterResource(CheFicoIcons.Check)
       )
     )
   ) {

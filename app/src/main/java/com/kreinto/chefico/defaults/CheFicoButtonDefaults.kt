@@ -1,105 +1,59 @@
 package com.kreinto.chefico.defaults
 
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.R
 
 object CheFicoButtonDefaults {
 
-  fun roundedButton(
-    icon: ButtonIcon,
-    size: ButtonSize = buttonSize(40.dp),
-  ): Button = Button(
-    icon = icon,
-    size = size,
-    elevation = buttonElevation(
-      default = 3.dp,
-      pressed = 0.dp
-    ),
-    color = buttonColor(
-      content = Color(0xff4caf50),
-      container = Color(0xffffffff)
-    )
-  )
-
-  fun transparentButton(
-    icon: ButtonIcon,
-  ): Button = Button(
-    icon = icon,
-    size = buttonSize(40.dp),
-    elevation = buttonElevation(
-      default = 3.dp,
-      pressed = 0.dp
-    ),
-    color = buttonColor(
-      content = Color(0xff4caf50),
-      container = Color(0xffffff00)
-    )
-  )
-
-  @Composable
-  fun buttonIcon(
-    iconDescription: String,
-    iconResource: Int
-  ): ButtonIcon = ButtonIcon(
-    resource = painterResource(id = iconResource),
-    description = iconDescription
-  )
-
-
-  fun buttonSize(size: Dp): ButtonSize = ButtonSize(
-    width = size,
-    height = size,
-  )
-
-  fun buttonSize(width: Dp, height: Dp) = ButtonSize(
-    width = width,
-    height = height,
-  )
-
-  private fun buttonElevation(
-    default: Dp,
-    pressed: Dp
-  ): ButtonElevation = ButtonElevation(
-    default = default,
-    pressed = pressed
-  )
-
-  private fun buttonColor(
-    content: Color,
-    container: Color
-  ): ButtonColor = ButtonColor(
-    content = content,
-    container = container
-  )
-
-  class Button internal constructor(
+  data class RoundedButton(
     val icon: ButtonIcon,
-    val size: ButtonSize,
-    val elevation: ButtonElevation,
-    val color: ButtonColor
-  )
+    val size: ButtonSize = ButtonSize(
+      width = 40.dp,
+      height = 40.dp
+    )
+  ) {
+    val elevation = ButtonElevation(
+      default = 3.dp,
+      pressed = 0.dp
+    )
+    val color = ButtonColor(
+      content = Color(0xFF4CAF50),
+      container = Color.White
+    )
+  }
 
-  class ButtonIcon internal constructor(
+  class TransparentButton constructor(
+    val icon: ButtonIcon
+  ) {
+    val size = ButtonSize(
+      width = 40.dp,
+      height = 40.dp
+    )
+    val color = ButtonColor(
+      content = Color(0xFF4CAF50),
+      container = Color.Transparent
+    )
+  }
+
+  data class ButtonIcon(
     var resource: Painter,
     var description: String
   )
 
-  class ButtonSize internal constructor(
+  data class ButtonSize(
     val width: Dp,
     val height: Dp,
   )
 
-  internal class ButtonElevation internal constructor(
+  data class ButtonElevation(
     var default: Dp,
     var pressed: Dp
   )
 
-  internal class ButtonColor internal constructor(
+  data class ButtonColor(
     val content: Color,
     val container: Color
   )
