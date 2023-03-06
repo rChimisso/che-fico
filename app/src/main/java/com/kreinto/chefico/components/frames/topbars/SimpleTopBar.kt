@@ -8,7 +8,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.kreinto.chefico.AppRoute
+import com.kreinto.chefico.Route
 import com.kreinto.chefico.components.buttons.RoundButton
 import com.kreinto.chefico.components.data.ButtonData
 
@@ -29,7 +29,7 @@ fun SimpleTopBar(onBackPressed: (String) -> Unit) {
         ButtonData(
           icon = Icons.Default.ArrowBack,
           contentDescription = "Go back",
-          onClick = { onBackPressed(AppRoute.Back.route) }
+          onClick = { onBackPressed(Route.Back.path) }
         )
       )
     },

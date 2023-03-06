@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.kreinto.chefico.AppRoute
+import com.kreinto.chefico.Route
 import com.kreinto.chefico.components.items.BasicItem
 
 @ExperimentalFoundationApi
@@ -31,15 +31,13 @@ fun DashboardMenu(onNavigate: (id: String) -> Unit) {
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier.padding(16.dp)
     ) {
+      BasicItem(icon = Icons.Default.List, text = "POI List") { onNavigate(Route.PoiList.path) }
       Spacer(modifier = Modifier.size(16.dp))
-
-      BasicItem(icon = Icons.Default.List, text = "POI List") { onNavigate(AppRoute.PoiList.route) }
+      BasicItem(icon = Icons.Default.Place, text = "Maps") { onNavigate(Route.Maps.path) }
       Spacer(modifier = Modifier.size(16.dp))
-      BasicItem(icon = Icons.Default.Place, text = "Maps") { onNavigate(AppRoute.Maps.route) }
+      BasicItem(icon = Icons.Default.Star, text = "Camera") { onNavigate(Route.Camera.path) }
       Spacer(modifier = Modifier.size(16.dp))
-      BasicItem(icon = Icons.Default.Star, text = "Camera") { onNavigate(AppRoute.Camera.route) }
-      Spacer(modifier = Modifier.size(16.dp))
-      BasicItem(icon = Icons.Default.Build, text = "TODO") { onNavigate(AppRoute.Dashboard.route) }
+      BasicItem(icon = Icons.Default.Build, text = "TODO") { onNavigate(Route.Dashboard.path) }
     }
   }
 }

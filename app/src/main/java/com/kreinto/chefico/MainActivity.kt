@@ -1,20 +1,24 @@
 package com.kreinto.chefico
 
-import android.Manifest.permission.ACCESS_FINE_LOCATION
-import android.Manifest.permission.CAMERA
+import android.Manifest.permission.*
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
@@ -25,9 +29,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.SettingsClient
 import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.ui.theme.CheFicoTheme
 import com.kreinto.chefico.views.camera.CameraView
@@ -40,30 +42,6 @@ import com.kreinto.chefico.views.poilist.PoiListView
 import com.kreinto.chefico.views.settings.SettinsView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-sealed class AppRoute(val route: String, val arg: String = "") {
-  object Back : AppRoute("back")
-  object Dashboard : AppRoute("dashboard")
-  object Settings : AppRoute("settings")
-  object Maps : AppRoute("maps")
-  object Camera : AppRoute("camera")
-  object PoiList : AppRoute("poilist")
-  object PoiDetail : AppRoute("poidetail/{poiId}", "poiId")
-  object PoiCreation : AppRoute("poicreation")
-  object PlantDetail : AppRoute("plantdetail/{imageName}", "imageName")
-
-  fun route(vararg args: Pair<String, String>): String {
-    var routes = route
-    args.forEach { pair ->
-      routes = routes.replace(
-        "{${pair.first}}",
-        pair.second
-      )
-    }
-    println(routes)
-    return routes
-  }
-}
-
 @ExperimentalLifecycleComposeApi
 @ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
@@ -72,136 +50,130 @@ sealed class AppRoute(val route: String, val arg: String = "") {
 @ExperimentalPagerApi
 @ExperimentalGetImage
 class MainActivity : ComponentActivity() {
-  private lateinit var fusedLocationClient: FusedLocationProviderClient
-  private lateinit var locationSettingsClient: SettingsClient
   private lateinit var navController: NavHostController
+
+  /**
+   * If the app is lacking the specified permission, requests it.
+   *
+   * @param permission permission to request.
+   * @param launcher [ActivityResultLauncher] to execute on the user decision.
+   */
+  private fun requestPermission(permission: String, launcher: ActivityResultLauncher<String>) {
+    if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
+      if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+        // In an educational UI, explain to the user why your app requires this
+        // permission for a specific feature to behave as expected, and what
+        // features are disabled if it's declined. In this UI, include a
+        // "cancel" or "no thanks" button that lets the user continue
+        // using your app without granting the permission.
+        // showInContextUI(...)
+      } else {
+        launcher.launch(permission)
+      }
+    }
+  }
+
+  /**
+   * Returns an [ActivityResultLauncher] for permission requests.
+   *
+   * @param callback [ActivityResultCallback] to launch when the user choose whether to grant the permission.
+   * @return [ActivityResultLauncher] for permission requests.
+   */
+  private fun getPermissionLauncher(callback: ActivityResultCallback<Boolean>): ActivityResultLauncher<String> {
+    return registerForActivityResult(ActivityResultContracts.RequestPermission(), callback)
+  }
+
+  /**
+   * Returns an [ActivityResultLauncher] for permission requests that navigates to the given [Route] if the user grants the permission.
+   *
+   * @param route [Route] to navigate to if the user grants the permission.
+   * @return [ActivityResultLauncher] for permission requests.
+   */
+  private fun getPermissionLauncher(route: Route): ActivityResultLauncher<String> {
+    return getPermissionLauncher {
+      if (it) {
+        navController.navigate(route.path)
+      } else {
+        // Explain to the user that the feature is unavailable because the
+        // feature requires a permission that the user has denied. At the
+        // same time, respect the user's decision. Don't link to system
+        // settings in an effort to convince the user to change their
+        // decision.
+      }
+    }
+  }
+
+  /**
+   * Returns a list of [navArguments][androidx.navigation.navArgument] for the given [Route].
+   *
+   * @param route
+   * @return list of [navArguments][androidx.navigation.navArgument].
+   */
+  private fun getNavArgs(route: Route) = listOf(navArgument(route.arg) { type = NavType.StringType })
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-    locationSettingsClient = LocationServices.getSettingsClient(this)
-    val requestLocationPermissionLauncher =
-      registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-        if (it) {
-          navController.navigate(AppRoute.Maps.route)
-        } else {
-          // Explain to the user that the feature is unavailable because the
-          // feature requires a permission that the user has denied. At the
-          // same time, respect the user's decision. Don't link to system
-          // settings in an effort to convince the user to change their
-          // decision.
-        }
+    val requestLocationPermissionLauncher = getPermissionLauncher(Route.Maps)
+    val requestCameraPermissionLauncher = getPermissionLauncher(Route.Camera)
+    val requestNotificationPermissionLauncher = getPermissionLauncher {
+      if (!it) {
+        // Explain to the user that the feature is unavailable because the
+        // feature requires a permission that the user has denied. At the
+        // same time, respect the user's decision. Don't link to system
+        // settings in an effort to convince the user to change their
+        // decision.
       }
-    val requestCameraPermissionLauncher =
-      registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-        if (it) {
-          navController.navigate(AppRoute.Camera.route)
-        } else {
-          // Explain to the user that the feature is unavailable because the
-          // feature requires a permission that the user has denied. At the
-          // same time, respect the user's decision. Don't link to system
-          // settings in an effort to convince the user to change their
-          // decision.
-        }
-      }
+    }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      requestPermission(POST_NOTIFICATIONS, requestNotificationPermissionLauncher)
+    }
 
     setContent {
       CheFicoTheme {
+        val context = LocalContext.current
         navController = rememberNavController()
-        val onNavigate: (route: String) -> Unit = {
-          if (it == AppRoute.Back.route) {
-            navController.popBackStack()
-            if (navController.currentDestination?.route == AppRoute.PlantDetail.route) {
+        val viewModel by viewModels<CheFicoViewModel>()
+        val onNavigate: (String) -> Unit = {
+          when (it) {
+            Route.Back.path -> {
               navController.popBackStack()
+              if (navController.currentDestination?.route == Route.PlantDetail.path) {
+                navController.popBackStack()
+              }
             }
-          } else if (it == AppRoute.Maps.route && ContextCompat.checkSelfPermission(
-              this,
-              ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_DENIED
-          ) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_FINE_LOCATION)) {
-              // In an educational UI, explain to the user why your app requires this
-              // permission for a specific feature to behave as expected, and what
-              // features are disabled if it's declined. In this UI, include a
-              // "cancel" or "no thanks" button that lets the user continue
-              // using your app without granting the permission.
-              // showInContextUI(...)
-            } else {
-              requestLocationPermissionLauncher.launch(ACCESS_FINE_LOCATION)
+            Route.Maps.path -> {
+              requestPermission(ACCESS_FINE_LOCATION, requestLocationPermissionLauncher)
             }
-          } else if (it == AppRoute.Camera.route && ContextCompat.checkSelfPermission(
-              this,
-              CAMERA
-            ) == PackageManager.PERMISSION_DENIED
-          ) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, CAMERA)) {
-              // In an educational UI, explain to the user why your app requires this
-              // permission for a specific feature to behave as expected, and what
-              // features are disabled if it's declined. In this UI, include a
-              // "cancel" or "no thanks" button that lets the user continue
-              // using your app without granting the permission.
-              // showInContextUI(...)
-            } else {
-              requestCameraPermissionLauncher.launch(CAMERA)
+            Route.Camera.path -> {
+              requestPermission(CAMERA, requestCameraPermissionLauncher)
             }
-          } else {
-            navController.navigate(it)
+            else -> navController.navigate(it)
           }
         }
-        val viewModel by viewModels<CheFicoViewModel>()
-        NavHost(
-          navController = navController,
-          startDestination = AppRoute.Dashboard.route,
-        ) {
-          composable(AppRoute.Dashboard.route) {
-            DashboardView(onNavigate = onNavigate)
-          }
-          composable(AppRoute.Maps.route) {
+
+        LaunchedEffect(Unit) {
+          PoiNotificationManager.createNotificationChannel(context)
+        }
+
+        NavHost(navController, startDestination = Route.Dashboard.path) {
+          composable(Route.Dashboard.path) { DashboardView(onNavigate) }
+          composable(Route.Maps.path) {
             MapsView(
-              fusedLocationClient = fusedLocationClient,
-              locationSettingsClient = locationSettingsClient,
-              viewModel = viewModel,
-              onNavigate = onNavigate
+              onNavigate,
+              viewModel,
+              fusedLocationClient = LocationServices.getFusedLocationProviderClient(this@MainActivity),
+              locationSettingsClient = LocationServices.getSettingsClient(this@MainActivity)
             )
           }
-          composable(AppRoute.Settings.route) {
-            SettinsView(onNavigate = onNavigate)
+          composable(Route.Settings.path) { SettinsView(onNavigate) }
+          composable(Route.PoiList.path) { PoiListView(onNavigate, viewModel) }
+          composable(Route.PoiDetail.path, getNavArgs(Route.PoiDetail)) {
+            PoiDetailView(onNavigate, viewModel, poiId = it.arguments?.getString(Route.PoiDetail.arg))
           }
-          composable(AppRoute.PoiList.route) {
-            PoiListView(viewModel = viewModel, onNavigate = onNavigate)
-          }
-          composable(
-            AppRoute.PoiDetail.route,
-            arguments = listOf(
-              navArgument(AppRoute.PoiDetail.arg) {
-                type = NavType.StringType
-              }
-            )
-          ) { backStackEntry ->
-            PoiDetailView(
-              onNavigate = onNavigate,
-              poiId = backStackEntry.arguments?.getString(AppRoute.PoiDetail.arg),
-              viewModel = viewModel
-            )
-          }
-          composable(AppRoute.Camera.route) {
-            CameraView(onNavigate = onNavigate)
-          }
-          composable(AppRoute.PoiCreation.route) {
-            PoiCreationView(onNavigate = onNavigate)
-          }
-          composable(
-            AppRoute.PlantDetail.route,
-            arguments = listOf(
-              navArgument("imageName") {
-                type = NavType.StringType
-              }
-            )
-          ) { backStackEntry ->
-            PlantDetailView(
-              onNavigate = onNavigate,
-              imageName = backStackEntry.arguments?.getString("imageName")
-            )
+          composable(Route.Camera.path) { CameraView(onNavigate) }
+          composable(Route.PoiCreation.path) { PoiCreationView(onNavigate) }
+          composable(Route.PlantDetail.path, getNavArgs(Route.PlantDetail)) {
+            PlantDetailView(onNavigate, imageName = it.arguments?.getString(Route.PlantDetail.arg))
           }
         }
       }
@@ -214,4 +186,3 @@ fun Context.getActivity(): Activity = when (this) {
   is ContextWrapper -> baseContext.getActivity()
   else -> throw IllegalStateException("Permissions should be called in the context of an Activity")
 }
-
