@@ -116,9 +116,9 @@ fun PlantDetailView(
       Surface {
         Column {
           Row {
-            Text("Conosciuta come:")
+            Text("Conosciuta come: ")
             Spacer(Modifier.width(16.dp))
-            var len = result.value.results?.size ?: 0
+            //var len = result.value.results?.size ?: 0
             result.value.results?.getOrNull(0)?.species?.commonNames?.forEach { name ->
               Text(name)
             }
