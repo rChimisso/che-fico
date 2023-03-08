@@ -34,27 +34,6 @@ fun SimpleBottomBar(
     horizontalArrangement = Arrangement.SpaceBetween,
     verticalAlignment = Alignment.CenterVertically
   ) {
-//    RoundButton(leftButtonData)
-//    if (centerButtonData != null) {
-//      Surface(
-//        shape = RoundedCornerShape(40.dp),
-//        shadowElevation = 12.dp
-//      ) {
-//        IconButton(
-//          modifier = Modifier
-//            .width(80.dp)
-//            .height(28.dp),
-//          onClick = centerButtonData.onClick
-//        ) {
-//          Icon(
-//            imageVector = centerButtonData.icon,
-//            contentDescription = centerButtonData.contentDescription,
-//            tint = centerButtonData.tint,
-//          )
-//        }
-//      }
-//    }
-//    RoundButton(rightButtonData)
     FilledButton(leftButtonData)
     if (centerButtonData != null) {
       FilledButton(
