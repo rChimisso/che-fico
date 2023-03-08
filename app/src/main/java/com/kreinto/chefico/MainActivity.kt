@@ -59,6 +59,7 @@ class MainActivity : ComponentActivity() {
    * @param launcher [ActivityResultLauncher] to execute on the user decision.
    */
   private fun requestPermission(permission: String, launcher: ActivityResultLauncher<String>) {
+    println(ContextCompat.checkSelfPermission(this, permission))
     if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
       if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
         // In an educational UI, explain to the user why your app requires this
@@ -70,6 +71,8 @@ class MainActivity : ComponentActivity() {
       } else {
         launcher.launch(permission)
       }
+    } else {
+      launcher.launch(permission)
     }
   }
 
@@ -109,8 +112,7 @@ class MainActivity : ComponentActivity() {
    * @param route
    * @return list of [navArguments][androidx.navigation.navArgument].
    */
-  private fun getNavArgs(route: Route) =
-    listOf(navArgument(route.arg) { type = NavType.StringType })
+  private fun getNavArgs(route: Route) = listOf(navArgument(route.arg) { type = NavType.StringType })
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -127,6 +129,7 @@ class MainActivity : ComponentActivity() {
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       requestPermission(POST_NOTIFICATIONS, requestNotificationPermissionLauncher)
+
     }
 
     setContent {
@@ -169,11 +172,7 @@ class MainActivity : ComponentActivity() {
           composable(Route.Settings.path) { SettinsView(onNavigate) }
           composable(Route.PoiList.path) { PoiListView(onNavigate, viewModel) }
           composable(Route.PoiDetail.path, getNavArgs(Route.PoiDetail)) {
-            PoiDetailView(
-              onNavigate,
-              viewModel,
-              poiId = it.arguments?.getString(Route.PoiDetail.arg)
-            )
+            PoiDetailView(onNavigate, viewModel, poiId = it.arguments?.getString(Route.PoiDetail.arg))
           }
           composable(Route.Camera.path) { CameraView(onNavigate) }
           composable(Route.PoiCreation.path) { PoiCreationView(onNavigate) }
