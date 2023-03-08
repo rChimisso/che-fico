@@ -21,7 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -29,8 +28,8 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
-import com.kreinto.chefico.Route
 import com.kreinto.chefico.R
+import com.kreinto.chefico.Route
 import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
@@ -39,7 +38,6 @@ import com.kreinto.chefico.room.entities.Poi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
-@ExperimentalLifecycleComposeApi
 @SuppressLint("MissingPermission")
 @ExperimentalCoroutinesApi
 @ExperimentalMaterial3Api
@@ -110,7 +108,7 @@ fun MapsView(
           contentDescription = "Go to POI list",
         ) { onNavigate(Route.PoiList.path) },
         centerButtonData = ButtonData(
-          icon = R.drawable.ic_list, // TODO: search
+          icon = R.drawable.ic_photo_camera,
           contentDescription = "Open Plant Recognition",
         ) { onNavigate(Route.Camera.path) },
         rightButtonData = ButtonData(

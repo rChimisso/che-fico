@@ -22,7 +22,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.kreinto.chefico.components.frames.SimpleFrame
@@ -30,7 +29,6 @@ import com.kreinto.chefico.components.inputs.TextInput
 import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.room.entities.Poi
 
-@ExperimentalLifecycleComposeApi
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api

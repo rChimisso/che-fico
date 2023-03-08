@@ -13,18 +13,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kreinto.chefico.R
-import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.Route
+import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.frames.StandardFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 import com.kreinto.chefico.components.inputs.SearchInput
 import com.kreinto.chefico.components.items.SelectableItem
 import com.kreinto.chefico.room.CheFicoViewModel
 
-@ExperimentalLifecycleComposeApi
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @Composable

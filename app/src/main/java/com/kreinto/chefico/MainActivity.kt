@@ -21,7 +21,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -42,7 +41,6 @@ import com.kreinto.chefico.views.poilist.PoiListView
 import com.kreinto.chefico.views.settings.SettinsView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalLifecycleComposeApi
 @ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
