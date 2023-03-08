@@ -14,7 +14,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,7 +30,8 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import com.kreinto.chefico.AppRoute
-import com.kreinto.chefico.components.data.ButtonData
+import com.kreinto.chefico.R
+import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 import com.kreinto.chefico.room.CheFicoViewModel
@@ -106,15 +106,15 @@ fun MapsView(
     bottomBar = {
       SimpleBottomBar(
         leftButtonData = ButtonData(
-          icon = Icons.Default.List,
+          icon = R.drawable.ic_list,
           contentDescription = "Go to POI list",
         ) { onNavigate(AppRoute.PoiList.route) },
         centerButtonData = ButtonData(
-          icon = Icons.Default.Search,
+          icon = R.drawable.ic_list, // TODO: search
           contentDescription = "Open Plant Recognition",
         ) { onNavigate(AppRoute.Camera.route) },
         rightButtonData = ButtonData(
-          icon = if (shouldFollow) Icons.Default.AccountCircle else Icons.Default.AccountBox,
+          icon = if (shouldFollow) R.drawable.ic_check else R.drawable.ic_close,
           contentDescription = "Center camera",
         ) {
           shouldFollow = true

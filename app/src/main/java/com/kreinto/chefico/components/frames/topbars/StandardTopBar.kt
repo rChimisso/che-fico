@@ -1,8 +1,5 @@
 package com.kreinto.chefico.components.frames.topbars
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBar
@@ -12,8 +9,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.AppRoute
-import com.kreinto.chefico.components.buttons.SimpleButton
-import com.kreinto.chefico.components.data.ButtonData
+import com.kreinto.chefico.R
+import com.kreinto.chefico.components.buttons.TransparentButton
+import com.kreinto.chefico.components.buttons.data.ButtonData
 
 /**
  * Standard Top Bar following Material3 guidelines.
@@ -36,9 +34,9 @@ fun StandardTopBar(
       colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Color.White),
       navigationIcon = {
         if (!isDashboard) {
-          SimpleButton(
+          TransparentButton(
             ButtonData(
-              icon = Icons.Default.ArrowBack,
+              icon = R.drawable.ic_arrow_back,
               contentDescription = "Go back",
               onClick = { onNavPressed(AppRoute.Back.route) },
             )
@@ -48,9 +46,9 @@ fun StandardTopBar(
       title = title,
       actions = {
         if (isDashboard) {
-          SimpleButton(
+          TransparentButton(
             ButtonData(
-              icon = Icons.Default.Settings,
+              icon = R.drawable.ic_settings,
               contentDescription = "Settings",
               onClick = { onNavPressed(AppRoute.Settings.route) },
             )

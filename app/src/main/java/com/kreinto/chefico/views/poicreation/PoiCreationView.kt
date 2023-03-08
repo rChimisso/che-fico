@@ -1,12 +1,11 @@
 package com.kreinto.chefico.views.poicreation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.kreinto.chefico.components.data.ButtonData
+import com.kreinto.chefico.R
+import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 
@@ -18,13 +17,15 @@ fun PoiCreationView(onNavigate: (String) -> Unit) {
     bottomBar = {
       SimpleBottomBar(
         leftButtonData = ButtonData(
-          Icons.Default.Close,
-          "Cancel",
-          Color.Red
+          icon = R.drawable.ic_close,
+          contentDescription = "Cancel",
+          colors = IconButtonDefaults.filledIconButtonColors(
+            contentColor = Color.Red
+          )
         ) {},
         rightButtonData = ButtonData(
-          Icons.Default.Check,
-          "Confirm"
+          icon = R.drawable.ic_check,
+          contentDescription = "Confirm"
         ) {}
       )
     }

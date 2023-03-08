@@ -7,9 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,8 +21,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.kreinto.chefico.components.buttons.SimpleButton
-import com.kreinto.chefico.components.data.ButtonData
+import com.kreinto.chefico.R
+import com.kreinto.chefico.components.buttons.TransparentButton
 import kotlin.math.roundToInt
 
 /**
@@ -101,8 +99,18 @@ private fun SwipeableItemPreview() {
     icon = Icons.Default.Star,
     text = "Swipeable item",
     actions = arrayOf(
-      { SimpleButton(ButtonData(icon = Icons.Default.Warning, contentDescription = "Snooze") {}) },
-      { SimpleButton(ButtonData(icon = Icons.Default.Delete, contentDescription = "Delete") {}) }
+      {
+        TransparentButton(
+          icon = R.drawable.ic_snooze,
+          contentDescription = "Snooze"
+        ) {}
+      },
+      {
+        TransparentButton(
+          icon = R.drawable.ic_trash,
+          contentDescription = "Delete"
+        ) {}
+      }
     )
   ) {}
 }

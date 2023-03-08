@@ -4,9 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MailOutline
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,8 +15,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.kreinto.chefico.R
-import com.kreinto.chefico.components.buttons.RoundButton
-import com.kreinto.chefico.components.data.ButtonData
+import com.kreinto.chefico.components.buttons.FilledButton
 import com.kreinto.chefico.components.utils.HorizontalPagerSlider
 
 @Composable
@@ -42,8 +38,8 @@ fun PoiDetailSlideShow() {
       )
     }
     val icons = arrayOf(
-      Icons.Default.Share,
-      Icons.Default.MailOutline
+      R.drawable.ic_share,
+      R.drawable.ic_snooze // FIXME: Prima era MailOutline, cosa dovrebbe essere?
     )
     LazyRow(
       horizontalArrangement = Arrangement.End,
@@ -53,7 +49,7 @@ fun PoiDetailSlideShow() {
         .offset(y = 20.dp)
     ) {
       items(icons.size) { index ->
-        RoundButton(ButtonData(icon = icons[index], contentDescription = "") {})
+        FilledButton(icon = icons[index], contentDescription = "") {}
         Spacer(modifier = Modifier.width(8.dp))
       }
     }

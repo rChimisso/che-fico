@@ -5,10 +5,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -17,7 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kreinto.chefico.AppRoute
-import com.kreinto.chefico.components.data.ButtonData
+import com.kreinto.chefico.R
+import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.frames.StandardFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 import com.kreinto.chefico.components.inputs.SearchInput
@@ -43,15 +43,17 @@ fun PoiListView(
       if (selectedPois.size > 0) {
         SimpleBottomBar(
           leftButtonData = ButtonData(
-            icon = Icons.Default.Delete,
+            icon = R.drawable.ic_trash,
             contentDescription = "Delete selected",
-            tint = Color.Red
+            colors = IconButtonDefaults.filledIconButtonColors(
+              contentColor = Color.Red
+            )
           ) {
             selectedPois.forEach { id -> viewModel.deletePoi(id) }
             selectedPois.clear()
           },
           rightButtonData = ButtonData(
-            icon = Icons.Default.Share,
+            icon = R.drawable.ic_share,
             contentDescription = "Share selected",
           ) {
             selectedPois.clear()

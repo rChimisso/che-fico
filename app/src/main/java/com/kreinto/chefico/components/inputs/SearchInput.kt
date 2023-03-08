@@ -4,15 +4,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.kreinto.chefico.components.buttons.SimpleButton
-import com.kreinto.chefico.components.data.ButtonData
+import com.kreinto.chefico.R
+import com.kreinto.chefico.components.buttons.TransparentButton
 
 /**
  * Standardized search input.
@@ -32,12 +31,10 @@ fun SearchInput(onValueChange: (String) -> Unit) {
           tint = Color(0xff4caf50)
         )
       } else {
-        SimpleButton(
-          ButtonData(
-            icon = Icons.Default.Close,
-            contentDescription = "Empty query"
-          ) { setter("") }
-        )
+        TransparentButton(
+          icon = R.drawable.ic_close,
+          contentDescription = "Empty query"
+        ) { setter("") }
       }
     },
     onValueChange = onValueChange,
