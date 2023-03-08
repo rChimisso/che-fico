@@ -12,6 +12,10 @@
     <Properties>
       <option name="SPACES_AROUND_KEY_VALUE_DELIMITER" value="true" />
     </Properties>
+    <XML>
+      <option name="XML_KEEP_BLANK_LINES" value="0" />
+      <option name="XML_SPACE_INSIDE_EMPTY_TAG" value="false" />
+    </XML>
     <codeStyleSettings language="Groovy">
       <indentOptions>
         <option name="INDENT_SIZE" value="2" />

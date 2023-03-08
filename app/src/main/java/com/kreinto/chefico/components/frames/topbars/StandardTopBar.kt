@@ -12,6 +12,7 @@ import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.TransparentButton
 import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.Route
+import com.kreinto.chefico.ui.theme.level0
 
 /**
  * Standard Top Bar following Material3 guidelines.
@@ -28,10 +29,10 @@ fun StandardTopBar(
   onNavPressed: (String) -> Unit,
   title: @Composable () -> Unit
 ) {
-  Surface(shadowElevation = 12.dp) {
+  Surface(tonalElevation = level0) {
     TopAppBar(
       scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
-      colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Color.White),
+      colors = TopAppBarDefaults.centerAlignedTopAppBarColors(MaterialTheme.colorScheme.surface),
       navigationIcon = {
         if (!isDashboard) {
           TransparentButton(

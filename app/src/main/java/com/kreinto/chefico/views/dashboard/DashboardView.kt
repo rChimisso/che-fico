@@ -8,6 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,7 +25,11 @@ import com.kreinto.chefico.components.items.SwipeableItem
 @Composable
 fun DashboardView(onNavigate: (String) -> Unit) {
   StandardFrame(
-    title = { Text(text = "Che fico!", fontSize = 24.sp) },
+    title = { Text(
+      text = "Che fico!",
+      fontSize = 24.sp,
+      color = MaterialTheme.colorScheme.onSurface
+    ) },
     isDashboard = true,
     onNavPressed = onNavigate,
     bottomBar = { DashboardMenu(onNavigate = onNavigate) }
