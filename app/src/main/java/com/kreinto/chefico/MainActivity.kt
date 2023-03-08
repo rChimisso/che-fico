@@ -59,7 +59,6 @@ class MainActivity : ComponentActivity() {
    * @param launcher [ActivityResultLauncher] to execute on the user decision.
    */
   private fun requestPermission(permission: String, launcher: ActivityResultLauncher<String>) {
-    println(ContextCompat.checkSelfPermission(this, permission))
     if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
       if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
         // In an educational UI, explain to the user why your app requires this
