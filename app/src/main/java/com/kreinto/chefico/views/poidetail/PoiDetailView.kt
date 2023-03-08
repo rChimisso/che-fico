@@ -37,9 +37,9 @@ import com.kreinto.chefico.room.entities.Poi
 @ExperimentalPagerApi
 @Composable
 fun PoiDetailView(
-  poiId: String?,
+  onNavigate: (String) -> Unit,
   viewModel: CheFicoViewModel,
-  onNavigate: (String) -> Unit
+  poiId: String?
 ) {
   SimpleFrame(
     onBackPressed = onNavigate,

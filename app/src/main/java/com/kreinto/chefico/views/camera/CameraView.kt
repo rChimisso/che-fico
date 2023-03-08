@@ -25,7 +25,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import com.kreinto.chefico.AppRoute
+import com.kreinto.chefico.Route
 import com.kreinto.chefico.components.frames.SimpleFrame
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -63,7 +63,7 @@ fun CameraView(
   }
   val isLoading = remember { mutableStateOf(false) }
   val coroutineScope = rememberCoroutineScope()
-  var fileName = remember { mutableStateOf("") }
+  val fileName = remember { mutableStateOf("") }
   SimpleFrame(onBackPressed = onNavigate) {
     if (!isLoading.value) {
       Box {
@@ -89,11 +89,7 @@ fun CameraView(
     }
   }
   if (fileName.value != "") {
-    onNavigate(
-      AppRoute.PlantDetail.route(
-        Pair("imageName", fileName.value)
-      )
-    )
+    onNavigate(Route.PlantDetail.route(fileName.value))
   }
 }
 

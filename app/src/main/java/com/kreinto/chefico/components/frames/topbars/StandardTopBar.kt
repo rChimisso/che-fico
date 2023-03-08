@@ -8,10 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.kreinto.chefico.AppRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.TransparentButton
 import com.kreinto.chefico.components.buttons.data.ButtonData
+import com.kreinto.chefico.Route
 
 /**
  * Standard Top Bar following Material3 guidelines.
@@ -38,7 +38,7 @@ fun StandardTopBar(
             ButtonData(
               icon = R.drawable.ic_arrow_back,
               contentDescription = "Go back",
-              onClick = { onNavPressed(AppRoute.Back.route) },
+              onClick = { onNavPressed(Route.Back.path) },
             )
           )
         }
@@ -50,7 +50,7 @@ fun StandardTopBar(
             ButtonData(
               icon = R.drawable.ic_settings,
               contentDescription = "Settings",
-              onClick = { onNavPressed(AppRoute.Settings.route) },
+              onClick = { onNavPressed(Route.Settings.path) },
             )
           )
         }

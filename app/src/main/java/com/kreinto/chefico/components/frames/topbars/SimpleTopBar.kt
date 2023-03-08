@@ -6,10 +6,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.kreinto.chefico.AppRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.FilledButton
 import com.kreinto.chefico.components.buttons.data.ButtonData
+import com.kreinto.chefico.Route
 
 /**
  * Simple Top Bar following Material3 guidelines.
@@ -28,7 +28,7 @@ fun SimpleTopBar(onBackPressed: (String) -> Unit) {
         ButtonData(
           icon = R.drawable.ic_arrow_back,
           contentDescription = "Go back",
-          onClick = { onBackPressed(AppRoute.Back.route) }
+          onClick = { onBackPressed(Route.Back.path) }
         )
       )
     },
