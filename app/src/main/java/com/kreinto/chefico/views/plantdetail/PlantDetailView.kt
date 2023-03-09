@@ -1,6 +1,8 @@
 package com.kreinto.chefico.views.plantdetail
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.fadeOut
@@ -28,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kreinto.chefico.Route
 import com.kreinto.chefico.components.frames.SimpleFrame
+import com.kreinto.chefico.components.util.ModalBottomSheet
 import com.kreinto.chefico.views.camera.PlantRecognition
 import java.io.File
 
@@ -61,18 +64,18 @@ fun PlantDetailView(
     Box(
       modifier = Modifier
         .fillMaxSize()
-        .background(Color.Red)
     ) {
       val imgBitmap = BitmapFactory.decodeFile(image.absolutePath)
       Image(
-        bitmap = imgBitmap.asImageBitmap(),
+        bitmap = rotateImage(imgBitmap, 90f)!!.asImageBitmap(),
         contentDescription = "",
-        //contentScale = ContentScale.FillBounds,
+        contentScale = ContentScale.Crop,
         modifier = Modifier
           .fillMaxSize()
-          .rotate(90f)
-          .background(Color.Blue)
       )
+      ModalBottomSheet(onDismissRequest = { /*TODO*/ }) {
+        Text(text = "Ciao")
+      }
     }
 
 //    Column(
@@ -156,4 +159,13 @@ fun PlantDetailView(
       )
     }
   }
+}
+
+fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
+  val matrix = Matrix()
+  matrix.postRotate(angle)
+  return Bitmap.createBitmap(
+    source, 0, 0, source.width, source.height,
+    matrix, true
+  )
 }
