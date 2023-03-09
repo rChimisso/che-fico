@@ -58,75 +58,91 @@ fun PlantDetailView(
     onBackPressed = onNavigate,
 
     ) {
-    Column(
+    Box(
       modifier = Modifier
-        .padding(it)
-        .fillMaxWidth()
-        .padding(16.dp),
-      horizontalAlignment = Alignment.CenterHorizontally
+        .fillMaxSize()
+        .background(Color.Red)
     ) {
       val imgBitmap = BitmapFactory.decodeFile(image.absolutePath)
-
       Image(
         bitmap = imgBitmap.asImageBitmap(),
         contentDescription = "",
-        contentScale = ContentScale.FillBounds,
+        //contentScale = ContentScale.FillBounds,
         modifier = Modifier
-          .height(350.dp)
+          .fillMaxSize()
           .rotate(90f)
-          .clip(RoundedCornerShape(10.dp))
-          .shadow(12.dp)
+          .background(Color.Blue)
       )
-      Spacer(modifier = Modifier.height(16.dp))
-      Surface(
-        shadowElevation = 12.dp,
-        shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(16.dp)
-      ) {
-
-        Column(modifier = Modifier.fillMaxWidth()) {
-
-          Row(
-            modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-          ) {
-            Text(
-              text = result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(0) ?: "",
-              fontSize = 21.sp,
-              color = Color(0xff4caf50)
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(
-              colors = IconButtonDefaults.iconButtonColors(
-                contentColor = Color.Green
-              ),
-              onClick = {
-                onNavigate(Route.PoiCreation.path)
-              }) {
-              Icon(
-                imageVector = Icons.Rounded.Add,
-                contentDescription = ""
-              )
-            }
-          }
-        }
-      }
-      Surface {
-        Column {
-          Row {
-            Text("Conosciuta come: ")
-            Spacer(Modifier.width(16.dp))
-            // var len = result.value.results?.size ?: 0
-            result.value.results?.getOrNull(0)?.species?.commonNames?.forEach { name ->
-              Text(name)
-            }
-          }
-          Text(description.value)
-        }
-      }
     }
+
+//    Column(
+//      modifier = Modifier
+//        .padding(it)
+//        .fillMaxWidth()
+//        .padding(16.dp),
+//      horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//      val imgBitmap = BitmapFactory.decodeFile(image.absolutePath)
+//
+//      Image(
+//        bitmap = imgBitmap.asImageBitmap(),
+//        contentDescription = "",
+//        contentScale = ContentScale.FillBounds,
+//        modifier = Modifier
+//          .fillMaxWidth()
+//          .fillMaxHeight()
+//          .rotate(90f)
+//      )
+//      Spacer(modifier = Modifier.height(16.dp))
+//      Surface(
+//        shadowElevation = 12.dp,
+//        shape = RoundedCornerShape(8.dp),
+//        modifier = Modifier
+//          .fillMaxWidth()
+//          .padding(16.dp)
+//      ) {
+//
+//        Column(modifier = Modifier.fillMaxWidth()) {
+//
+//          Row(
+//            modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+//            verticalAlignment = Alignment.CenterVertically
+//          ) {
+//            Text(
+//              text = result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(0) ?: "",
+//              fontSize = 21.sp,
+//              color = Color(0xff4caf50)
+//            )
+//            Spacer(modifier = Modifier.weight(1f))
+//            IconButton(
+//              colors = IconButtonDefaults.iconButtonColors(
+//                contentColor = Color.Green
+//              ),
+//              onClick = {
+//                onNavigate(Route.PoiCreation.path)
+//              }) {
+//              Icon(
+//                imageVector = Icons.Rounded.Add,
+//                contentDescription = ""
+//              )
+//            }
+//          }
+//        }
+//      }
+//      Surface {
+//        Column {
+//          Row {
+//            Text("Conosciuta come: ")
+//            Spacer(Modifier.width(16.dp))
+//            // var len = result.value.results?.size ?: 0
+//            result.value.results?.getOrNull(0)?.species?.commonNames?.forEach { name ->
+//              Text(name)
+//            }
+//          }
+//          Text(description.value)
+//        }
+//      }
+//    }
     AnimatedVisibility(
       modifier = Modifier.fillMaxSize(),
       visible = !result.value.isValid(),
