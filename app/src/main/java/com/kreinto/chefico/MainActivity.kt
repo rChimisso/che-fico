@@ -4,6 +4,7 @@ import android.Manifest.permission.*
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -153,6 +154,7 @@ class MainActivity : ComponentActivity() {
         }
 
         LaunchedEffect(Unit) {
+          this@MainActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
           PoiNotificationManager.createNotificationChannel(context)
         }
 
