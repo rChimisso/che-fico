@@ -47,6 +47,7 @@ fun PlantDetailView(
       }
     }
   }
+
   BottomSheetScaffold(
     topBar = { PlantDetailTopBar(onNavigate) },
     content = { PlantDetailContent(image) },

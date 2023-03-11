@@ -5,14 +5,11 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.dp
 import java.io.File
 
 @Composable
@@ -21,9 +18,7 @@ fun PlantDetailContent(image: File) {
     bitmap = fixOrientaton(BitmapFactory.decodeFile(image.absolutePath)),
     contentDescription = "",
     contentScale = ContentScale.Crop,
-    modifier = Modifier
-      .fillMaxSize()
-      .clip(RoundedCornerShape(12.dp))
+    modifier = Modifier.fillMaxSize()
   )
 }
 

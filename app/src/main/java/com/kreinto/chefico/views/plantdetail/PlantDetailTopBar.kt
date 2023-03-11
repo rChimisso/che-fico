@@ -10,7 +10,6 @@ import com.kreinto.chefico.R
 @Composable
 fun PlantDetailTopBar(onNavigate: (String) -> Unit) {
   TopAppBar(
-    colors = TopAppBarDefaults.smallTopAppBarColors(Color(0xff20211e)),
     scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
     title = {},
     navigationIcon = {
