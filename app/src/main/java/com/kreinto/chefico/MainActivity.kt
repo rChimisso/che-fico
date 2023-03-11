@@ -30,6 +30,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.ui.theme.CheFicoTheme
 import com.kreinto.chefico.views.camera.CameraView
@@ -51,6 +53,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalGetImage
 class MainActivity : ComponentActivity() {
   private lateinit var navController: NavHostController
+  private lateinit var auth: FirebaseAuth
 
   /**
    * If the app is lacking the specified permission, requests it.
@@ -124,6 +127,8 @@ class MainActivity : ComponentActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    FirebaseApp.initializeApp(this@MainActivity)
+
     val requestLocationPermissionLauncher = getPermissionLauncher(Route.Maps)
     val requestCameraPermissionLauncher = getPermissionLauncher(Route.Camera)
     val requestNotificationPermissionLauncher = getPermissionLauncher {
