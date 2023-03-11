@@ -33,9 +33,7 @@ import kotlin.coroutines.suspendCoroutine
 @ExperimentalMaterial3Api
 @ExperimentalGetImage
 @Composable
-fun CameraView(
-  onNavigate: (route: String) -> Unit
-) {
+fun CameraView(onNavigate: (route: String) -> Unit) {
   val lensFacing = CameraSelector.LENS_FACING_BACK
   val context = LocalContext.current
   val lifecycleOwner = LocalLifecycleOwner.current
@@ -55,9 +53,12 @@ fun CameraView(
     )
     preview.setSurfaceProvider(previewView.surfaceProvider)
   }
+
   val isLoading = remember { mutableStateOf(false) }
   val coroutineScope = rememberCoroutineScope()
   val fileName = remember { mutableStateOf("") }
+
+
   SimpleFrame(
     onBackPressed = onNavigate,
     bottomBar = {
@@ -94,7 +95,17 @@ fun CameraView(
   }
 }
 
-suspend fun ImageCapture.takePicture(executor: Executor): File {
+
+private suspend fun Context.getCameraProvider(): ProcessCameraProvider = suspendCoroutine {
+  ProcessCameraProvider.getInstance(this).also { future ->
+    future.addListener({
+      // FIXME
+      it.resume(future.get())
+    }, executor)
+  }
+}
+
+private suspend fun ImageCapture.takePicture(executor: Executor): File {
   val photoFile = withContext(Dispatchers.IO) {
     kotlin.runCatching {
       File.createTempFile("image", ".jpg")
@@ -119,13 +130,4 @@ suspend fun ImageCapture.takePicture(executor: Executor): File {
   }
 }
 
-suspend fun Context.getCameraProvider(): ProcessCameraProvider = suspendCoroutine {
-  ProcessCameraProvider.getInstance(this).also { future ->
-    future.addListener({
-      // FIXME
-      it.resume(future.get())
-    }, executor)
-  }
-}
-
-val Context.executor: Executor get() = ContextCompat.getMainExecutor(this)
+private val Context.executor: Executor get() = ContextCompat.getMainExecutor(this)

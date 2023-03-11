@@ -41,7 +41,7 @@ fun BasicItem(
   onClick: () -> Unit
 ) {
   BasicItem(
-    color = MaterialTheme.colorScheme.primary, //secondary
+    color = MaterialTheme.colorScheme.onPrimary, //secondary
     icon = {
       Icon(
         modifier = it,
