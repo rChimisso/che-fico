@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 fun AccountLoginView(onNavigate: (String) -> Unit) {
   Scaffold(
     topBar = { AccountLoginTopAppBar(onNavigate) },
-    content = { AccountLoginContent(it) },
+    content = { AccountLoginContent(it, onNavigate) },
     containerColor = Color.Black
   )
 }

@@ -15,7 +15,7 @@ internal fun AccountSigninTopAppBar(onNavigate: (String) -> Unit) {
     colors = TopAppBarDefaults.smallTopAppBarColors(Color.Transparent),
     title = { Text("Accedi") },
     navigationIcon = {
-      IconButton(onClick = { onNavigate(Route.Settings.path) }) {
+      IconButton(onClick = { onNavigate(Route.Login.path) }) {
         Icon(painter = painterResource(id = R.drawable.ic_arrow_back), contentDescription = "Back")
       }
     }

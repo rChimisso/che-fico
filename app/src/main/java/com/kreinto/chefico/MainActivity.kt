@@ -35,6 +35,8 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.ui.theme.CheFicoTheme
+import com.kreinto.chefico.views.account.AccountLoginView
+import com.kreinto.chefico.views.account.AccountSigninView
 import com.kreinto.chefico.views.camera.CameraView
 import com.kreinto.chefico.views.dashboard.DashboardView
 import com.kreinto.chefico.views.maps.MapsView
@@ -194,6 +196,8 @@ class MainActivity : ComponentActivity() {
           composable(Route.PlantDetail.path, getNavArgs(Route.PlantDetail)) {
             PlantDetailView(onNavigate, imageName = it.arguments?.getString(Route.PlantDetail.arg))
           }
+          composable(Route.Signin.path) { AccountSigninView(onNavigate) }
+          composable(Route.Login.path) { AccountLoginView(onNavigate) }
         }
       }
     }

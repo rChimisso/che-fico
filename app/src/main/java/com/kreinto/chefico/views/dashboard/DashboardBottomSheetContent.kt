@@ -83,7 +83,7 @@ fun DashboardBottomSheetContent(bottomSheetState: BottomSheetState, onNavigate: 
     DashboardBottomSheetItem(
       icon = painterResource(R.drawable.ic_settings),
       text = "Impostazioni"
-    ) { onNavigate(Route.Camera.path) }
+    ) { onNavigate(Route.Settings.path) }
   }
 }
 
