@@ -4,7 +4,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,11 +13,11 @@ import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.TransparentButton
 import com.kreinto.chefico.components.items.SwipeableItem
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@ExperimentalFoundationApi
+@ExperimentalMaterialApi
 @Composable
 fun DashboardContent() {
   Column(modifier = Modifier.padding(16.dp)) {
-
     SwipeableItem(
       icon = R.drawable.ic_poi,
       text = "Notification Name",

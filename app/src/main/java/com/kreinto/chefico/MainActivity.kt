@@ -40,7 +40,9 @@ import com.kreinto.chefico.views.poicreation.PoiCreationView
 import com.kreinto.chefico.views.poidetail.PoiDetailView
 import com.kreinto.chefico.views.poilist.PoiListView
 import com.kreinto.chefico.views.settings.SettinsView
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi

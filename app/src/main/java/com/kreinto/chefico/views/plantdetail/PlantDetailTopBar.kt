@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import com.kreinto.chefico.R
 
-@OptIn(ExperimentalMaterial3Api::class)
+@ExperimentalMaterial3Api
 @Composable
 fun PlantDetailTopBar(onNavigate: (String) -> Unit) {
   TopAppBar(
