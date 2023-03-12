@@ -1,22 +1,25 @@
 package com.kreinto.chefico.components.items
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kreinto.chefico.R
 import com.kreinto.chefico.ui.theme.level1
 
 /**
@@ -24,33 +27,28 @@ import com.kreinto.chefico.ui.theme.level1
  *
  * @param icon Icon to display.
  * @param text Text to display.
- * @param modifier An ordered, immutable collection of modifier elements that decorate or add behavior to this element.
- * @param tint Optional icon color, defaults to green.
+ * @param modifier Optional [Modifier].
+ * @param contentColor Optional content color, defaults to TODO.
+ * @param containerColor Optional container color, defaults to TODO.
  * @param onLongClick Optional function called when the item is pressed for long.
  * @param onClick Function called when the item is tapped.
  */
 @ExperimentalFoundationApi
-@ExperimentalMaterial3Api
 @Composable
 fun BasicItem(
-  icon: ImageVector,
+  @DrawableRes icon: Int,
   text: String,
   modifier: Modifier = Modifier,
-  tint: Color = MaterialTheme.colorScheme.onPrimary, //onSecondary
+  contentColor: Color = Color(0xff4caf50),
+  containerColor: Color = Color(0xffaaef71),
   onLongClick: (() -> Unit)? = null,
   onClick: () -> Unit
 ) {
   BasicItem(
-    color = MaterialTheme.colorScheme.onPrimary, //secondary
-    icon = {
-      Icon(
-        modifier = it,
-        imageVector = icon,
-        contentDescription = "",
-        tint = tint
-      )
-    },
+    icon = { Icon(painter = painterResource(icon), contentDescription = null, modifier = it) },
     text = text,
+    contentColor = contentColor,
+    containerColor = containerColor,
     modifier = modifier,
     onLongClick = onLongClick,
     onClick = onClick
@@ -62,20 +60,21 @@ fun BasicItem(
  *
  * @param icon Icon to display.
  * @param text Text to display.
- * @param modifier An ordered, immutable collection of modifier elements that decorate or add behavior to this element.
- * @param color Optional background color, defaults to white.
+ * @param modifier Optional [Modifier].
+ * @param contentColor Optional content color, defaults to TODO.
+ * @param containerColor Optional container color, defaults to TODO.
  * @param border Optional border color, defaults to null.
  * @param onLongClick Optional function called when the item is pressed for long.
  * @param onClick Function called when the item is tapped.
  */
 @ExperimentalFoundationApi
-@ExperimentalMaterial3Api
 @Composable
-fun BasicItem(
+internal fun BasicItem(
   icon: @Composable (Modifier) -> Unit,
   text: String,
   modifier: Modifier = Modifier,
-  color: Color = MaterialTheme.colorScheme.primary, //secondary
+  contentColor: Color = Color(0xff4caf50),
+  containerColor: Color = Color(0xffaaef71),
   border: BorderStroke? = null,
   onLongClick: (() -> Unit)? = null,
   onClick: () -> Unit
@@ -84,9 +83,11 @@ fun BasicItem(
     modifier = modifier
       .fillMaxWidth()
       .combinedClickable(onClick = onClick, onLongClick = onLongClick),
+    shape = RoundedCornerShape(12.dp),
+    color = containerColor,
+    contentColor = contentColor,
+    // FIXME: da mettere? shadowElevation = level1,
     tonalElevation = level1,
-    shape = RoundedCornerShape(16.dp),
-    color = color,
     border = border
   ) {
     Row(
@@ -96,13 +97,17 @@ fun BasicItem(
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.Start
     ) {
-      icon(Modifier.padding(horizontal = 8.dp))
+      icon(
+        Modifier
+          .padding(horizontal = 8.dp)
+          .size(24.dp)
+      )
       Text(
-        modifier = Modifier.padding(horizontal = 8.dp),
         text = text,
+        modifier = Modifier.padding(horizontal = 4.dp),
+        fontSize = 24.sp,
         overflow = TextOverflow.Ellipsis,
-        maxLines = 1,
-        fontSize = 18.sp
+        maxLines = 1
       )
     }
   }
@@ -116,5 +121,5 @@ fun BasicItem(
 @Composable
 @Preview
 private fun BasicItemPreview() {
-  BasicItem(icon = Icons.Default.ShoppingCart, text = "Basic item") {}
+  BasicItem(icon = R.drawable.ic_settings, text = "Basic item") {}
 }

@@ -9,7 +9,6 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.TransparentButton
@@ -21,7 +20,7 @@ fun DashboardContent() {
   Column(modifier = Modifier.padding(16.dp)) {
 
     SwipeableItem(
-      icon = painterResource(id = R.drawable.ic_poi),
+      icon = R.drawable.ic_poi,
       text = "Notification Name",
       containerColor = Color(0xff20211e),
       contentColor = Color(0xff32C896),
