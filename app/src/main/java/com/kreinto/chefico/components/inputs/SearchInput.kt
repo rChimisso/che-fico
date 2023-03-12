@@ -16,7 +16,7 @@ import com.kreinto.chefico.components.buttons.TransparentButton
 
 
 /**
- * Standardized search input.
+ * Search input.
  *
  * @param onValueChange Function called when the input value changes.
  */

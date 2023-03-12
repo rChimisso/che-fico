@@ -18,15 +18,15 @@ import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.data.ButtonData
 
 /**
- * Multipurpose icon button.
+ * Transparent icon button.
  *
- * @param icon
- * @param contentDescription
- * @param colors
- * @param height
- * @param width
- * @param enabled
- * @param onClick
+ * @param icon Icon to display.
+ * @param contentDescription Text used by accessibility services to describe what the icon button represents.
+ * @param colors [IconButtonColors].
+ * @param height Button height.
+ * @param width Button width.
+ * @param enabled Whether the button is enabled.
+ * @param onClick Callback called when the button is clicked.
  */
 @Composable
 fun TransparentButton(
@@ -54,6 +54,11 @@ fun TransparentButton(
   }
 }
 
+/**
+ * Transparent icon button.
+ *
+ * @param buttonData [ButtonData].
+ */
 @Composable
 fun TransparentButton(buttonData: ButtonData) {
   TransparentButton(

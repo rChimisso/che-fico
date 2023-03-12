@@ -76,10 +76,7 @@ fun MapsView(
         cameraPosition = position
       }
     }
-    fusedLocationClient.getCurrentLocation(
-      Priority.PRIORITY_BALANCED_POWER_ACCURACY,
-      null
-    ).addOnSuccessListener {
+    fusedLocationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null).addOnSuccessListener {
       if (it != null) {
         position = buildCameraPosition(it)
         cameraPosition = position

@@ -1,9 +1,7 @@
 package com.kreinto.chefico.views.poidetail
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Divider
@@ -29,8 +27,6 @@ import com.kreinto.chefico.components.inputs.TextInput
 import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.room.entities.Poi
 
-@ExperimentalFoundationApi
-@ExperimentalMaterialApi
 @ExperimentalMaterial3Api
 @ExperimentalPagerApi
 @Composable
