@@ -2,10 +2,7 @@ package com.kreinto.chefico
 
 import android.Manifest.permission.*
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
-import android.content.ContextWrapper
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Build
@@ -42,7 +39,6 @@ import com.kreinto.chefico.views.poidetail.PoiDetailView
 import com.kreinto.chefico.views.poilist.PoiListView
 import com.kreinto.chefico.views.settings.SettinsView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-
 
 @ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
@@ -195,8 +191,8 @@ class MainActivity : ComponentActivity() {
   }
 }
 
-fun Context.getActivity(): Activity = when (this) {
-  is Activity -> this
-  is ContextWrapper -> baseContext.getActivity()
-  else -> throw IllegalStateException("Permissions should be called in the context of an Activity")
-}
+//fun Context.getActivity(): Activity = when (this) {
+//  is Activity -> this
+//  is ContextWrapper -> baseContext.getActivity()
+//  else -> throw IllegalStateException("Permissions should be called in the context of an Activity")
+//}
