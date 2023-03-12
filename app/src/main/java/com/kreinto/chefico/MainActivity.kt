@@ -3,6 +3,7 @@ package com.kreinto.chefico
 import android.Manifest.permission.*
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.pm.ActivityInfo
@@ -42,6 +43,7 @@ import com.kreinto.chefico.views.poilist.PoiListView
 import com.kreinto.chefico.views.settings.SettinsView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+
 @ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
@@ -59,12 +61,17 @@ class MainActivity : ComponentActivity() {
   private fun requestPermission(permission: String, launcher: ActivityResultLauncher<String>) {
     if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
       if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-        // In an educational UI, explain to the user why your app requires this
-        // permission for a specific feature to behave as expected, and what
-        // features are disabled if it's declined. In this UI, include a
-        // "cancel" or "no thanks" button that lets the user continue
-        // using your app without granting the permission.
-        // showInContextUI(...)
+        val alertBuilder = AlertDialog.Builder(this@MainActivity)
+        alertBuilder.setCancelable(true)
+        alertBuilder.setTitle("Permesso necessario")
+        alertBuilder.setMessage("Il permesso è necessario ai fini dell'utilizzo.")
+        alertBuilder.setPositiveButton(
+          "Grazie"
+        ) { _, _ ->
+          launcher.launch(permission)
+        }
+        val alert = alertBuilder.create()
+        alert.show()
       } else {
         launcher.launch(permission)
       }
@@ -94,11 +101,15 @@ class MainActivity : ComponentActivity() {
       if (it) {
         navController.navigate(route.path)
       } else {
-        // Explain to the user that the feature is unavailable because the
-        // feature requires a permission that the user has denied. At the
-        // same time, respect the user's decision. Don't link to system
-        // settings in an effort to convince the user to change their
-        // decision.
+        val alertBuilder = AlertDialog.Builder(this@MainActivity)
+        alertBuilder.setCancelable(true)
+        alertBuilder.setTitle("Attenzione!")
+        alertBuilder.setMessage("Per proseguire è necessario garantire i permessi")
+        alertBuilder.setPositiveButton(
+          "Grazie"
+        ) { _, _ -> }
+        val alert = alertBuilder.create()
+        alert.show()
       }
     }
   }
