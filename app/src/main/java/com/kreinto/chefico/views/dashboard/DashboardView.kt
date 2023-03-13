@@ -7,6 +7,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FabPosition
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -22,10 +23,10 @@ fun DashboardView(onNavigate: (String) -> Unit) {
     scaffoldState = scaffoldState,
     floatingActionButtonPosition = FabPosition.End,
     floatingActionButton = { DashboardFloatingActionButton() },
-    backgroundColor = Color(0xff20211e),
+    backgroundColor = MaterialTheme.colorScheme.background,
     sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
     sheetGesturesEnabled = true,
-    sheetBackgroundColor = Color(0xFF262724),
+    sheetBackgroundColor = MaterialTheme.colorScheme.surface,
     sheetElevation = 12.dp,
     sheetPeekHeight = 48.dp,
     sheetContent = { DashboardBottomSheetContent(scaffoldState.bottomSheetState, onNavigate) },

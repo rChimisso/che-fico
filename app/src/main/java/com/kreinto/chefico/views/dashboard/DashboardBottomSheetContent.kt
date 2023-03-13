@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomSheetState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -44,13 +45,13 @@ fun DashboardBottomSheetContent(bottomSheetState: BottomSheetState, onNavigate: 
         Icon(
           painter = painterResource(R.drawable.ic_arrow_up),
           contentDescription = "swipe",
-          tint = Color(0xff32C896),
+          tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
       } else {
         Icon(
           painter = painterResource(R.drawable.ic_arrow_down),
           contentDescription = "swipe",
-          tint = Color(0xff32C896),
+          tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
       }
     }
@@ -94,8 +95,8 @@ private fun DashboardBottomSheetItem(
   onClick: () -> Unit
 ) {
   val colorStops = arrayOf(
-    0.0f to Color(0xFF32C896),
-    1f to Color(0xff2B9584)
+    0.0f to MaterialTheme.colorScheme.primaryContainer,
+    1f to MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
   )
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -113,13 +114,13 @@ private fun DashboardBottomSheetItem(
       Icon(
         painter = icon,
         contentDescription = text,
-        tint = Color(0xff20211e),
+        tint = MaterialTheme.colorScheme.onPrimaryContainer,
         modifier = Modifier
           .size(32.dp)
           .align(Alignment.Center)
       )
     }
     Spacer(modifier = Modifier.height(8.dp))
-    Text(text, fontSize = 12.sp, color = Color(0xFF32C896))
+    Text(text, fontSize = 12.sp, color = MaterialTheme.colorScheme.primary)
   }
 }
