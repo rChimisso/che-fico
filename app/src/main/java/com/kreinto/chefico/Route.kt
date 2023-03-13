@@ -12,6 +12,7 @@ sealed class Route(val path: String, val arg: String = "") {
   object PlantDetail : Route("plantdetail/{imageName}", "imageName")
   object Login : Route("login")
   object Signin : Route("signin")
+  object Account : Route("account")
 
   fun route(arg: String): String {
     return path.replace("{${this.arg}}", arg)

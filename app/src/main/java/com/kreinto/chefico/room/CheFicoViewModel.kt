@@ -1,7 +1,6 @@
 package com.kreinto.chefico.room
 
 import android.app.Application
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
@@ -24,7 +23,6 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
       LatLng(0.0, 0.0)
     )
   )
-  private val credentials = mutableStateOf(User())
 
   @ExperimentalCoroutinesApi
   val poisWithin = mapBoundariesFlow.flatMapLatest { selectPoisWithin(it) }
@@ -96,8 +94,3 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     viewModelScope.launch(Dispatchers.IO) { block() }
   }
 }
-
-private data class User(
-  val email: String = "",
-  val password: String = ""
-)

@@ -31,12 +31,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.android.gms.location.LocationServices
-import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
+import com.kreinto.chefico.room.AuthViewModel
 import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.ui.theme.CheFicoTheme
 import com.kreinto.chefico.views.account.AccountLoginView
 import com.kreinto.chefico.views.account.AccountSigninView
+import com.kreinto.chefico.views.account.AccountView
 import com.kreinto.chefico.views.camera.CameraView
 import com.kreinto.chefico.views.dashboard.DashboardView
 import com.kreinto.chefico.views.maps.MapsView
@@ -56,7 +56,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalGetImage
 class MainActivity : ComponentActivity() {
   private lateinit var navController: NavHostController
-  private lateinit var auth: FirebaseAuth
 
   /**
    * If the app is lacking the specified permission, requests it.
@@ -128,9 +127,9 @@ class MainActivity : ComponentActivity() {
    */
   private fun getNavArgs(route: Route) = listOf(navArgument(route.arg) { type = NavType.StringType })
 
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    FirebaseApp.initializeApp(this@MainActivity)
 
     val requestLocationPermissionLauncher = getPermissionLauncher(Route.Maps)
     val requestCameraPermissionLauncher = getPermissionLauncher(Route.Camera)
@@ -153,6 +152,7 @@ class MainActivity : ComponentActivity() {
         val context = LocalContext.current
         navController = rememberNavController()
         val viewModel by viewModels<CheFicoViewModel>()
+        val authViewModel by viewModels<AuthViewModel>()
         val onNavigate: (String) -> Unit = {
           when (it) {
             Route.Back.path -> {
@@ -170,7 +170,6 @@ class MainActivity : ComponentActivity() {
             else -> navController.navigate(it)
           }
         }
-
         LaunchedEffect(Unit) {
           this@MainActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
           PoiNotificationManager.createNotificationChannel(context)
@@ -186,7 +185,7 @@ class MainActivity : ComponentActivity() {
               locationSettingsClient = LocationServices.getSettingsClient(this@MainActivity)
             )
           }
-          composable(Route.Settings.path) { SettinsView(onNavigate) }
+          composable(Route.Settings.path) { SettinsView(authViewModel, onNavigate) }
           composable(Route.PoiList.path) { PoiListView(onNavigate, viewModel) }
           composable(Route.PoiDetail.path, getNavArgs(Route.PoiDetail)) {
             PoiDetailView(onNavigate, viewModel, poiId = it.arguments?.getString(Route.PoiDetail.arg))
@@ -196,8 +195,9 @@ class MainActivity : ComponentActivity() {
           composable(Route.PlantDetail.path, getNavArgs(Route.PlantDetail)) {
             PlantDetailView(onNavigate, imageName = it.arguments?.getString(Route.PlantDetail.arg))
           }
-          composable(Route.Signin.path) { AccountSigninView(onNavigate) }
-          composable(Route.Login.path) { AccountLoginView(onNavigate) }
+          composable(Route.Signin.path) { AccountSigninView(authViewModel, onNavigate) }
+          composable(Route.Login.path) { AccountLoginView(authViewModel, onNavigate) }
+          composable(Route.Account.path) { AccountView(authViewModel, onNavigate) }
         }
       }
     }

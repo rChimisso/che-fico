@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "427989966367",
+    "project_id": "che-fico-1eb15",
+    "storage_bucket": "che-fico-1eb15.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:427989966367:android:67b7269bea216c720e3f2a",
+        "android_client_info": {
+          "package_name": "com.kreinto.chefico"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "427989966367-bikpm5s359i8us4d9ea06bostua66tjv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kreinto.chefico",
+            "certificate_hash": "3bb430dcfe21ea6b82287ee223dc10d873e0f277"
+          }
+        },
+        {
+          "client_id": "427989966367-a33fc75997k2dkqsnr1k2mae3mos4fls.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBisA_rtyOWw6ZzxWrIhD9Qbh2uqk3V98I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "427989966367-2t0gbjnhva1iernavershfl92q22rlu6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
