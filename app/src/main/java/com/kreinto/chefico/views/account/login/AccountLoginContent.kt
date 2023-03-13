@@ -1,15 +1,19 @@
 package com.kreinto.chefico.views.account
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,14 +22,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kreinto.chefico.R
 import com.kreinto.chefico.Route
-import com.kreinto.chefico.views.account.signin.GoogleSignInButton
+import com.kreinto.chefico.room.AuthViewModel
+import com.kreinto.chefico.views.account.signin.GoogleLogInButton
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun AccountLoginContent(paddingValues: PaddingValues, onNavigate: (String) -> Unit) {
+internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: PaddingValues, onNavigate: (String) -> Unit) {
+
+  var coroutine = rememberCoroutineScope()
+  var loading = remember {
+    mutableStateOf(false)
+  }
   Column(
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -35,9 +49,12 @@ internal fun AccountLoginContent(paddingValues: PaddingValues, onNavigate: (Stri
   ) {
     Image(painter = painterResource(id = R.drawable.che_fico_icon), contentDescription = "", Modifier.size(156.dp))
     Spacer(modifier = Modifier.height(64.dp))
-    GoogleSignInButton {
-
-    }
+    GoogleLogInButton(
+      onSuccess = {
+        onNavigate(Route.Account.path)
+      },
+      onFailure = {}
+    )
     Spacer(modifier = Modifier.height(40.dp))
     Row(
       horizontalArrangement = Arrangement.Center,
@@ -50,9 +67,86 @@ internal fun AccountLoginContent(paddingValues: PaddingValues, onNavigate: (Stri
       Divider(color = Color(0x6632C896), modifier = Modifier.width(128.dp))
     }
     Spacer(modifier = Modifier.height(32.dp))
-    AccountField(R.drawable.ic_email, "Email") {}
+    var email: String by rememberSaveable { mutableStateOf("") }
+    var password: String by rememberSaveable { mutableStateOf("") }
+
+    var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    TextField(
+      label = { Text("Email") },
+      value = email,
+      onValueChange = {
+        email = it
+      },
+      singleLine = true,
+      colors = TextFieldDefaults.textFieldColors(
+        textColor = Color(0xff32C896),
+        containerColor = Color.Transparent,
+        cursorColor = Color(0xff32C896),
+        placeholderColor = Color(0xff32C896),
+        focusedIndicatorColor = Color(0x6632C896),
+        disabledIndicatorColor = Color(0x6632C896),
+        unfocusedIndicatorColor = Color(0x6632C896),
+        focusedLeadingIconColor = Color(0xff32C896),
+        disabledLabelColor = Color(0xff32C896),
+        unfocusedLeadingIconColor = Color(0xff32C896),
+        focusedLabelColor = Color.Transparent,
+        unfocusedLabelColor = Color(0xff32C896),
+
+        ),
+      leadingIcon = {
+        Icon(
+          painter = painterResource(id = R.drawable.ic_email),
+          contentDescription = "email",
+          modifier = Modifier.size(24.dp)
+        )
+      }
+    )
     Spacer(modifier = Modifier.height(16.dp))
-    AccountField(R.drawable.ic_lock, "Password") {}
+    TextField(
+      label = { Text("Email") },
+      value = password,
+      onValueChange = {
+        password = it
+      },
+      singleLine = true,
+      colors = TextFieldDefaults.textFieldColors(
+        textColor = Color(0xff32C896),
+        containerColor = Color.Transparent,
+        cursorColor = Color(0xff32C896),
+        placeholderColor = Color(0xff32C896),
+        focusedIndicatorColor = Color(0x6632C896),
+        disabledIndicatorColor = Color(0x6632C896),
+        unfocusedIndicatorColor = Color(0x6632C896),
+        focusedLeadingIconColor = Color(0xff32C896),
+        disabledLabelColor = Color(0xff32C896),
+        unfocusedLeadingIconColor = Color(0xff32C896),
+        focusedLabelColor = Color.Transparent,
+        unfocusedLabelColor = Color(0xff32C896),
+        focusedTrailingIconColor = Color(0xff32C896),
+        unfocusedTrailingIconColor = Color(0x6632C896)
+
+      ),
+      trailingIcon = {
+        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+          Crossfade(targetState = passwordVisible, animationSpec = tween(300)) { visible ->
+            if (visible) {
+              Icon(painter = painterResource(id = R.drawable.ic_visible), contentDescription = "", modifier = Modifier.size(24.dp))
+            } else {
+              Icon(painter = painterResource(id = R.drawable.ic_hidden), contentDescription = "", modifier = Modifier.size(24.dp))
+            }
+          }
+        }
+      },
+      keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+      visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+      leadingIcon = {
+        Icon(
+          painter = painterResource(id = R.drawable.ic_lock),
+          contentDescription = "email",
+          modifier = Modifier.size(24.dp)
+        )
+      }
+    )
     Spacer(modifier = Modifier.height(32.dp))
     Row(
       horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
@@ -81,7 +175,20 @@ internal fun AccountLoginContent(paddingValues: PaddingValues, onNavigate: (Stri
       modifier = Modifier
         .width(208.dp)
         .height(40.dp),
-      onClick = { /*TODO*/ }
+      onClick = {
+        loading.value = true
+        authViewModel.logIn(email, password) {
+          loading.value = false
+          if (it == null) {
+            email = ""
+            password = ""
+            onNavigate(Route.Account.path)
+          } else {
+
+          }
+        }
+
+      }
     ) {
       Box(
         modifier = Modifier
@@ -108,6 +215,18 @@ internal fun AccountLoginContent(paddingValues: PaddingValues, onNavigate: (Stri
       Text("Registrati", fontSize = 16.sp)
     }
     Spacer(modifier = Modifier.height(8.dp))
-    Text(text = "Accedendo si accettano i termini e condizioni d'uso dell'applicazione.")
+  }
+  AnimatedVisibility(
+    modifier = Modifier.fillMaxSize(),
+    visible = loading.value,
+    enter = EnterTransition.None,
+    exit = fadeOut()
+  ) {
+    CircularProgressIndicator(
+      modifier = Modifier
+        .background(MaterialTheme.colorScheme.background)
+        .wrapContentSize()
+    )
   }
 }
+

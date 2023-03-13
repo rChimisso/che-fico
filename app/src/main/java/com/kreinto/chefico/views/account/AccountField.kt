@@ -2,6 +2,7 @@ package com.kreinto.chefico.views.account
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -11,6 +12,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 
 
@@ -19,6 +23,7 @@ import androidx.compose.ui.unit.dp
 internal fun AccountField(@DrawableRes leadingIcon: Int, fieldName: String, onValueChange: (String) -> Unit) {
   var value: String by rememberSaveable { mutableStateOf("") }
 
+  var passwordVisible by rememberSaveable { mutableStateOf(false) }
   TextField(
     label = { Text(fieldName) },
     value = value,
@@ -42,6 +47,8 @@ internal fun AccountField(@DrawableRes leadingIcon: Int, fieldName: String, onVa
       unfocusedLabelColor = Color(0xff32C896),
 
       ),
+    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
     leadingIcon = {
       Icon(
         painter = painterResource(id = leadingIcon),
