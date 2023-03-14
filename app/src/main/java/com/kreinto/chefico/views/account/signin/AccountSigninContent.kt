@@ -70,10 +70,10 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       },
       singleLine = true,
       colors = TextFieldDefaults.textFieldColors(
-        textColor = Color(0xff32C896),
+        unfocusedTextColor = Color(0xff32C896),
         containerColor = Color.Transparent,
         cursorColor = Color(0xff32C896),
-        placeholderColor = Color(0xff32C896),
+        unfocusedPlaceholderColor = Color(0xff32C896),
         focusedIndicatorColor = Color(0x6632C896),
         disabledIndicatorColor = Color(0x6632C896),
         unfocusedIndicatorColor = Color(0x6632C896),
@@ -100,10 +100,10 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       },
       singleLine = true,
       colors = TextFieldDefaults.textFieldColors(
-        textColor = Color(0xff32C896),
+        unfocusedTextColor = Color(0xff32C896),
         containerColor = Color.Transparent,
         cursorColor = Color(0xff32C896),
-        placeholderColor = Color(0xff32C896),
+        unfocusedPlaceholderColor = Color(0xff32C896),
         focusedIndicatorColor = Color(0x6632C896),
         disabledIndicatorColor = Color(0x6632C896),
         unfocusedIndicatorColor = Color(0x6632C896),
@@ -130,10 +130,10 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       },
       singleLine = true,
       colors = TextFieldDefaults.textFieldColors(
-        textColor = Color(0xff32C896),
+        unfocusedTextColor = Color(0xff32C896),
         containerColor = Color.Transparent,
         cursorColor = Color(0xff32C896),
-        placeholderColor = Color(0xff32C896),
+        unfocusedPlaceholderColor = Color(0xff32C896),
         focusedIndicatorColor = Color(0x6632C896),
         disabledIndicatorColor = Color(0x6632C896),
         unfocusedIndicatorColor = Color(0x6632C896),
@@ -144,7 +144,6 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
         unfocusedLabelColor = Color(0xff32C896),
         focusedTrailingIconColor = Color(0xff32C896),
         unfocusedTrailingIconColor = Color(0x6632C896)
-
       ),
       trailingIcon = {
         IconButton(onClick = { passwordVisible = !passwordVisible }) {
@@ -173,10 +172,10 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       },
       singleLine = true,
       colors = TextFieldDefaults.textFieldColors(
-        textColor = Color(0xff32C896),
+        unfocusedTextColor = Color(0xff32C896),
         containerColor = Color.Transparent,
         cursorColor = Color(0xff32C896),
-        placeholderColor = Color(0xff32C896),
+        unfocusedPlaceholderColor = Color(0xff32C896),
         focusedIndicatorColor = Color(0x6632C896),
         disabledIndicatorColor = Color(0x6632C896),
         unfocusedIndicatorColor = Color(0x6632C896),

@@ -12,6 +12,12 @@ import java.util.*
 
 class PlantRecognition {
 
+  sealed class PlantOrgan {
+    val leaf = "leaf"
+    val flower = "flower"
+    val fruit = "fruit"
+  }
+
   private data class WikiMediaQueryData(
     @SerializedName("query") val query: WikiMediaPages? = null
   )

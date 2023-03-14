@@ -33,10 +33,10 @@ internal fun AccountField(@DrawableRes leadingIcon: Int, fieldName: String, onVa
     },
     singleLine = true,
     colors = TextFieldDefaults.textFieldColors(
-      textColor = Color(0xff32C896),
+      unfocusedTextColor = Color(0xff32C896),
       containerColor = Color.Transparent,
       cursorColor = Color(0xff32C896),
-      placeholderColor = Color(0xff32C896),
+      unfocusedPlaceholderColor = Color(0xff32C896),
       focusedIndicatorColor = Color(0x6632C896),
       disabledIndicatorColor = Color(0x6632C896),
       unfocusedIndicatorColor = Color(0x6632C896),

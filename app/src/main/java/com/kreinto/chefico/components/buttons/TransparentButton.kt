@@ -49,7 +49,7 @@ fun TransparentButton(
     Icon(
       painter = painterResource(icon),
       contentDescription = contentDescription,
-      modifier = Modifier.size(24.dp)
+      modifier = Modifier.size(48.dp)
     )
   }
 }
