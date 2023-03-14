@@ -18,8 +18,8 @@ import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.FilledButton
 import com.kreinto.chefico.components.utils.HorizontalPagerSlider
 
-@Composable
 @ExperimentalPagerApi
+@Composable
 fun PoiDetailSlideShow() {
   Box {
     val pagerState = rememberPagerState()

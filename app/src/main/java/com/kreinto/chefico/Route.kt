@@ -1,5 +1,11 @@
 package com.kreinto.chefico
 
+/**
+ * Route for app navigation.
+ *
+ * @property path Navigation path.
+ * @property arg Optional navigation argument.
+ */
 sealed class Route(val path: String, val arg: String = "") {
   object Back : Route("back")
   object Dashboard : Route("dashboard")

@@ -2,7 +2,6 @@ package com.kreinto.chefico.components.frames.bottombars
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.BottomAppBarDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,7 +18,6 @@ import com.kreinto.chefico.components.buttons.data.ButtonData
  * @param centerButtonData Optional [ButtonData] for the central button.
  * @param rightButtonData [ButtonData] for the right button.
  */
-@ExperimentalMaterial3Api
 @Composable
 fun SimpleBottomBar(
   leftButtonData: ButtonData,
@@ -55,7 +53,6 @@ fun SimpleBottomBar(
 /**
  * [Preview] for [SimpleBottomBar].
  */
-@ExperimentalMaterial3Api
 @Composable
 @Preview
 private fun SimpleBottomBarPreview() {

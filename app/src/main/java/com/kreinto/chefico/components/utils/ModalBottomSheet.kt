@@ -1,15 +1,10 @@
 package com.kreinto.chefico.components.util
 
-import android.graphics.Color
+//import androidx.compose.material3.NavigationRailDefaults.ContainerColor
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
-//import androidx.compose.material3.NavigationRailDefaults.ContainerColor
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,10 +15,8 @@ import kotlinx.coroutines.launch
 //import androidx.compose.ui.Modifier
 //import androidx.compose.ui.graphics.Shape
 //import androidx.compose.ui.unit.Dp
-//@OptIn(ExperimentalMaterialApi::class)
-@OptIn(ExperimentalMaterialApi::class)
+@ExperimentalMaterialApi
 @Composable
-@ExperimentalMaterial3Api
 fun ModalBottomSheet(
   onDismissRequest: () -> Unit,
 //  modifier: Modifier = Modifier,
@@ -34,7 +27,7 @@ fun ModalBottomSheet(
 //  tonalElevation: Dp = ModalBottomSheetDefaults.Elevation,
 //  scrimColor: Color = ModalBottomSheetDefaults.ScrimColor,
   content: @Composable ColumnScope.() -> Unit
-):Unit {
+) {
   var openBottomSheet by rememberSaveable { mutableStateOf(false) }
   var skipPartiallyExpanded by remember { mutableStateOf(false) }
   val scope = rememberCoroutineScope()

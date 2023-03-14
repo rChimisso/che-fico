@@ -76,10 +76,7 @@ fun MapsView(
         cameraPosition = position
       }
     }
-    fusedLocationClient.getCurrentLocation(
-      Priority.PRIORITY_BALANCED_POWER_ACCURACY,
-      null
-    ).addOnSuccessListener {
+    fusedLocationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null).addOnSuccessListener {
       if (it != null) {
         position = buildCameraPosition(it)
         cameraPosition = position
@@ -147,18 +144,17 @@ fun MapsView(
     val locationRequest = LocationRequest
       .Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000)
       .build()
-    val settingResultRequest =
-      rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-          fusedLocationClient.requestLocationUpdates(
-            locationRequest,
-            locationListener,
-            Looper.getMainLooper()
-          )
-        } else {
-          println("Settings denied")
-        }
+    val settingResultRequest = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+      if (it.resultCode == Activity.RESULT_OK) {
+        fusedLocationClient.requestLocationUpdates(
+          locationRequest,
+          locationListener,
+          Looper.getMainLooper()
+        )
+      } else {
+        println("Settings denied")
       }
+    }
     val refreshMarkers = {
       val latLngBounds = cameraPositionState.projection?.visibleRegion?.latLngBounds
       if (latLngBounds != null) {

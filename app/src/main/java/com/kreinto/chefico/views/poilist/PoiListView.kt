@@ -4,8 +4,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.*
@@ -68,7 +66,7 @@ fun PoiListView(
       if (filter.isEmpty()) {
         items(pois.value.size) { index ->
           SelectableItem(
-            icon = Icons.Default.Star,
+            icon = R.drawable.ic_poi,
             text = pois.value[index].name,
             selectable = selectedPois.size > 0,
             onClick = { onNavigate(Route.PoiDetail.route(pois.value[index].id.toString())) },
@@ -86,7 +84,7 @@ fun PoiListView(
         val filteredPoi = pois.value.filter { poi -> poi.name.contains(filter) }
         items(filteredPoi.size) { index ->
           SelectableItem(
-            icon = Icons.Default.Star,
+            icon = R.drawable.ic_poi,
             text = filteredPoi[index].name,
             selectable = selectedPois.size > 0,
             onClick = { onNavigate(Route.PoiDetail.path) },

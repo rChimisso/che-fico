@@ -2,7 +2,10 @@ package com.kreinto.chefico.views.camera
 
 import android.content.Context
 import android.util.Log
-import androidx.camera.core.*
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.*
@@ -31,7 +34,6 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 @ExperimentalMaterial3Api
-@ExperimentalGetImage
 @Composable
 fun CameraView(onNavigate: (route: String) -> Unit) {
   val lensFacing = CameraSelector.LENS_FACING_BACK
@@ -99,8 +101,7 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
 private suspend fun Context.getCameraProvider(): ProcessCameraProvider = suspendCoroutine {
   ProcessCameraProvider.getInstance(this).also { future ->
     future.addListener({
-      // FIXME
-      it.resume(future.get())
+      it.resume(future.get()) // FIXME
     }, executor)
   }
 }

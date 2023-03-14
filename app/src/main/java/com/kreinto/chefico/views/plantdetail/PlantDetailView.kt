@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.views.camera.PlantRecognition
 import java.io.File
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterialApi::class)
 @ExperimentalMaterial3Api
+@ExperimentalMaterialApi
 @Composable
 fun PlantDetailView(
   onNavigate: (String) -> Unit,

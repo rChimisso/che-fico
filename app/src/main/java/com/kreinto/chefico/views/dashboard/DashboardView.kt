@@ -2,12 +2,11 @@ package com.kreinto.chefico.views.dashboard
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FabPosition
-import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -17,20 +16,20 @@ import androidx.compose.ui.unit.dp
 @ExperimentalMaterialApi
 @Composable
 fun DashboardView(onNavigate: (String) -> Unit) {
-  var scaffoldState = rememberBottomSheetScaffoldState()
+  val scaffoldState = rememberBottomSheetScaffoldState()
   BottomSheetScaffold(
-    drawerGesturesEnabled = false,
+    sheetContent = { DashboardBottomSheetContent(onNavigate) },
     scaffoldState = scaffoldState,
-    floatingActionButtonPosition = FabPosition.End,
-    floatingActionButton = { DashboardFloatingActionButton() },
-    backgroundColor = MaterialTheme.colorScheme.background,
-    sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-    sheetGesturesEnabled = true,
-    sheetBackgroundColor = MaterialTheme.colorScheme.surface,
-    sheetElevation = 12.dp,
     sheetPeekHeight = 48.dp,
-    sheetContent = { DashboardBottomSheetContent(scaffoldState.bottomSheetState, onNavigate) },
-    content = { DashboardContent() }
-  )
+    sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+    sheetContainerColor = Color(0xFF262724),
+    sheetContentColor = Color(0xff32C896),
+    // TODO:
+    //  Trovare soluzione per la mancanza del FAB, https://issuetracker.google.com/issues/273066268
+    //  floatingActionButtonPosition = FabPosition.End,
+    //  floatingActionButton = { DashboardFloatingActionButton() },
+    sheetDragHandle = { BottomSheetDefaults.DragHandle(color = Color(0xff32C896)) },
+    sheetSwipeEnabled = true,
+    containerColor = Color(0xff20211e)
+  ) { DashboardContent() }
 }
-
