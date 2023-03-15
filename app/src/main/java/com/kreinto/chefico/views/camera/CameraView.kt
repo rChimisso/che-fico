@@ -8,37 +8,33 @@ import androidx.camera.core.ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.kreinto.chefico.R
-import com.kreinto.chefico.Route
 import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
-import java.io.File
 import java.util.concurrent.TimeUnit
 
+@OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("ClickableViewAccessibility")
 @ExperimentalMaterial3Api
 @ExperimentalGetImage
@@ -80,6 +76,7 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
     true
 
   }
+  preview.setSurfaceProvider(previewView.surfaceProvider)
 
 
   var cameraFlashEnabled by remember { mutableStateOf(false) }
@@ -93,7 +90,7 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
         modifier = Modifier
           .fillMaxSize()
           .align(Alignment.Center),
-        update = { preview.setSurfaceProvider(previewView.surfaceProvider) }
+        update = { }
 
       )
       Column(
@@ -103,6 +100,8 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
       ) {
+        var show by remember { mutableStateOf(false) }
+        val scale: Float by animateFloatAsState(if (show) 1.2f else 1f)
         Box(
           modifier = Modifier.fillMaxWidth()
         ) {
@@ -115,10 +114,19 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
             shape = CircleShape,
             contentPadding = PaddingValues(0.dp),
             modifier = Modifier
+              .scale(scale)
               .size(64.dp)
-              .align(Alignment.Center),
+              .align(Alignment.Center)
+              .pointerInteropFilter {
+                when (it.action) {
+                  MotionEvent.ACTION_DOWN -> show = true
+                  MotionEvent.ACTION_UP -> show = false
+                  MotionEvent.ACTION_CANCEL -> show = false
+                }
+                return@pointerInteropFilter true
+              },
             onClick = {
-              val file = File.createTempFile("image", ".jpg")
+              /*val file = File.createTempFile("image", ".jpg")
               imageCapture.takePicture(
                 ImageCapture.OutputFileOptions.Builder(file).build(),
                 context.mainExecutor,
@@ -130,10 +138,13 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
                   override fun onError(exception: ImageCaptureException) {
                   }
                 }
-
               )
+
+               */
             },
-            content = {}
+            content = {
+
+            }
           )
           IconButton(
             onClick = {
@@ -181,21 +192,18 @@ fun SegmentedButton(vararg content: ButtonData) {
     verticalAlignment = Alignment.CenterVertically
   ) {
     content.forEachIndexed { index, item ->
-      Box(
+      Surface(
         modifier = Modifier
           .weight(1f)
-          .height(40.dp)
-          .clip(RoundedCornerShape(12.dp))
+          .height(40.dp),
+        shape = RoundedCornerShape(12.dp),
+        tonalElevation = 12.dp,
+        color = if (index == selected) MaterialTheme.colorScheme.primary else Color.Transparent,
+        contentColor = if (index == selected) MaterialTheme.colorScheme.onPrimary else Color.White,
+        onClick = { selected = index }
       ) {
-
         Row(
-          modifier = Modifier
-            .clickable {
-              selected = index
-            }
-            .align(Alignment.Center)
-            .background(if (index == selected) MaterialTheme.colorScheme.primary else Color.Transparent)
-            .fillMaxSize(),
+          modifier = Modifier.fillMaxSize(),
           verticalAlignment = Alignment.CenterVertically,
           horizontalArrangement = Arrangement.Center
         ) {
@@ -203,22 +211,12 @@ fun SegmentedButton(vararg content: ButtonData) {
             painter = painterResource(id = item.icon),
             contentDescription = null,
             modifier = Modifier.size(24.dp),
-            tint = Color.White
           )
           Spacer(modifier = Modifier.width(8.dp))
           Text(
             item.contentDescription,
-            style = TextStyle(
-              color = Color.White,
-              fontSize = 16.sp,
-              fontWeight = FontWeight.Bold,
-              textAlign = TextAlign.Center,
-              shadow = Shadow(
-                color = Color(0x4c000000),
-                offset = Offset(2f, 2f),
-                blurRadius = 7f
-              )
-            )
+            fontSize = 16.sp,
+            fontWeight = FontWeight.SemiBold
           )
         }
       }
