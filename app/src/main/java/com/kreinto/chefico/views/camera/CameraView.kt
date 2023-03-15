@@ -30,8 +30,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.kreinto.chefico.R
+import com.kreinto.chefico.Route
 import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -119,29 +121,30 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
               .align(Alignment.Center)
               .pointerInteropFilter {
                 when (it.action) {
-                  MotionEvent.ACTION_DOWN -> show = true
+                  MotionEvent.ACTION_DOWN -> {
+                    show = true
+                    val file = File.createTempFile("image", ".jpg")
+                    imageCapture.takePicture(
+                      ImageCapture.OutputFileOptions
+                        .Builder(file)
+                        .build(),
+                      context.mainExecutor,
+                      object : ImageCapture.OnImageSavedCallback {
+                        override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                          onNavigate(Route.PlantDetail.route(file.name))
+                        }
+
+                        override fun onError(exception: ImageCaptureException) {
+                        }
+                      }
+                    )
+                  }
                   MotionEvent.ACTION_UP -> show = false
                   MotionEvent.ACTION_CANCEL -> show = false
                 }
                 return@pointerInteropFilter true
               },
-            onClick = {
-              /*val file = File.createTempFile("image", ".jpg")
-              imageCapture.takePicture(
-                ImageCapture.OutputFileOptions.Builder(file).build(),
-                context.mainExecutor,
-                object : ImageCapture.OnImageSavedCallback {
-                  override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    onNavigate(Route.PlantDetail.route(file.name))
-                  }
-
-                  override fun onError(exception: ImageCaptureException) {
-                  }
-                }
-              )
-
-               */
-            },
+            onClick = {},
             content = {
 
             }
