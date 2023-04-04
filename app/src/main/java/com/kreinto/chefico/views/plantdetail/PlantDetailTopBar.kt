@@ -20,6 +20,6 @@ fun PlantDetailTopBar(onNavigate: (String) -> Unit) {
           tint = Color(0xFF32C896)
         )
       }
-    }
+    },
   )
 }

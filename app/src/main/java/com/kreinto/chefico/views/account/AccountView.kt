@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,8 +19,8 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
-import com.kreinto.chefico.Route
 import com.kreinto.chefico.room.AuthViewModel
 import com.kreinto.chefico.views.account.settings.AccountDetailView
 import com.kreinto.chefico.views.account.settings.AccountNotificationView
@@ -31,10 +32,10 @@ fun AccountView(authViewModel: AuthViewModel, onNavigate: (String) -> Unit) {
   Scaffold(
     topBar = {
       TopAppBar(
-        colors = TopAppBarDefaults.smallTopAppBarColors(Color.Transparent),
+        colors = topAppBarColors(Color.Transparent),
         title = { Text("Impostazioni") },
         navigationIcon = {
-          IconButton(onClick = { onNavigate(Route.Settings.path) }) {
+          IconButton(onClick = { onNavigate(CheFicoRoute.Settings.path) }) {
             Icon(painter = painterResource(id = R.drawable.ic_arrow_back), contentDescription = "Back")
           }
         }
@@ -141,7 +142,7 @@ fun AccountView(authViewModel: AuthViewModel, onNavigate: (String) -> Unit) {
         TextButton(
           onClick = {
             authViewModel.logOut()
-            onNavigate(Route.Settings.path)
+            onNavigate(CheFicoRoute.Settings.path)
           }) {
           Text("Esci dall'account", color = Color.Red)
         }

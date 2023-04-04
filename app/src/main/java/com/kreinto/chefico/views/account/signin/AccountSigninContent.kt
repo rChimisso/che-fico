@@ -21,8 +21,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
-import com.kreinto.chefico.Route
 import com.kreinto.chefico.room.AuthViewModel
 import com.kreinto.chefico.views.account.signin.GoogleSignInButton
 
@@ -46,7 +46,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
     Spacer(modifier = Modifier.height(64.dp))
     GoogleSignInButton(
       onSuccess = {
-        onNavigate(Route.Account.path)
+        onNavigate(CheFicoRoute.Account.path)
       },
       onFailure = {}
     )

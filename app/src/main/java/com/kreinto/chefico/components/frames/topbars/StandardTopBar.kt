@@ -3,8 +3,8 @@ package com.kreinto.chefico.components.frames.topbars
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
-import com.kreinto.chefico.Route
 import com.kreinto.chefico.components.buttons.TransparentButton
 import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.ui.theme.level0
@@ -34,7 +34,7 @@ fun StandardTopBar(
             ButtonData(
               icon = R.drawable.ic_arrow_back,
               contentDescription = "Go back",
-              onClick = { onNavPressed(Route.Back.path) },
+              onClick = { onNavPressed(CheFicoRoute.Back.path) },
             )
           )
         }
@@ -46,7 +46,7 @@ fun StandardTopBar(
             ButtonData(
               icon = R.drawable.ic_settings,
               contentDescription = "Settings",
-              onClick = { onNavPressed(Route.Settings.path) },
+              onClick = { onNavPressed(CheFicoRoute.Settings.path) },
             )
           )
         }

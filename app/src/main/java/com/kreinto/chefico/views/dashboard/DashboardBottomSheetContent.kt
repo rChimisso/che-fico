@@ -16,8 +16,8 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
-import com.kreinto.chefico.Route
 
 @Composable
 fun DashboardBottomSheetContent(onNavigate: (String) -> Unit) {
@@ -30,23 +30,23 @@ fun DashboardBottomSheetContent(onNavigate: (String) -> Unit) {
     DashboardBottomSheetItem(
       icon = painterResource(R.drawable.ic_poi),
       text = "Green Spots"
-    ) { onNavigate(Route.PoiList.path) }
+    ) { onNavigate(CheFicoRoute.PoiList.path) }
     Spacer(modifier = Modifier.height(16.dp))
     DashboardBottomSheetItem(
       icon = painterResource(R.drawable.ic_map),
       text = "Mappa"
     )
-    { onNavigate(Route.Maps.path) }
+    { onNavigate(CheFicoRoute.Maps.path) }
     Spacer(modifier = Modifier.height(16.dp))
     DashboardBottomSheetItem(
       icon = painterResource(R.drawable.ic_photo_camera),
       text = "Camera"
-    ) { onNavigate(Route.Camera.path) }
+    ) { onNavigate(CheFicoRoute.Camera.path) }
     Spacer(modifier = Modifier.height(16.dp))
     DashboardBottomSheetItem(
       icon = painterResource(R.drawable.ic_settings),
       text = "Impostazioni"
-    ) { onNavigate(Route.Settings.path) }
+    ) { onNavigate(CheFicoRoute.Settings.path) }
   }
 }
 

@@ -1,10 +1,14 @@
 package com.kreinto.chefico.views.camera
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.*
-import androidx.camera.core.ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY
+import androidx.camera.core.ImageCapture.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.animation.Crossfade
@@ -24,18 +28,23 @@ import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
-import com.kreinto.chefico.Route
 import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.InputStream
 import java.util.concurrent.TimeUnit
 
+
+@androidx.annotation.OptIn(androidx.camera.core.ExperimentalZeroShutterLag::class)
 @OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("ClickableViewAccessibility")
 @ExperimentalMaterial3Api
@@ -48,7 +57,11 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
 
   var preview: Preview = Preview.Builder().build()
   val previewView = remember { PreviewView(context) }
-  val imageCapture = remember { ImageCapture.Builder().setCaptureMode(CAPTURE_MODE_MAXIMIZE_QUALITY).build() }
+  val imageCapture = remember {
+    ImageCapture.Builder()
+      .setCaptureMode(CAPTURE_MODE_ZERO_SHUTTER_LAG)
+      .setJpegQuality(100).build()
+  }
   cameraProvider.unbindAll()
 
   var camera = cameraProvider.bindToLifecycle(lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, preview, imageCapture)
@@ -80,8 +93,35 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
   }
   preview.setSurfaceProvider(previewView.surfaceProvider)
 
+  var plantOrgan by remember { mutableStateOf(PlantRecognition.PlantOrgan.leaf) }
 
   var cameraFlashEnabled by remember { mutableStateOf(false) }
+
+  val coroutine = rememberCoroutineScope()
+
+  val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+
+    if (uri != null) {
+      val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+      if (inputStream != null) {
+        val selectedImage = BitmapFactory.decodeStream(inputStream)
+        coroutine.launch {
+          val file = withContext(Dispatchers.IO) {
+            File.createTempFile("temp", null, context.cacheDir)
+          }
+          file.outputStream().use {
+            selectedImage.compress(Bitmap.CompressFormat.PNG, 100, it)
+          }
+          onNavigate(
+            CheFicoRoute.PlantDetail.path(
+              file.name,
+              plantOrgan
+            )
+          )
+        }
+      }
+    }
+  }
 
   SimpleFrame(
     onBackPressed = onNavigate,
@@ -108,6 +148,16 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
           modifier = Modifier.fillMaxWidth()
         ) {
           Button(
+            modifier = Modifier
+              .align(Alignment.CenterStart)
+              .size(64.dp),
+            onClick = {
+              galleryLauncher.launch("image/*")
+            }
+          ) {
+
+          }
+          Button(
             colors = ButtonDefaults.buttonColors(
               containerColor = Color.Transparent,
               contentColor = Color.White,
@@ -131,7 +181,7 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
                       context.mainExecutor,
                       object : ImageCapture.OnImageSavedCallback {
                         override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                          onNavigate(Route.PlantDetail.route(file.name))
+                          onNavigate(CheFicoRoute.PlantDetail.path(file.name, plantOrgan))
                         }
 
                         override fun onError(exception: ImageCaptureException) {
@@ -177,16 +227,22 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
         }
         Spacer(modifier = Modifier.height(32.dp))
         SegmentedButton(
-          ButtonData(R.drawable.ic_leaf, "Foglia") {},
-          ButtonData(R.drawable.ic_flower, "Fiore") {},
-          ButtonData(R.drawable.ic_fruit, "Frutto") {},
+          ButtonData(R.drawable.ic_leaf, "Foglia") {
+            plantOrgan = PlantRecognition.PlantOrgan.leaf
+          },
+          ButtonData(R.drawable.ic_flower, "Fiore") {
+            plantOrgan = PlantRecognition.PlantOrgan.flower
+          },
+          ButtonData(R.drawable.ic_fruit, "Frutto") {
+            plantOrgan = PlantRecognition.PlantOrgan.fruit
+          }
         )
       }
     }
   }
 }
 
-@OptIn(ExperimentalTextApi::class)
+
 @Composable
 fun SegmentedButton(vararg content: ButtonData) {
   var selected by remember { mutableStateOf(0) }
@@ -203,7 +259,10 @@ fun SegmentedButton(vararg content: ButtonData) {
         tonalElevation = 12.dp,
         color = if (index == selected) MaterialTheme.colorScheme.primary else Color.Transparent,
         contentColor = if (index == selected) MaterialTheme.colorScheme.onPrimary else Color.White,
-        onClick = { selected = index }
+        onClick = {
+          selected = index
+          content[index].onClick()
+        }
       ) {
         Row(
           modifier = Modifier.fillMaxSize(),

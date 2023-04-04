@@ -11,11 +11,10 @@ import java.util.*
 
 
 class PlantRecognition {
-
-  sealed class PlantOrgan {
-    val leaf = "leaf"
-    val flower = "flower"
-    val fruit = "fruit"
+  object PlantOrgan {
+    const val leaf: String = "leaf"
+    const val flower: String = "flower"
+    const val fruit: String = "fruit"
   }
 
   private data class WikiMediaQueryData(
@@ -109,7 +108,7 @@ class PlantRecognition {
       })
     }
 
-    fun recognize(file: File, onResult: (result: PlantRecognitionData) -> Unit) {
+    fun recognize(file: File, organ: String, onResult: (result: PlantRecognitionData) -> Unit) {
       val client = OkHttpClient()
       val formBody = MultipartBody.Builder()
         .setType(MultipartBody.FORM)
@@ -118,12 +117,17 @@ class PlantRecognition {
           file.name,
           file.asRequestBody("image/jpeg".toMediaType())
         )
+        .addFormDataPart(
+          "organs",
+          organ,
+        )
         .build()
       val request = Request.Builder()
         .header("content-type", "multipart/form-data;")
         .url(plantNetApi)
         .post(formBody)
         .build()
+
       val call = client.newCall(request)
       call.enqueue(object : Callback {
         override fun onFailure(call: Call, e: IOException) {
@@ -133,6 +137,8 @@ class PlantRecognition {
         override fun onResponse(call: Call, response: Response) {
           val gson = Gson()
           response.body?.string()?.let {
+            println(it)
+
             onResult(
               gson.fromJson(
                 it,

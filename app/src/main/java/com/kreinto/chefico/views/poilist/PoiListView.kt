@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
-import com.kreinto.chefico.Route
 import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.frames.StandardFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
@@ -69,7 +69,7 @@ fun PoiListView(
             icon = R.drawable.ic_poi,
             text = pois.value[index].name,
             selectable = selectedPois.size > 0,
-            onClick = { onNavigate(Route.PoiDetail.route(pois.value[index].id.toString())) },
+            onClick = { onNavigate(CheFicoRoute.PoiDetail.path(pois.value[index].id.toString())) },
             onLongClick = { selectedPois.add(pois.value[index].id) },
             onCheckedChange = { checked ->
               if (checked) {
@@ -87,7 +87,7 @@ fun PoiListView(
             icon = R.drawable.ic_poi,
             text = filteredPoi[index].name,
             selectable = selectedPois.size > 0,
-            onClick = { onNavigate(Route.PoiDetail.path) },
+            onClick = { onNavigate(CheFicoRoute.PoiDetail.path) },
             onLongClick = { selectedPois.add(filteredPoi[index].id) },
             onCheckedChange = { checked ->
               if (checked) {

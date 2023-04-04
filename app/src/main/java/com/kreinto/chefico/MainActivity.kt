@@ -13,6 +13,7 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,6 +45,7 @@ import com.kreinto.chefico.views.poilist.PoiListView
 import com.kreinto.chefico.views.settings.SettinsView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalGetImage
 @ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
@@ -96,10 +98,10 @@ class MainActivity : ComponentActivity() {
    * @param route [Route] to navigate to if the user grants the permission.
    * @return [ActivityResultLauncher] for permission requests.
    */
-  private fun getPermissionLauncher(route: Route): ActivityResultLauncher<String> {
+  private fun getPermissionLauncher(route: String): ActivityResultLauncher<String> {
     return getPermissionLauncher {
       if (it) {
-        navController.navigate(route.path)
+        navController.navigate(route)
       } else {
         val alertBuilder = AlertDialog.Builder(this@MainActivity)
         alertBuilder.setCancelable(true)
@@ -114,20 +116,11 @@ class MainActivity : ComponentActivity() {
     }
   }
 
-  /**
-   * Returns a list of [navArguments][androidx.navigation.navArgument] for the given [Route].
-   *
-   * @param route
-   * @return list of [navArguments][androidx.navigation.navArgument].
-   */
-  private fun getNavArgs(route: Route) = listOf(navArgument(route.arg) { type = NavType.StringType })
-
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val requestLocationPermissionLauncher = getPermissionLauncher(Route.Maps)
-    val requestCameraPermissionLauncher = getPermissionLauncher(Route.Camera)
+    val requestLocationPermissionLauncher = getPermissionLauncher(CheFicoRoute.Maps.path)
+    val requestCameraPermissionLauncher = getPermissionLauncher(CheFicoRoute.Camera.path)
     val requestNotificationPermissionLauncher = getPermissionLauncher {
       if (!it) {
         // Explain to the user that the feature is unavailable because the
@@ -150,16 +143,16 @@ class MainActivity : ComponentActivity() {
         val authViewModel by viewModels<AuthViewModel>()
         val onNavigate: (String) -> Unit = {
           when (it) {
-            Route.Back.path -> {
+            CheFicoRoute.Back.path -> {
               navController.popBackStack()
-              if (navController.currentDestination?.route == Route.PlantDetail.path) {
+              if (navController.currentDestination?.route == CheFicoRoute.PlantDetail.path) {
                 navController.popBackStack()
               }
             }
-            Route.Maps.path -> {
+            CheFicoRoute.Maps.path -> {
               requestPermission(ACCESS_FINE_LOCATION, requestLocationPermissionLauncher)
             }
-            Route.Camera.path -> {
+            CheFicoRoute.Camera.path -> {
               requestPermission(CAMERA, requestCameraPermissionLauncher)
             }
             else -> navController.navigate(it)
@@ -171,9 +164,9 @@ class MainActivity : ComponentActivity() {
           PoiNotificationManager.createNotificationChannel(context)
         }
 
-        NavHost(navController, startDestination = Route.Dashboard.path) {
-          composable(Route.Dashboard.path) { DashboardView(onNavigate) }
-          composable(Route.Maps.path) {
+        NavHost(navController, startDestination = CheFicoRoute.Dashboard.path) {
+          composable(CheFicoRoute.Dashboard.path) { DashboardView(onNavigate) }
+          composable(CheFicoRoute.Maps.path) {
             MapsView(
               onNavigate,
               viewModel,
@@ -181,19 +174,30 @@ class MainActivity : ComponentActivity() {
               locationSettingsClient = LocationServices.getSettingsClient(this@MainActivity)
             )
           }
-          composable(Route.Settings.path) { SettinsView(authViewModel, onNavigate) }
-          composable(Route.PoiList.path) { PoiListView(onNavigate, viewModel) }
-          composable(Route.PoiDetail.path, getNavArgs(Route.PoiDetail)) {
-            PoiDetailView(onNavigate, viewModel, poiId = it.arguments?.getString(Route.PoiDetail.arg))
+          composable(CheFicoRoute.Settings.path) { SettinsView(authViewModel, onNavigate) }
+          composable(CheFicoRoute.PoiList.path) { PoiListView(onNavigate, viewModel) }
+          composable(
+            CheFicoRoute.PoiDetail.path, listOf(
+              navArgument("poiId") { type = NavType.StringType },
+            )
+          ) {
+            PoiDetailView(onNavigate, viewModel, poiId = it.arguments?.getString("poiId"))
           }
-          composable(Route.Camera.path) { CameraView(onNavigate) }
-          composable(Route.PoiCreation.path) { PoiCreationView(onNavigate) }
-          composable(Route.PlantDetail.path, getNavArgs(Route.PlantDetail)) {
-            PlantDetailView(onNavigate, imageName = it.arguments?.getString(Route.PlantDetail.arg))
+          composable(CheFicoRoute.Camera.path) { CameraView(onNavigate) }
+          composable(CheFicoRoute.PoiCreation.path) { PoiCreationView(onNavigate) }
+          composable(CheFicoRoute.PlantDetail.path, listOf(
+            navArgument("imageName") { type = NavType.StringType },
+            navArgument("organ") { type = NavType.StringType }
+          )) {
+            PlantDetailView(
+              onNavigate = onNavigate,
+              imageName = it.arguments?.getString("imageName"),
+              organ = it.arguments?.getString("organ")
+            )
           }
-          composable(Route.Signin.path) { AccountSigninView(authViewModel, onNavigate) }
-          composable(Route.Login.path) { AccountLoginView(authViewModel, onNavigate) }
-          composable(Route.Account.path) { AccountView(authViewModel, onNavigate) }
+          composable(CheFicoRoute.Signin.path) { AccountSigninView(authViewModel, onNavigate) }
+          composable(CheFicoRoute.Login.path) { AccountLoginView(authViewModel, onNavigate) }
+          composable(CheFicoRoute.Account.path) { AccountView(authViewModel, onNavigate) }
         }
       }
     }

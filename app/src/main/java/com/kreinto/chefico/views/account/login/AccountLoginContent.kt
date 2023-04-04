@@ -27,8 +27,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
-import com.kreinto.chefico.Route
 import com.kreinto.chefico.room.AuthViewModel
 import com.kreinto.chefico.views.account.signin.GoogleLogInButton
 
@@ -51,7 +51,7 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
     Spacer(modifier = Modifier.height(64.dp))
     GoogleLogInButton(
       onSuccess = {
-        onNavigate(Route.Account.path)
+        onNavigate(CheFicoRoute.Account.path)
       },
       onFailure = {}
     )
@@ -182,7 +182,7 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
           if (it == null) {
             email = ""
             password = ""
-            onNavigate(Route.Account.path)
+            onNavigate(CheFicoRoute.Account.path)
           } else {
 
           }
@@ -210,7 +210,7 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
       modifier = Modifier
         .width(208.dp)
         .height(40.dp),
-      onClick = { onNavigate(Route.Signin.path) },
+      onClick = { onNavigate(CheFicoRoute.Signin.path) },
     ) {
       Text("Registrati", fontSize = 16.sp)
     }

@@ -28,8 +28,8 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
+import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
-import com.kreinto.chefico.Route
 import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
@@ -103,11 +103,11 @@ fun MapsView(
         leftButtonData = ButtonData(
           icon = R.drawable.ic_list,
           contentDescription = "Go to POI list",
-        ) { onNavigate(Route.PoiList.path) },
+        ) { onNavigate(CheFicoRoute.PoiList.path) },
         centerButtonData = ButtonData(
           icon = R.drawable.ic_photo_camera,
           contentDescription = "Open Plant Recognition",
-        ) { onNavigate(Route.Camera.path) },
+        ) { onNavigate(CheFicoRoute.Camera.path) },
         rightButtonData = ButtonData(
           icon = if (shouldFollow) R.drawable.ic_check else R.drawable.ic_close,
           contentDescription = "Center camera",
