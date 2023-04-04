@@ -2,36 +2,16 @@ package com.kreinto.chefico.views.settings
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.semantics.Role.Companion.Button
-import com.kreinto.chefico.Route
-import com.kreinto.chefico.components.frames.SimpleFrame
-import com.kreinto.chefico.room.AuthViewModel
-import com.kreinto.chefico.views.account.AccountLoginContent
-import com.kreinto.chefico.views.account.AccountLoginTopAppBar
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.google.android.gms.location.Priority
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.kreinto.chefico.R
-import com.kreinto.chefico.components.buttons.data.ButtonData
-import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
-import com.kreinto.chefico.ui.theme.CheFicoTheme
-import com.kreinto.chefico.ui.theme.md_theme_dark_surface
+import com.kreinto.chefico.CheFicoRoute
+import com.kreinto.chefico.components.frames.SimpleFrame
+import com.kreinto.chefico.room.AuthViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
@@ -72,9 +52,9 @@ fun SettinsView(authViewModel: AuthViewModel, onNavigate: (String) -> Unit) {
           Button(
             onClick = {
               if (authViewModel.isUserLoggedIn()) {
-                onNavigate(Route.Account.path)
+                onNavigate(CheFicoRoute.Account.path)
               } else {
-                onNavigate(Route.Login.path)
+                onNavigate(CheFicoRoute.Login.path)
               }
             },
             contentPadding = ButtonDefaults.ButtonWithIconContentPadding
