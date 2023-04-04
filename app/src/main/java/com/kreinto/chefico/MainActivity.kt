@@ -174,7 +174,7 @@ class MainActivity : ComponentActivity() {
               locationSettingsClient = LocationServices.getSettingsClient(this@MainActivity)
             )
           }
-          composable(CheFicoRoute.Settings.path) { SettinsView(authViewModel, onNavigate) }
+          composable(CheFicoRoute.Settings.path) { SettinsView(onNavigate, authViewModel) }
           composable(CheFicoRoute.PoiList.path) { PoiListView(onNavigate, viewModel) }
           composable(
             CheFicoRoute.PoiDetail.path, listOf(
