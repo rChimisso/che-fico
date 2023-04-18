@@ -93,4 +93,6 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
   private fun launch(block: suspend () -> Unit) {
     viewModelScope.launch(Dispatchers.IO) { block() }
   }
+
+
 }

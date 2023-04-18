@@ -224,7 +224,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
           .width(208.dp)
           .height(40.dp),
         onClick = {
-
+          authViewModel.signIn(email, password, displayName) {}
         }
       ) {
         Box(
