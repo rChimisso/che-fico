@@ -82,6 +82,7 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
     }
   ) {
     var automaticDeletion by rememberSaveable { mutableStateOf(false) }
+    var showMenu by rememberSaveable { mutableStateOf(false) }
     Column(
       modifier = Modifier
         .padding(top = it.calculateTopPadding())
@@ -115,8 +116,25 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        Text("Elimina notifiche", modifier = Modifier
-          .fillMaxWidth(),)
+        Text("Elimina notifiche", modifier = Modifier.fillMaxWidth())
+      }
+      Row(
+        modifier = Modifier
+          .fillMaxWidth()
+          .clickable { showMenu = true }
+          .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+          Text("Lingua")
+          Box {
+            Text("Italiano", modifier = Modifier.align(Alignment.Center))
+            DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
+              DropdownMenuItem(text = {Text("Italiano")}, onClick = {})
+              DropdownMenuItem(text = {Text("Inglese")}, onClick = {})
+            }
+          }
+
       }
     }
 //      ListItem(
