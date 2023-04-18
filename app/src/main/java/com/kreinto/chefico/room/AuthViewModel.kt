@@ -2,8 +2,11 @@ package com.kreinto.chefico.room
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.kreinto.chefico.room.entities.Poi
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
@@ -35,8 +38,9 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
 
   val user = MutableStateFlow(auth.currentUser)
 
-  fun signIn(email: String, password: String, onResult: (Throwable?) -> Unit) {
+  fun signIn(email: String, password: String, name: String, onResult: (Throwable?) -> Unit) {
     auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+      task.result.user!!.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(name).build())
       onResult(task.exception)
     }
   }
@@ -63,5 +67,19 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
       }
     }
     return providersId
+  }
+
+
+  fun backup() {
+    var db = Firebase.firestore
+    var test = Poi("ciao", "che fico", "a", "", 0.0, 0.0)
+    db.collection("pois").document(auth.currentUser!!.uid).set(test)
+  }
+
+  fun loadData() {
+    var db = Firebase.firestore
+    println(db.collection("pois").document(auth.currentUser!!.uid).get().addOnSuccessListener { result ->
+      println(result.data)
+    })
   }
 }
