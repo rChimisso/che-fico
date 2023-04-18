@@ -1,5 +1,6 @@
 package com.kreinto.chefico.components.frames.topbars
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
@@ -12,45 +13,32 @@ import com.kreinto.chefico.ui.theme.level0
 /**
  * Standard Top Bar following Material3 guidelines.
  *
- * @param isDashboard Whether this top bar is for the dashboard. Controls whether to show the
- * "Go back" icon or the "Settings" icon.
  * @param onNavPressed Function called when the top bar navigation button is clicked.
  * @param title [Composable] to show at the center.
+ * @param actions list of actions.
  */
 @ExperimentalMaterial3Api
 @Composable
 fun StandardTopBar(
-  isDashboard: Boolean = false,
   onNavPressed: (String) -> Unit,
-  title: @Composable () -> Unit
+  title: @Composable () -> Unit,
+  actions: @Composable (RowScope.() -> Unit) = {}
 ) {
   Surface(tonalElevation = level0) {
     TopAppBar(
       scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
       colors = TopAppBarDefaults.centerAlignedTopAppBarColors(MaterialTheme.colorScheme.surface),
       navigationIcon = {
-        if (!isDashboard) {
-          TransparentButton(
-            ButtonData(
-              icon = R.drawable.ic_arrow_back,
-              contentDescription = "Go back",
-              onClick = { onNavPressed(CheFicoRoute.Back.path) },
-            )
+        TransparentButton(
+          ButtonData(
+            icon = R.drawable.ic_arrow_back,
+            contentDescription = "Go back",
+            onClick = { onNavPressed(CheFicoRoute.Back.path) },
           )
-        }
+        )
       },
       title = title,
-      actions = {
-        if (isDashboard) {
-          TransparentButton(
-            ButtonData(
-              icon = R.drawable.ic_settings,
-              contentDescription = "Settings",
-              onClick = { onNavPressed(CheFicoRoute.Settings.path) },
-            )
-          )
-        }
-      }
+      actions = actions
     )
   }
 }
@@ -59,5 +47,5 @@ fun StandardTopBar(
 @Composable
 @Preview
 private fun StandardTopBarPreview() {
-  StandardTopBar(onNavPressed = {}) {}
+  StandardTopBar(onNavPressed = {}, title = {}) {}
 }

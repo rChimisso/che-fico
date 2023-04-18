@@ -9,8 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.kreinto.chefico.CheFicoRoute
+import com.kreinto.chefico.R
+import com.kreinto.chefico.components.buttons.FilledButton
 import com.kreinto.chefico.components.frames.SimpleFrame
+import com.kreinto.chefico.components.frames.StandardFrame
 import com.kreinto.chefico.room.AuthViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -19,9 +24,33 @@ import com.kreinto.chefico.room.AuthViewModel
 
 //bugg con l'icona di back, a volte funziona a volte no rimanendo nel loop del menu delle impostazioni e della view per registrarsi
 
-fun SettinsView(authViewModel: AuthViewModel, onNavigate: (String) -> Unit) {
-  SimpleFrame(
-    onBackPressed = onNavigate,
+fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
+  StandardFrame(
+    onNavPressed = onNavigate,
+    title = {
+      Row(
+        modifier = Modifier.fillMaxSize(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+      ){
+        if (authViewModel.isUserLoggedIn()) {
+          // TODO: cambiare recupero nome utente e visualizzazione ID (#&&&&&& tipo discord).
+          Text("${Firebase.auth.currentUser?.displayName}")
+        } else {
+          Text("Impostazioni")
+        }
+      }
+    },
+    actions = {
+      if (authViewModel.isUserLoggedIn()) {
+        FilledButton(
+          icon = R.drawable.che_fico_icon,
+          contentDescription = ""
+        ) {
+          onNavigate(CheFicoRoute.Account.path)
+        }
+      }
+    },
     bottomBar = {
       Column(
         modifier = Modifier
@@ -40,12 +69,13 @@ fun SettinsView(authViewModel: AuthViewModel, onNavigate: (String) -> Unit) {
   ) {
     Column(
       modifier = Modifier
+        .padding(top = it.calculateTopPadding())
         .fillMaxWidth()
         .fillMaxHeight(),
       //verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
-      Spacer(modifier = Modifier.height(50.dp))
+      //Spacer(modifier = Modifier.height(50.dp))
       ListItem(
         //singolo item
         headlineContent = {
