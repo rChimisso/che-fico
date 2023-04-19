@@ -1,4 +1,4 @@
-package com.kreinto.chefico.views.plantdetail
+package com.kreinto.chefico.views.plantdetail.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.sp
 import com.kreinto.chefico.views.camera.PlantRecognition
 
 @Composable
-fun PlantDeatailBottomSheetContent(result: MutableState<PlantRecognition.PlantRecognitionData>, description: MutableState<String>) {
+fun PlantDetailBottomSheetContent(result: MutableState<PlantRecognition.PlantRecognitionData>, description: MutableState<String>) {
 
   Spacer(modifier = Modifier.height(16.dp))
   Row(modifier = Modifier.padding(16.dp)) {

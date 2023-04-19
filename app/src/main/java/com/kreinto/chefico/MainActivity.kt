@@ -32,9 +32,9 @@ import com.google.android.gms.location.LocationServices
 import com.kreinto.chefico.room.AuthViewModel
 import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.ui.theme.CheFicoTheme
-import com.kreinto.chefico.views.account.AccountLoginView
-import com.kreinto.chefico.views.account.AccountSigninView
 import com.kreinto.chefico.views.account.AccountView
+import com.kreinto.chefico.views.account.login.AccountLoginView
+import com.kreinto.chefico.views.account.signin.AccountSigninView
 import com.kreinto.chefico.views.camera.CameraView
 import com.kreinto.chefico.views.dashboard.DashboardView
 import com.kreinto.chefico.views.maps.MapsView
@@ -184,7 +184,7 @@ class MainActivity : ComponentActivity() {
             PoiDetailView(onNavigate, viewModel, poiId = it.arguments?.getString("poiId"))
           }
           composable(CheFicoRoute.Camera.path) { CameraView(onNavigate) }
-          composable(CheFicoRoute.PoiCreation.path) { PoiCreationView(onNavigate) }
+          composable(CheFicoRoute.PoiCreation.path) { PoiCreationView(onNavigate, viewModel) }
           composable(CheFicoRoute.PlantDetail.path, listOf(
             navArgument("imageName") { type = NavType.StringType },
             navArgument("organ") { type = NavType.StringType }

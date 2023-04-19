@@ -7,8 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,7 +18,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kreinto.chefico.R
+import com.kreinto.chefico.components.buttons.FilledButton
+import com.kreinto.chefico.components.frames.topbars.SimpleTopBar
 import com.kreinto.chefico.views.camera.PlantRecognition
+import com.kreinto.chefico.views.plantdetail.components.PlantDetailBottomSheetContent
+import com.kreinto.chefico.views.plantdetail.components.PlantDetailContent
 import java.io.File
 
 @ExperimentalMaterial3Api
@@ -49,43 +52,37 @@ fun PlantDetailView(
   }
 
   BottomSheetScaffold(
-    topBar = { PlantDetailTopBar(onNavigate) },
-    content = { PlantDetailContent(image) },
-    sheetContent = { PlantDeatailBottomSheetContent(result, description) },
+    sheetContent = { PlantDetailBottomSheetContent(result, description) },
     sheetContainerColor = Color(0xFF262724),
     sheetContentColor = Color(0xff32C896),
     sheetShape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
     sheetPeekHeight = 48.dp + 16.dp + 16.dp,
     sheetDragHandle = {
-      Box(
+      Row(
         modifier = Modifier
           .padding(16.dp)
           .fillMaxWidth()
-          .height(48.dp)
+          .height(48.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
       ) {
         Text(
-          text = result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(0) ?: "Nome non trovato",
+          text = result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(0) ?: "Unrecognized plant",
           fontSize = 24.sp,
-          color = Color(0xFF32C896),
-          modifier = Modifier.align(Alignment.Center)
+          color = Color(0xFF32C896)
         )
-        FilledIconButton(
-          onClick = { /*TODO*/ },
-          colors = IconButtonDefaults.filledIconButtonColors(
-            contentColor = Color(0xff20211e),
-            containerColor = Color(0xff32C896),
-          ),
-          modifier = Modifier.align(Alignment.CenterEnd)
+        FilledButton(
+          icon = R.drawable.ic_close,
+          contentDescription = "Save plant as POI"
         ) {
-          Icon(
-            Icons.Rounded.Add,
-            ""
-          )
-        }
 
+        }
       }
     }
-  )
+  ) {
+    PlantDetailContent(image)
+    SimpleTopBar(onNavigate)
+  }
   AnimatedVisibility(
     modifier = Modifier.fillMaxSize(),
     visible = !result.value.isValid(),
@@ -98,6 +95,5 @@ fun PlantDetailView(
         .wrapContentSize()
     )
   }
-
 }
 

@@ -1,4 +1,4 @@
-package com.kreinto.chefico.views.dashboard
+package com.kreinto.chefico.views.dashboard.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size

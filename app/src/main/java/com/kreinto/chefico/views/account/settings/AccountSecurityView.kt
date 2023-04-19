@@ -30,7 +30,7 @@ fun AccountSecurityView() {
         val alertBuilder = AlertDialog.Builder(context)
         alertBuilder.setCancelable(true)
         alertBuilder.setTitle("Attenzione!")
-        alertBuilder.setMessage("L'azzione sarà irreversibile, procedere?")
+        alertBuilder.setMessage("L'azione sarà irreversibile, procedere?")
         alertBuilder.setPositiveButton(
           "Elimina Account"
         ) { _, _ -> Firebase.auth.currentUser!!.delete() }

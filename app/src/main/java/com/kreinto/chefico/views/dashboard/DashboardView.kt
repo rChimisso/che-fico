@@ -10,6 +10,8 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.kreinto.chefico.views.dashboard.components.DashboardBottomSheetContent
+import com.kreinto.chefico.views.dashboard.components.DashboardContent
 
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
@@ -24,12 +26,9 @@ fun DashboardView(onNavigate: (String) -> Unit) {
     sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
     sheetContainerColor = Color(0xFF262724),
     sheetContentColor = Color(0xff32C896),
-    // TODO:
-    //  Trovare soluzione per la mancanza del FAB, https://issuetracker.google.com/issues/273066268
-    //  floatingActionButtonPosition = FabPosition.End,
-    //  floatingActionButton = { DashboardFloatingActionButton() },
     sheetDragHandle = { BottomSheetDefaults.DragHandle(color = Color(0xff32C896)) },
     sheetSwipeEnabled = true,
-    containerColor = Color(0xff20211e)
+    containerColor = Color(0xff20211e),
+    contentColor = Color(0xff20211e)
   ) { DashboardContent() }
 }

@@ -1,4 +1,4 @@
-package com.kreinto.chefico.views.account
+package com.kreinto.chefico.views.account.signin
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.sp
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.room.AuthViewModel
-import com.kreinto.chefico.views.account.signin.GoogleSignInButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

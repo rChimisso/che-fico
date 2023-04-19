@@ -1,4 +1,4 @@
-package com.kreinto.chefico.views.poidetail
+package com.kreinto.chefico.views.poidetail.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi

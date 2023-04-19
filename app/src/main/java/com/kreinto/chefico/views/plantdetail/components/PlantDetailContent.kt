@@ -1,4 +1,4 @@
-package com.kreinto.chefico.views.plantdetail
+package com.kreinto.chefico.views.plantdetail.components
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -18,7 +18,8 @@ fun PlantDetailContent(image: File) {
     bitmap = fixOrientaton(BitmapFactory.decodeFile(image.absolutePath)),
     contentDescription = "",
     contentScale = ContentScale.Crop,
-    modifier = Modifier.fillMaxSize()
+    modifier = Modifier
+      .fillMaxSize()
   )
 }
 

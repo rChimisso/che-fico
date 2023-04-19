@@ -26,6 +26,7 @@ import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.inputs.TextInput
 import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.room.entities.Poi
+import com.kreinto.chefico.views.poidetail.components.PoiDetailSlideShow
 
 @ExperimentalMaterial3Api
 @ExperimentalPagerApi
