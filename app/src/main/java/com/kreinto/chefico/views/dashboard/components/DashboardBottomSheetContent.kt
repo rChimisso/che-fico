@@ -1,4 +1,4 @@
-package com.kreinto.chefico.views.dashboard
+package com.kreinto.chefico.views.dashboard.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

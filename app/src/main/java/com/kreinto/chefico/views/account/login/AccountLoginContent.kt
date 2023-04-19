@@ -1,4 +1,4 @@
-package com.kreinto.chefico.views.account
+package com.kreinto.chefico.views.account.login
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade

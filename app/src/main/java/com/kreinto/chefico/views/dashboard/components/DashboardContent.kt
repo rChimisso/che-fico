@@ -1,4 +1,4 @@
-package com.kreinto.chefico.views.dashboard
+package com.kreinto.chefico.views.dashboard.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
