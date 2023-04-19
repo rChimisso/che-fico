@@ -2,6 +2,7 @@ package com.kreinto.chefico.views.dashboard.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.IconButtonDefaults
@@ -17,7 +18,11 @@ import com.kreinto.chefico.components.items.SwipeableItem
 @ExperimentalMaterialApi
 @Composable
 fun DashboardContent() {
-  Column(modifier = Modifier.padding(16.dp)) {
+  Column(
+    modifier = Modifier
+      .fillMaxHeight()
+      .padding(16.dp)
+  ) {
     SwipeableItem(
       icon = R.drawable.ic_poi,
       text = "Notification Name",

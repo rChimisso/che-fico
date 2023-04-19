@@ -52,8 +52,6 @@ fun PlantDetailView(
   }
 
   BottomSheetScaffold(
-    topBar = { SimpleTopBar(onNavigate) },
-    content = { PlantDetailContent(image) },
     sheetContent = { PlantDetailBottomSheetContent(result, description) },
     sheetContainerColor = Color(0xFF262724),
     sheetContentColor = Color(0xff32C896),
@@ -66,13 +64,12 @@ fun PlantDetailView(
           .fillMaxWidth()
           .height(48.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End
+        horizontalArrangement = Arrangement.SpaceBetween
       ) {
         Text(
-          text = result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(0) ?: "Nome non trovato",
+          text = result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(0) ?: "Unrecognized plant",
           fontSize = 24.sp,
           color = Color(0xFF32C896)
-          // FIXME: Center text to center and button to end
         )
         FilledButton(
           icon = R.drawable.ic_close,
@@ -82,7 +79,10 @@ fun PlantDetailView(
         }
       }
     }
-  )
+  ) {
+    PlantDetailContent(image)
+    SimpleTopBar(onNavigate)
+  }
   AnimatedVisibility(
     modifier = Modifier.fillMaxSize(),
     visible = !result.value.isValid(),
@@ -95,6 +95,5 @@ fun PlantDetailView(
         .wrapContentSize()
     )
   }
-
 }
 

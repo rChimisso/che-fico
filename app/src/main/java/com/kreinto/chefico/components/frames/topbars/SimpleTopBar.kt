@@ -15,7 +15,7 @@ import com.kreinto.chefico.components.buttons.data.ButtonData
 /**
  * Simple Top Bar following Material3 guidelines.
  *
- * Transparent [TopAppBar] with just a [RoundButton] to go back.
+ * Transparent [TopAppBar] with just a [TransparentButton] to go back.
  *
  * @param onBackPressed Function called when the back button is clicked.
  */
