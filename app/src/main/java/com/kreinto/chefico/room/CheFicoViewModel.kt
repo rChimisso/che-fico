@@ -27,6 +27,8 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
   @ExperimentalCoroutinesApi
   val poisWithin = mapBoundariesFlow.flatMapLatest { selectPoisWithin(it) }
 
+  private val creatingPoiFlow = MutableStateFlow(Poi.NullPoi)
+
   init {
     val database = CheFicoDatabase.getInstance(application)
     repository = CheFicoRepository(
@@ -36,7 +38,9 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
   }
 
   fun addPoi(poi: Poi) = launch {
-    repository.insertPoi(poi)
+    if (poi != Poi.NullPoi) {
+      repository.insertPoi(poi)
+    }
   }
 
   fun addNotification(notification: Notification) = launch {
@@ -79,20 +83,28 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     repository.deleteNotifications()
   }
 
+  fun getCreatingPoi(): Poi {
+    return creatingPoiFlow.value
+  }
+
+  fun setCreatingPoi(poi: Poi) {
+    creatingPoiFlow.value = poi
+  }
+
+  fun removeCreatingPoi() {
+    creatingPoiFlow.value = Poi.NullPoi
+  }
+
   fun setLatLngBounds(latLngBounds: LatLngBounds) {
     mapBoundariesFlow.value = latLngBounds
   }
 
   @ExperimentalCoroutinesApi
   private fun selectPoisWithin(latLngBounds: LatLngBounds): Flow<List<Poi>> {
-    return getPois().mapLatest {
-      it.filter { poi -> latLngBounds.contains(LatLng(poi.latitude, poi.longitude)) }
-    }
+    return getPois().mapLatest { it.filter { poi -> latLngBounds.contains(LatLng(poi.latitude, poi.longitude)) } }
   }
 
   private fun launch(block: suspend () -> Unit) {
     viewModelScope.launch(Dispatchers.IO) { block() }
   }
-
-
 }

@@ -220,7 +220,8 @@ fun MapsView(
         refreshMarkers()
       },
       onMapLongClick = {
-        viewModel.addPoi(Poi(name = "", latitude = it.latitude, longitude = it.longitude))
+        viewModel.setCreatingPoi(Poi("New POI", latitude = it.latitude, longitude = it.longitude))
+        onNavigate(CheFicoRoute.PoiCreation.path)
       }
     ) {
       // For clustering: https://github.com/googlemaps/android-maps-compose/issues/44

@@ -18,9 +18,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.FilledButton
 import com.kreinto.chefico.components.frames.topbars.SimpleTopBar
+import com.kreinto.chefico.room.CheFicoViewModel
+import com.kreinto.chefico.room.entities.Poi
 import com.kreinto.chefico.views.camera.PlantRecognition
 import com.kreinto.chefico.views.plantdetail.components.PlantDetailBottomSheetContent
 import com.kreinto.chefico.views.plantdetail.components.PlantDetailContent
@@ -31,10 +34,12 @@ import java.io.File
 @Composable
 fun PlantDetailView(
   onNavigate: (String) -> Unit,
+  viewModel: CheFicoViewModel,
   imageName: String?,
   organ: String?,
 ) {
-  val image = File(LocalContext.current.cacheDir, imageName!!)
+  val cacheDir = LocalContext.current.cacheDir.absolutePath
+  val image = File("${LocalContext.current.cacheDir.absolutePath}/$imageName")
   val result = remember { mutableStateOf(PlantRecognition.InvalidData) }
   val description = remember { mutableStateOf("") }
 
@@ -66,8 +71,9 @@ fun PlantDetailView(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
       ) {
+        val name = result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(0) ?: "Unrecognized plant"
         Text(
-          text = result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(0) ?: "Unrecognized plant",
+          text = name,
           fontSize = 24.sp,
           color = Color(0xFF32C896)
         )
@@ -75,12 +81,14 @@ fun PlantDetailView(
           icon = R.drawable.ic_close,
           contentDescription = "Save plant as POI"
         ) {
-
+          viewModel.setCreatingPoi(Poi(name, description.value, cacheDir + imageName))
+          onNavigate(CheFicoRoute.PoiCreation.path)
         }
       }
     }
   ) {
     PlantDetailContent(image)
+    // Simple Top Bar drawn here above content because setting BottomSheetScaffold topBar parameter results in unwanted content padding.
     SimpleTopBar(onNavigate)
   }
   AnimatedVisibility(
@@ -96,4 +104,3 @@ fun PlantDetailView(
     )
   }
 }
-

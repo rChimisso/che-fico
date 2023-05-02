@@ -9,7 +9,7 @@ import com.kreinto.chefico.room.daos.PoiDao
 import com.kreinto.chefico.room.entities.Notification
 import com.kreinto.chefico.room.entities.Poi
 
-@Database(entities = [(Notification::class), (Poi::class)], version = 1)
+@Database(entities = [(Notification::class), (Poi::class)], version = 2)
 abstract class CheFicoDatabase : RoomDatabase() {
   abstract fun notificationDao(): NotificationDao
   abstract fun poiDao(): PoiDao
