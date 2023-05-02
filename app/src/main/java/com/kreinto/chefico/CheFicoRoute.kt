@@ -40,4 +40,6 @@ object CheFicoRoute {
   object PlantDetail : RouteArgs("plantDetail", "imageName", "organ")
 
   object PoiDetail : RouteArgs("poiDetail", "poiId")
+
+  object AccountEdit : Route ("edit")
 }

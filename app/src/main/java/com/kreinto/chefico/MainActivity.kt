@@ -33,6 +33,7 @@ import com.kreinto.chefico.room.AuthViewModel
 import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.ui.theme.CheFicoTheme
 import com.kreinto.chefico.views.account.AccountView
+import com.kreinto.chefico.views.account.edit.AccountEditView
 import com.kreinto.chefico.views.account.login.AccountLoginView
 import com.kreinto.chefico.views.account.signin.AccountSigninView
 import com.kreinto.chefico.views.camera.CameraView
@@ -198,6 +199,7 @@ class MainActivity : ComponentActivity() {
           composable(CheFicoRoute.Signin.path) { AccountSigninView(authViewModel, onNavigate) }
           composable(CheFicoRoute.Login.path) { AccountLoginView(authViewModel, onNavigate) }
           composable(CheFicoRoute.Account.path) { AccountView(authViewModel, onNavigate) }
+          composable(CheFicoRoute.AccountEdit.path) { AccountEditView(onNavigate, authViewModel) }
         }
       }
     }
