@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Surface
@@ -30,11 +29,6 @@ import com.kreinto.chefico.components.buttons.FilledButton
 import com.kreinto.chefico.components.inputs.TextInput
 import com.kreinto.chefico.room.entities.Poi
 import java.io.File
-
-val icons = arrayOf(
-  R.drawable.ic_share,
-  R.drawable.ic_snooze // FIXME: Prima era MailOutline, cosa dovrebbe essere?
-)
 
 private fun fixOrientaton(source: Bitmap): ImageBitmap {
   val matrix = Matrix()
@@ -77,19 +71,21 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean) {
                 )
               }
             }
-            if (showActions) {
-              LazyRow(
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier
-                  .align(Alignment.BottomEnd)
-                  .fillMaxWidth()
-                  .offset(y = 20.dp)
-              ) {
-                items(icons.size) { index ->
-                  FilledButton(icon = icons[index], contentDescription = "") {}
-                  Spacer(modifier = Modifier.width(8.dp))
-                }
+            Row(
+              horizontalArrangement = Arrangement.End,
+              modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .fillMaxWidth()
+                .offset(y = 20.dp)
+            ) {
+              if (showActions) {
+                FilledButton(icon = R.drawable.ic_share, contentDescription = "Share") {}
+                Spacer(modifier = Modifier.width(8.dp))
               }
+              FilledButton(icon = R.drawable.ic_close, contentDescription = "Change image") {
+                // TODO: Change image (pick from gallery and overwrite)
+              }
+              Spacer(modifier = Modifier.width(8.dp))
             }
           }
           TextInput(

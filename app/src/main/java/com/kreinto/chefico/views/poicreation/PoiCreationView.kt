@@ -19,19 +19,19 @@ fun PoiCreationView(
   viewModel: CheFicoViewModel
 ) {
   var creatingPoi = viewModel.getCreatingPoi()
-  val action = {
+  fun action(path: String = CheFicoRoute.Back.path) {
     viewModel.removeCreatingPoi()
-    onNavigate(CheFicoRoute.Back.path)
+    onNavigate(path)
   }
   SimpleFrame(
-    onBackPressed = onNavigate,
+    onBackPressed = ::action,
     bottomBar = {
       SimpleBottomBar(
         leftButtonData = ButtonData(
           icon = R.drawable.ic_close,
           contentDescription = "Cancel",
           colors = IconButtonDefaults.filledIconButtonColors(contentColor = Color.Red),
-          onClick = action
+          onClick = ::action
         ),
         rightButtonData = ButtonData(
           icon = R.drawable.ic_check,
