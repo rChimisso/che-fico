@@ -33,8 +33,10 @@ import com.kreinto.chefico.room.AuthViewModel
 import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.ui.theme.CheFicoTheme
 import com.kreinto.chefico.views.account.AccountView
+import com.kreinto.chefico.views.account.blacklist.BlackListView
 import com.kreinto.chefico.views.account.edit.AccountEditView
 import com.kreinto.chefico.views.account.login.AccountLoginView
+import com.kreinto.chefico.views.account.sharings.SharingsView
 import com.kreinto.chefico.views.account.signin.AccountSigninView
 import com.kreinto.chefico.views.camera.CameraView
 import com.kreinto.chefico.views.dashboard.DashboardView
@@ -200,6 +202,8 @@ class MainActivity : ComponentActivity() {
           composable(CheFicoRoute.Login.path) { AccountLoginView(authViewModel, onNavigate) }
           composable(CheFicoRoute.Account.path) { AccountView(authViewModel, onNavigate) }
           composable(CheFicoRoute.AccountEdit.path) { AccountEditView(onNavigate, authViewModel) }
+          composable(CheFicoRoute.BlackList.path) { BlackListView(onNavigate, authViewModel) }
+          composable(CheFicoRoute.Sharings.path) { SharingsView(onNavigate, authViewModel) }
         }
       }
     }
