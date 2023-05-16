@@ -33,6 +33,10 @@ If your application supports federated sign-in using Google ID tokens, configure
 For the sign-in scenario, it is strongly recommended to set GoogleIdTokenRequestOptions.Builder.setFilterByAuthorizedAccounts to true so only the Google accounts that the user has authorized before will show up in the credential list. This can help prevent a new account being created when the user has an existing account registered with the application.
  */
 
+data class UserInfo(
+  val username: String
+)
+
 open class AuthViewModel(application: Application) : AndroidViewModel(application) {
   private val auth = Firebase.auth
   private var database = Firebase.firestore
@@ -40,6 +44,8 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
   private val blockedUsersDocumentPath = "blocked_users"
 
   val user = MutableStateFlow(auth.currentUser)
+
+  private var blockedUsers: MutableMap<String, String> = mutableMapOf()
 
   fun signIn(email: String, password: String, name: String, onResult: (Throwable?) -> Unit) {
     auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
@@ -73,44 +79,34 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
   }
 
 
-  fun getBlockedUsers(onResult: (List<String>) -> Unit) {
-    var blockedUsers = ArrayList<String>()
-    if (isUserLoggedIn()) {
+  fun getBlockedUsers(onResult: (Map<String, String>) -> Unit) {
+    if (auth.currentUser != null) {
       database.collection(auth.currentUser!!.uid).document(blockedUsersDocumentPath).get().addOnCompleteListener {
         if (it.result.data != null) {
-          blockedUsers = it.result.data!!["users"] as ArrayList<String>
-        }
-      }
-    }
-    onResult(blockedUsers)
-  }
-
-  fun blockUser(user: String) {
-    if (user.isNotEmpty()) {
-      if (isUserLoggedIn()) {
-        getBlockedUsers {
-          var blockedUsers = ArrayList<String>(it)
-          if (!blockedUsers.contains(user)) {
-            blockedUsers.add(user)
-          }
-          database.collection(auth.currentUser!!.uid).document(blockedUsersDocumentPath).set(blockedUsers)
+          blockedUsers = it.result.data as MutableMap<String, String>
+          onResult(blockedUsers)
         }
       }
     }
   }
 
-  fun unblockUser(user: String) {
-    if (user.isNotEmpty()) {
-      if (isUserLoggedIn()) {
-        getBlockedUsers {
-          var blockedUsers = ArrayList<String>(it)
-          val index = blockedUsers.indexOf(user)
-          if (index != -1) {
-            blockedUsers.removeAt(index)
-          }
-          database.collection(auth.currentUser!!.uid).document(blockedUsersDocumentPath).set(blockedUsers)
-        }
+  fun blockUser(uid: String) {
+    if (uid.isNotEmpty() && auth.currentUser != null) {
+      getUserInfo(uid) {
+        blockedUsers.putIfAbsent(uid, it.username)
       }
+    }
+  }
+
+  fun unblockUser(uid: String) {
+    if (uid.isNotEmpty() && auth.currentUser != null) {
+      blockedUsers.remove(uid)
+    }
+  }
+
+  fun getUserInfo(uid: String, onResult: (UserInfo) -> Unit) {
+    database.collection(uid).document("info").get().addOnCompleteListener {
+      onResult(UserInfo(it.result.data?.get("username")!! as String))
     }
   }
 }
