@@ -1,3 +1,20 @@
 <resources>
   <string name="app_name">Che Fico!</string>
+
+  //text = stringResource(R.string.email_area_edit_label)
+
+  //AccountEditView.kt strings Start
+  <string name="user_name_area_edit_label">Nome Utente</string>
+  <string name="email_area_edit_label">Email</string>
+  <string name="old_pwd_area_edit_label">Password Vecchia</string>
+  <string name="old_pwd_placeholder_area_edit_label">La vecchia Password</string>
+  <string name="new_pwd_area_edit_label">Password Nuova</string>
+  <string name="new_pwd_placeholder_area_edit_label">La nuova Password</string>
+  <string name="btn_edit_label">Modifica Dati</string>
+  <string name="btn_submit_label">Conferma Modifiche</string>
+  //AccountEditView.kt strings Finish
+
+  //SearchInput.kt strings Start
+  <string name="search_placeholder_label">Search...</string>
+  //SearchInput.kt strings Finish
 </resources>

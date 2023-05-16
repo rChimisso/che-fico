@@ -1,6 +1,5 @@
 package com.kreinto.chefico.views.account.edit
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,15 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.Visibility
 import coil.compose.AsyncImage
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.room.AuthViewModel
@@ -97,7 +95,7 @@ fun AccountEditView (onNavigate: (String) -> Unit, authViewModel: AuthViewModel)
               userName = it
             },
             label = {
-              Text("User Name")
+              Text(text = stringResource(R.string.user_name_area_edit_label))
             },
             readOnly = authViewModel.getUserProviderIds().contains("google.com") && !modify,
             shape = RoundedCornerShape(0.dp)
@@ -117,7 +115,7 @@ fun AccountEditView (onNavigate: (String) -> Unit, authViewModel: AuthViewModel)
               email = it
             },
             label = {
-              Text("Email")
+              Text(text = stringResource(R.string.email_area_edit_label))
             },
             readOnly = authViewModel.getUserProviderIds().contains("google.com") && !modify,
             shape = RoundedCornerShape(0.dp)
@@ -137,10 +135,10 @@ fun AccountEditView (onNavigate: (String) -> Unit, authViewModel: AuthViewModel)
               passwordOld = it
             },
             label = {
-              Text("Password Vecchia")
+              Text(text = stringResource(R.string.old_pwd_area_edit_label))
             },
             singleLine = true,
-            placeholder = { Text("La vecchia Password") },
+            placeholder = { Text(text = stringResource(R.string.old_pwd_placeholder_area_edit_label)) },
             visualTransformation = if (oldPasswordVisible && modify) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
@@ -169,10 +167,10 @@ fun AccountEditView (onNavigate: (String) -> Unit, authViewModel: AuthViewModel)
               passwordNew1 = it
             },
             label = {
-              Text("Password Nuova")
+              Text(text = stringResource(R.string.new_pwd_area_edit_label))
             },
             singleLine = true,
-            placeholder = { Text("La nuova Password") },
+            placeholder = { Text(text = stringResource(R.string.new_pwd_placeholder_area_edit_label)) },
             visualTransformation = if (newPasswordVisible1 && modify) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
@@ -202,10 +200,10 @@ fun AccountEditView (onNavigate: (String) -> Unit, authViewModel: AuthViewModel)
               passwordNew2 = it
             },
             label = {
-              Text("Password Nuova")
+              Text(text = stringResource(R.string.new_pwd_area_edit_label))
             },
             singleLine = true,
-            placeholder = { Text("La nuova Password") },
+            placeholder = { Text(text = stringResource(R.string.new_pwd_placeholder_area_edit_label)) },
             visualTransformation = if (newPasswordVisible2 && modify) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
@@ -222,7 +220,6 @@ fun AccountEditView (onNavigate: (String) -> Unit, authViewModel: AuthViewModel)
           )
         }
       }
-
       Button(
         onClick = {
           modify = !modify
@@ -230,9 +227,9 @@ fun AccountEditView (onNavigate: (String) -> Unit, authViewModel: AuthViewModel)
         contentPadding = ButtonDefaults.ButtonWithIconContentPadding
       ) {
         if (!modify)
-          Text("Modifica Dati", color = Color.Red)
+          Text(text = stringResource(R.string.btn_edit_label), color = Color.Red)
         else
-          Text("Conferma Modifiche", color = Color.Red)
+          Text(text = stringResource(R.string.btn_submit_label), color = Color.Red)
       }
     }
   }
