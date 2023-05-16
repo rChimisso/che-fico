@@ -109,4 +109,10 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
       onResult(UserInfo(it.result.data?.get("username")!! as String))
     }
   }
+
+  fun backup() {
+    if (auth.currentUser != null) {
+      // deve aggiornare tutto
+    }
+  }
 }
