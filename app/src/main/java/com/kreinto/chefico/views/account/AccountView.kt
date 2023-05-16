@@ -94,7 +94,7 @@ fun AccountView(authViewModel: AuthViewModel, onNavigate: (String) -> Unit) {
           modifier = Modifier
             .fillMaxWidth()
             .clickable {
-
+              onNavigate(CheFicoRoute.Sharings.path)
             }
             .padding(16.dp),
           horizontalArrangement = Arrangement.SpaceBetween,
@@ -106,7 +106,7 @@ fun AccountView(authViewModel: AuthViewModel, onNavigate: (String) -> Unit) {
           modifier = Modifier
             .fillMaxWidth()
             .clickable {
-
+              onNavigate(CheFicoRoute.BlackList.path)
             }
             .padding(16.dp),
           horizontalArrangement = Arrangement.SpaceBetween,
