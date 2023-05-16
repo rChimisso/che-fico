@@ -6,7 +6,6 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.kreinto.chefico.room.entities.Poi
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
@@ -33,8 +32,12 @@ If your application supports username/password login, configure an instance of P
 If your application supports federated sign-in using Google ID tokens, configure an instance of GoogleIdTokenRequestOptions accordingly - be sure to supply your server client ID (you can find this in your Google API console project).
 For the sign-in scenario, it is strongly recommended to set GoogleIdTokenRequestOptions.Builder.setFilterByAuthorizedAccounts to true so only the Google accounts that the user has authorized before will show up in the credential list. This can help prevent a new account being created when the user has an existing account registered with the application.
  */
+
 open class AuthViewModel(application: Application) : AndroidViewModel(application) {
   private val auth = Firebase.auth
+  private var database = Firebase.firestore
+
+  private val blockedUsersDocumentPath = "blocked_users"
 
   val user = MutableStateFlow(auth.currentUser)
 
@@ -70,16 +73,44 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
   }
 
 
-  fun backup() {
-    var db = Firebase.firestore
-    var test = Poi("ciao", "che fico", "a", 0.0, 0.0)
-    db.collection("pois").document(auth.currentUser!!.uid).set(test)
+  fun getBlockedUsers(onResult: (List<String>) -> Unit) {
+    var blockedUsers = ArrayList<String>()
+    if (isUserLoggedIn()) {
+      database.collection(auth.currentUser!!.uid).document(blockedUsersDocumentPath).get().addOnCompleteListener {
+        if (it.result.data != null) {
+          blockedUsers = it.result.data!!["users"] as ArrayList<String>
+        }
+      }
+    }
+    onResult(blockedUsers)
   }
 
-  fun loadData() {
-    var db = Firebase.firestore
-    println(db.collection("pois").document(auth.currentUser!!.uid).get().addOnSuccessListener { result ->
-      println(result.data)
-    })
+  fun blockUser(user: String) {
+    if (user.isNotEmpty()) {
+      if (isUserLoggedIn()) {
+        getBlockedUsers {
+          var blockedUsers = ArrayList<String>(it)
+          if (!blockedUsers.contains(user)) {
+            blockedUsers.add(user)
+          }
+          database.collection(auth.currentUser!!.uid).document(blockedUsersDocumentPath).set(blockedUsers)
+        }
+      }
+    }
+  }
+
+  fun unblockUser(user: String) {
+    if (user.isNotEmpty()) {
+      if (isUserLoggedIn()) {
+        getBlockedUsers {
+          var blockedUsers = ArrayList<String>(it)
+          val index = blockedUsers.indexOf(user)
+          if (index != -1) {
+            blockedUsers.removeAt(index)
+          }
+          database.collection(auth.currentUser!!.uid).document(blockedUsersDocumentPath).set(blockedUsers)
+        }
+      }
+    }
   }
 }
