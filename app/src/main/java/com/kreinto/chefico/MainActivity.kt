@@ -27,7 +27,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.android.gms.location.LocationServices
 import com.kreinto.chefico.room.AuthViewModel
 import com.kreinto.chefico.room.CheFicoViewModel
@@ -53,7 +52,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
-@ExperimentalPagerApi
 class MainActivity : ComponentActivity() {
   private lateinit var navController: NavHostController
 
@@ -179,11 +177,7 @@ class MainActivity : ComponentActivity() {
           }
           composable(CheFicoRoute.Settings.path) { SettinsView(onNavigate, authViewModel) }
           composable(CheFicoRoute.PoiList.path) { PoiListView(onNavigate, viewModel) }
-          composable(
-            CheFicoRoute.PoiDetail.path, listOf(
-              navArgument("poiId") { type = NavType.StringType },
-            )
-          ) {
+          composable(CheFicoRoute.PoiDetail.path, listOf(navArgument("poiId") { type = NavType.StringType })) {
             PoiDetailView(onNavigate, viewModel, poiId = it.arguments?.getString("poiId"))
           }
           composable(CheFicoRoute.Camera.path) { CameraView(onNavigate) }
@@ -194,6 +188,7 @@ class MainActivity : ComponentActivity() {
           )) {
             PlantDetailView(
               onNavigate = onNavigate,
+              viewModel = viewModel,
               imageName = it.arguments?.getString("imageName"),
               organ = it.arguments?.getString("organ")
             )

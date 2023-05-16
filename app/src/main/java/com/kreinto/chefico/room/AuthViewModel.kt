@@ -72,7 +72,7 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
 
   fun backup() {
     var db = Firebase.firestore
-    var test = Poi("ciao", "che fico", "a", "", 0.0, 0.0)
+    var test = Poi("ciao", "che fico", "a", 0.0, 0.0)
     db.collection("pois").document(auth.currentUser!!.uid).set(test)
   }
 
