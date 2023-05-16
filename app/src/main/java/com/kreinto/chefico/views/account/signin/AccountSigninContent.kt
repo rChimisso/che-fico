@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -56,13 +57,13 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
     ) {
       Divider(color = Color(0x6632C896), modifier = Modifier.width(128.dp))
       Spacer(modifier = Modifier.width(8.dp))
-      Text("oppure", fontSize = 16.sp, color = Color(0xff32C896))
+      Text(text = stringResource(R.string.singup_methods_divider_label), fontSize = 16.sp, color = Color(0xff32C896))
       Spacer(modifier = Modifier.width(8.dp))
       Divider(color = Color(0x6632C896), modifier = Modifier.width(128.dp))
     }
     Spacer(modifier = Modifier.height(32.dp))
     TextField(
-      label = { Text("Nome") },
+      label = { Text(text = stringResource(R.string.name_label)) },
       value = displayName,
       onValueChange = {
         displayName = it
@@ -92,7 +93,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       }
     )
     TextField(
-      label = { Text("Email") },
+      label = { Text(text = stringResource(R.string.email_label)) },
       value = email,
       onValueChange = {
         email = it
@@ -122,7 +123,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       }
     )
     TextField(
-      label = { Text("Password") },
+      label = { Text(text = stringResource(R.string.pwd_label)) },
       value = password,
       onValueChange = {
         password = it
@@ -164,7 +165,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       }
     )
     TextField(
-      label = { Text("Ripeti Password") },
+      label = { Text(text = stringResource(R.string.pwd_repeat_label)) },
       value = password,
       onValueChange = {
         password = it
@@ -232,7 +233,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
             .clip(RoundedCornerShape(12.dp))
             .background(Brush.verticalGradient(listOf(Color(0xff32C896), Color(0x6632C896))))
         ) {
-          Text("Registrati", fontSize = 16.sp, modifier = Modifier.align(Alignment.Center))
+          Text(text = stringResource(R.string.singup_label), fontSize = 16.sp, modifier = Modifier.align(Alignment.Center))
         }
       }
     }

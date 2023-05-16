@@ -1,20 +1,40 @@
 <resources>
   <string name="app_name">Che Fico!</string>
+  <string name="email_label">Email</string>
+  <string name="btn_submit_label">Conferma Modifiche</string>
+  <string name="singup_label">Registrati</string>
 
-  //text = stringResource(R.string.email_area_edit_label)
+  //SearchInput.kt strings Start
+  <string name="search_placeholder_label">Cerca…</string>
+  //SearchInput.kt strings Finish
 
   //AccountEditView.kt strings Start
   <string name="user_name_area_edit_label">Nome Utente</string>
-  <string name="email_area_edit_label">Email</string>
   <string name="old_pwd_area_edit_label">Password Vecchia</string>
   <string name="old_pwd_placeholder_area_edit_label">La vecchia Password</string>
   <string name="new_pwd_area_edit_label">Password Nuova</string>
   <string name="new_pwd_placeholder_area_edit_label">La nuova Password</string>
   <string name="btn_edit_label">Modifica Dati</string>
-  <string name="btn_submit_label">Conferma Modifiche</string>
   //AccountEditView.kt strings Finish
 
-  //SearchInput.kt strings Start
-  <string name="search_placeholder_label">Search...</string>
-  //SearchInput.kt strings Finish
+  //AccountLoginContent.kt strings Start
+  <string name="login_methods_divider_label">oppure</string>
+  <string name="pwd_forgot_label">Password dimenticata?</string>
+  <string name="pwd_recover_label">Recupera password</string>
+  <string name="login_label">Accedi</string>
+  //AccountLoginContent.kt strings Finish
+
+  //AccountDetailView.kt strings Start (delete?)
+  <string name="reference_label">Credenziali</string>
+  <string name="change_pwd_label">Cambia password</string>
+  //AccountDetailView.kt strings Finish
+
+  //AccountSinginContent.kt strings Start
+  <string name="singup_methods_divider_label">oppure</string>
+  <string name="name_label">Nome</string>
+  <string name="pwd_label">Password</string>
+  <string name="pwd_repeat_label">Ripeti Password</string>
+  //AccountSinginContent.kt strings Finish
+
+  //text = stringResource(R.string.email_area_edit_label)
 </resources>

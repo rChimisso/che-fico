@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -36,8 +37,7 @@ import com.kreinto.chefico.views.account.signin.GoogleLogInButton
 @Composable
 internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: PaddingValues, onNavigate: (String) -> Unit) {
 
-  var coroutine = rememberCoroutineScope()
-  var loading = remember {
+  val loading = remember {
     mutableStateOf(false)
   }
   Column(
@@ -62,7 +62,7 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
     ) {
       Divider(color = Color(0x6632C896), modifier = Modifier.width(128.dp))
       Spacer(modifier = Modifier.width(8.dp))
-      Text("oppure", fontSize = 16.sp, color = Color(0xff32C896))
+      Text(text = stringResource(R.string.login_methods_divider_label), fontSize = 16.sp, color = Color(0xff32C896))
       Spacer(modifier = Modifier.width(8.dp))
       Divider(color = Color(0x6632C896), modifier = Modifier.width(128.dp))
     }
@@ -72,7 +72,7 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
 
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     TextField(
-      label = { Text("Email") },
+      label = { Text(text = stringResource(R.string.email_label)) },
       value = email,
       onValueChange = {
         email = it
@@ -103,7 +103,7 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
     )
     Spacer(modifier = Modifier.height(16.dp))
     TextField(
-      label = { Text("Email") },
+      label = { Text(text = stringResource(R.string.email_label)) },
       value = password,
       onValueChange = {
         password = it
@@ -151,10 +151,10 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
     Row(
       horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
     ) {
-      Text("Password dimenticata?", fontSize = 16.sp, color = Color(0xff32C896))
+      Text(text = stringResource(R.string.pwd_forgot_label), fontSize = 16.sp, color = Color(0xff32C896))
       Spacer(modifier = Modifier.width(8.dp))
       ClickableText(
-        AnnotatedString("Recupera password"),
+        AnnotatedString(text = stringResource(R.string.pwd_recover_label)),
         style = TextStyle(
           color = Color(0xff32C896),
           fontSize = 16.sp,
@@ -183,8 +183,6 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
             email = ""
             password = ""
             onNavigate(CheFicoRoute.Account.path)
-          } else {
-
           }
         }
 
@@ -196,7 +194,7 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
           .clip(RoundedCornerShape(12.dp))
           .background(Brush.verticalGradient(listOf(Color(0xff32C896), Color(0x6632C896))))
       ) {
-        Text("Accedi", fontSize = 16.sp, modifier = Modifier.align(Alignment.Center))
+        Text(text = stringResource(R.string.login_label), fontSize = 16.sp, modifier = Modifier.align(Alignment.Center))
       }
     }
     Spacer(modifier = Modifier.height(16.dp))
@@ -212,7 +210,7 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
         .height(40.dp),
       onClick = { onNavigate(CheFicoRoute.Signin.path) },
     ) {
-      Text("Registrati", fontSize = 16.sp)
+      Text(text = stringResource(R.string.singup_label), fontSize = 16.sp)
     }
     Spacer(modifier = Modifier.height(8.dp))
   }

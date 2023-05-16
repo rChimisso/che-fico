@@ -11,7 +11,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.kreinto.chefico.R
 import com.kreinto.chefico.room.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,7 +35,7 @@ fun AccountDetailView(authViewModel: AuthViewModel) {
           .fillMaxWidth()
           .height(40.dp)
       ) {
-        Text("Credenziali")
+        Text(text = stringResource(R.string.reference_label))
       }
       TextField(
         value = email,
@@ -42,13 +44,13 @@ fun AccountDetailView(authViewModel: AuthViewModel) {
           onChange = true
         },
         label = {
-          Text("Email")
+          Text(text = stringResource(R.string.email_label))
         },
         readOnly = authViewModel.getUserProviderIds().contains("google.com")
       )
       if (!authViewModel.getUserProviderIds().contains("google.com")) {
         Row {
-          Text("Cambia password")
+          Text(text = stringResource(R.string.change_pwd_label))
         }
       }
       Spacer(modifier = Modifier.weight(1f))
@@ -57,7 +59,7 @@ fun AccountDetailView(authViewModel: AuthViewModel) {
           user!!.updateEmail(email)
           onChange = false
         }) {
-          Text("Conferma modifiche")
+          Text(text = stringResource(R.string.btn_submit_label))
         }
       }
     }

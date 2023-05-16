@@ -115,7 +115,7 @@ fun AccountEditView (onNavigate: (String) -> Unit, authViewModel: AuthViewModel)
               email = it
             },
             label = {
-              Text(text = stringResource(R.string.email_area_edit_label))
+              Text(text = stringResource(R.string.email_label))
             },
             readOnly = authViewModel.getUserProviderIds().contains("google.com") && !modify,
             shape = RoundedCornerShape(0.dp)
