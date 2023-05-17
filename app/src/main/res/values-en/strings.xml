@@ -3,7 +3,7 @@
   <string name="app_name">Che Fico!</string>
   <string name="email_label">Email</string>
   <string name="btn_submit_label">Confirm Changes</string>
-  <string name="singup_label">Sing Up</string>
+  <string name="signup_label">Sign Up</string>
   <string name="settings_label">Settings</string>
 
   //SearchInput.kt strings Start
@@ -31,20 +31,20 @@
   <string name="change_pwd_label">Change password</string>
   //AccountDetailView.kt strings Finish
 
-  //AccountSinginContent.kt strings Start
-  <string name="singup_methods_divider_label">or</string>
+  //AccountSigninContent.kt strings Start
+  <string name="signup_methods_divider_label">or</string>
   <string name="name_label">Name</string>
   <string name="pwd_label">Password</string>
   <string name="pwd_repeat_label">Repeat Password</string>
-  //AccountSinginContent.kt strings Finish
+  //AccountSigninContent.kt strings Finish
 
-  //GoogleSingIn.kt and GoogleSingInButton.kt strings Start
-  <string name="google_login_label">SingIn with Google</string>
-  //GoogleSingIn.kt and GoogleSingInButton.kt strings Finish
+  //GoogleSignIn.kt and GoogleSignInButton.kt strings Start
+  <string name="google_login_label">SignIn with Google</string>
+  //GoogleSignIn.kt and GoogleSignInButton.kt strings Finish
 
-  //KreintoSingIn.kt strings Start
-  <string name="kreinto_login_label">SingIn with Kreinto</string>
-  //KreintoSingIn.kt strings Finish
+  //KreintoSignIn.kt strings Start
+  <string name="kreinto_login_label">SignIn with Kreinto</string>
+  //KreintoSignIn.kt strings Finish
 
   //AccountView.kt strings Start
   <string name="edit_profile_label">Edit Informations</string>
@@ -95,5 +95,6 @@
   <string name="dark_label">Dar</string> //da modif
   <string name="defaulf_label">Def</string> //da modif
   <string name="account_settings_label">Account Settings</string>
+  <string name="signup_or_login_label">SignUp/LogIn</string>
   //SettingsView.kt strings Finish
 </resources>

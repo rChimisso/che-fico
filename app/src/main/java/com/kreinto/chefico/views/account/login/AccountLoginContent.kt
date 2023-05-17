@@ -210,7 +210,7 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
         .height(40.dp),
       onClick = { onNavigate(CheFicoRoute.Signin.path) },
     ) {
-      Text(text = stringResource(R.string.singup_label), fontSize = 16.sp)
+      Text(text = stringResource(R.string.signup_label), fontSize = 16.sp)
     }
     Spacer(modifier = Modifier.height(8.dp))
   }

@@ -201,7 +201,7 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
           if (authViewModel.isUserLoggedIn()) {
             Text(text = stringResource(R.string.account_settings_label))
           } else {
-            Text(text = stringResource(R.string.singup_label))
+            Text(text = stringResource(R.string.signup_or_login_label))
           }
         }
       }
