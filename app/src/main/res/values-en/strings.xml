@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Che Fico!</string>
+  <string name="email_label">Email</string>
+  <string name="btn_submit_label">Confirm Changes</string>
+  <string name="singup_label">Sing Up</string>
+  <string name="settings_label">Settings</string>
+
+  //SearchInput.kt strings Start
+  <string name="search_placeholder_label">Search…</string>
+  //SearchInput.kt strings Finish
+
+  //AccountEditView.kt strings Start
+  <string name="user_name_area_edit_label">User Name</string>
+  <string name="old_pwd_area_edit_label">Old Password</string>
+  <string name="old_pwd_placeholder_area_edit_label">Old Password</string>
+  <string name="new_pwd_area_edit_label">New Password</string>
+  <string name="new_pwd_placeholder_area_edit_label">New Password</string>
+  <string name="btn_edit_label">Edit Data</string>
+  //AccountEditView.kt strings Finish
+
+  //AccountLoginContent.kt strings Start
+  <string name="login_methods_divider_label">or</string>
+  <string name="pwd_forgot_label">Forgot password?</string>
+  <string name="pwd_recover_label">Recover password</string>
+  <string name="login_label">LogIn</string>
+  //AccountLoginContent.kt strings Finish
+
+  //AccountDetailView.kt strings Start (delete?)
+  <string name="reference_label">References</string>
+  <string name="change_pwd_label">Change password</string>
+  //AccountDetailView.kt strings Finish
+
+  //AccountSinginContent.kt strings Start
+  <string name="singup_methods_divider_label">or</string>
+  <string name="name_label">Name</string>
+  <string name="pwd_label">Password</string>
+  <string name="pwd_repeat_label">Repeat Password</string>
+  //AccountSinginContent.kt strings Finish
+
+  //GoogleSingIn.kt and GoogleSingInButton.kt strings Start
+  <string name="google_login_label">SingIn with Google</string>
+  //GoogleSingIn.kt and GoogleSingInButton.kt strings Finish
+
+  //KreintoSingIn.kt strings Start
+  <string name="kreinto_login_label">SingIn with Kreinto</string>
+  //KreintoSingIn.kt strings Finish
+
+  //AccountView.kt strings Start
+  <string name="edit_profile_label">Edit Informations</string>
+  <string name="backup_label">BackUp Online</string>
+  <string name="see_sharings_label">View Sharings</string>
+  <string name="see_blacklist_label">View BlackList</string>
+  <string name="logout_label">LogOut</string>
+  //AccountView.kt strings Finish
+
+  //DashboardBottomSheetContent.kt strings Start
+  <string name="spots_label">Green Spots</string>
+  <string name="map_label">Map</string>
+  <string name="camera_label">Camera</string>
+  //DashboardBottomSheetContent.kt strings Finish
+
+  //DashboardContent.kt strings Start
+  <string name="notification_label">Notification Name</string>
+  //DashboardContent.kt strings Finish
+
+  //MapsView.kt strings Start
+  <string name="message_label">Settings denied</string>
+  //MapsView.kt strings Finish
+
+  //PlantDetailBottomSheetContent.kt strings Start
+  <string name="known_as_label">Known as:</string>
+  //PlantDetailBottomSheetContent.kt strings Finish
+
+  //PoiDetailEvent.kt strings Start
+  <string name="event_1_label">Event 1</string>
+  //PoiDetailEvent.kt strings Finish
+
+  //SettingsView.kt strings Start
+  <string name="privacy_label">Privacy</string>
+  <string name="copyright_label">Copyright</string>
+  <string name="version_label">Version</string>
+  <string name="dot_spacer_label">·</string>
+  <string name="auto_delete_label">Autoelimination notifations (30d)</string>
+  <string name="delete_notifications_title_label">Delete Notifications</string>
+  <string name="delete_message_label">Do you want to eliminate all the notifications?</string>
+  <string name="positive_label">Yes</string>
+  <string name="negative_label">No</string>
+  <string name="delete_notifications_label">Delete all Notifications</string>
+  <string name="lenguage_label">Language</string>
+  <string name="it_label">Italian</string>
+  <string name="en_label">English</string>
+  <string name="theme_label">Theme:</string>
+  <string name="light_label">Lig</string> //da modif
+  <string name="dark_label">Dar</string> //da modif
+  <string name="defaulf_label">Def</string> //da modif
+  <string name="account_settings_label">Account Settings</string>
+  //SettingsView.kt strings Finish
+</resources>

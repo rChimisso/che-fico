@@ -96,5 +96,4 @@
   <string name="account_settings_label">Impostazioni Account</string>
   //SettingsView.kt strings Finish
 
-  //text = stringResource(R.string.email_area_edit_label)
 </resources>
