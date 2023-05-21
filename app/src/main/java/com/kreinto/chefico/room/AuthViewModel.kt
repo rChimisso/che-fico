@@ -6,7 +6,6 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.kreinto.chefico.room.entities.Poi
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
@@ -71,9 +70,9 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
 
 
   fun backup() {
-    var db = Firebase.firestore
-    var test = Poi("ciao", "che fico", "a", 0.0, 0.0)
-    db.collection("pois").document(auth.currentUser!!.uid).set(test)
+//    var db = Firebase.firestore
+//    var test = Poi("ciao", "che fico", "a", 0.0, 0.0)
+//    db.collection("pois").document(auth.currentUser!!.uid).set(test)
   }
 
   fun loadData() {

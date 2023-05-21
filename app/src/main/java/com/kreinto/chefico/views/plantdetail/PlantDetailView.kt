@@ -39,7 +39,7 @@ fun PlantDetailView(
   organ: String?,
 ) {
   val cacheDir = LocalContext.current.cacheDir.absolutePath
-  val image = File("${LocalContext.current.cacheDir.absolutePath}/$imageName")
+  val image = File("$cacheDir/$imageName")
   val result = remember { mutableStateOf(PlantRecognition.InvalidData) }
   val description = remember { mutableStateOf("") }
 
@@ -81,7 +81,7 @@ fun PlantDetailView(
           icon = R.drawable.ic_close,
           contentDescription = "Save plant as POI"
         ) {
-          viewModel.setCreatingPoi(Poi(name, description.value, cacheDir + imageName))
+          viewModel.setCreatingPoi(Poi(name, description.value, "$cacheDir/$imageName"))
           onNavigate(CheFicoRoute.PoiCreation.path)
         }
       }

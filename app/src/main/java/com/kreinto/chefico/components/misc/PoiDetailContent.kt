@@ -113,6 +113,7 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean) {
             modifier = Modifier.requiredHeight(128.dp),
             init = description,
             textStyle = TextStyle(fontSize = 18.sp),
+            singleLine = false,
             onFocusChanged = {
               poi.description = description
               updatePoi(poi)

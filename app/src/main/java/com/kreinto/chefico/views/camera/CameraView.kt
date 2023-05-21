@@ -100,7 +100,6 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
   val coroutine = rememberCoroutineScope()
 
   val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-
     if (uri != null) {
       val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
       if (inputStream != null) {
