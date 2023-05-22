@@ -96,7 +96,7 @@ class MainActivity : ComponentActivity() {
   /**
    * Returns an [ActivityResultLauncher] for permission requests that navigates to the given [Route] if the user grants the permission.
    *
-   * @param route [Route] to navigate to if the user grants the permission.
+   * @param route path to navigate to if the user grants the permission.
    * @return [ActivityResultLauncher] for permission requests.
    */
   private fun getPermissionLauncher(route: String): ActivityResultLauncher<String> {
@@ -120,9 +120,17 @@ class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val requestLocationPermissionLauncher = getPermissionLauncher(CheFicoRoute.Maps.path)
+    val requestLocationPermissionLauncherMaps = getPermissionLauncher(CheFicoRoute.Maps.path)
+    val requestLocationPermissionLauncherPoi = getPermissionLauncher(CheFicoRoute.PoiCreation.path)
+    val requestLocationPermissionLauncher: (String) -> ActivityResultLauncher<String> = {
+      when (it) {
+        CheFicoRoute.Maps.path -> requestLocationPermissionLauncherMaps
+        CheFicoRoute.PoiCreation.path -> requestLocationPermissionLauncherPoi
+        else -> requestLocationPermissionLauncherMaps
+      }
+    }
     val requestCameraPermissionLauncher = getPermissionLauncher(CheFicoRoute.Camera.path)
-    val requestNotificationPermissionLauncher = getPermissionLauncher {
+    val requestGenericPermissionLauncher = getPermissionLauncher {
       if (!it) {
         // Explain to the user that the feature is unavailable because the
         // feature requires a permission that the user has denied. At the
@@ -132,9 +140,10 @@ class MainActivity : ComponentActivity() {
       }
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      requestPermission(POST_NOTIFICATIONS, requestNotificationPermissionLauncher)
-
+      requestPermission(POST_NOTIFICATIONS, requestGenericPermissionLauncher)
+      requestPermission(READ_MEDIA_IMAGES, requestGenericPermissionLauncher)
     }
+
 
     setContent {
       CheFicoTheme {
@@ -150,8 +159,8 @@ class MainActivity : ComponentActivity() {
                 navController.popBackStack()
               }
             }
-            CheFicoRoute.Maps.path -> {
-              requestPermission(ACCESS_FINE_LOCATION, requestLocationPermissionLauncher)
+            CheFicoRoute.Maps.path, CheFicoRoute.PoiCreation.path -> {
+              requestPermission(ACCESS_FINE_LOCATION, requestLocationPermissionLauncher(it))
             }
             CheFicoRoute.Camera.path -> {
               requestPermission(CAMERA, requestCameraPermissionLauncher)
@@ -181,15 +190,21 @@ class MainActivity : ComponentActivity() {
             PoiDetailView(onNavigate, viewModel, poiId = it.arguments?.getString("poiId"))
           }
           composable(CheFicoRoute.Camera.path) { CameraView(onNavigate) }
-          composable(CheFicoRoute.PoiCreation.path) { PoiCreationView(onNavigate, viewModel) }
+          composable(CheFicoRoute.PoiCreation.path) {
+            PoiCreationView(
+              onNavigate,
+              viewModel,
+              fusedLocationClient = LocationServices.getFusedLocationProviderClient(this@MainActivity)
+            )
+          }
           composable(CheFicoRoute.PlantDetail.path, listOf(
             navArgument("imageName") { type = NavType.StringType },
             navArgument("organ") { type = NavType.StringType }
           )) {
             PlantDetailView(
-              onNavigate = onNavigate,
-              viewModel = viewModel,
-              imageName = it.arguments?.getString("imageName"),
+              onNavigate,
+              viewModel,
+              imageURI = it.arguments?.getString("imageName"),
               organ = it.arguments?.getString("organ")
             )
           }

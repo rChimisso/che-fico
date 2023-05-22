@@ -35,6 +35,7 @@ fun TextInput(
   placeholder: @Composable (() -> Unit)? = null,
   textColor: Color = Color.Black,
   textStyle: TextStyle = LocalTextStyle.current,
+  singleLine: Boolean = true,
   trailingIcon: @Composable ((String, (String) -> Unit) -> Unit)? = null,
   onFocusChanged: ((FocusState) -> Unit)? = null,
   onValueChange: (String) -> Unit
@@ -55,7 +56,7 @@ fun TextInput(
     onValueChange = changeValue,
     value = value,
     maxLines = 1,
-    singleLine = true,
+    singleLine = singleLine,
     placeholder = placeholder,
     textStyle = textStyle,
     colors = TextFieldDefaults.textFieldColors(

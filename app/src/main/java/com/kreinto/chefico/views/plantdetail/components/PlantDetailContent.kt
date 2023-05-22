@@ -1,7 +1,6 @@
 package com.kreinto.chefico.views.plantdetail.components
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,12 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import java.io.File
 
 @Composable
-fun PlantDetailContent(image: File) {
+fun PlantDetailContent(image: Bitmap) {
   Image(
-    bitmap = fixOrientaton(BitmapFactory.decodeFile(image.absolutePath)),
+    bitmap = fixOrientaton(image),
     contentDescription = "",
     contentScale = ContentScale.Crop,
     modifier = Modifier
