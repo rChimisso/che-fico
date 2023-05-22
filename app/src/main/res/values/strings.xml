@@ -3,6 +3,7 @@
   <string name="email_label">Email</string>
   <string name="btn_submit_label">Conferma Modifiche</string>
   <string name="singup_label">Registrati</string>
+  <string name="settings_label">Impostazioni</string>
 
   //SearchInput.kt strings Start
   <string name="search_placeholder_label">Cerca…</string>
@@ -35,6 +36,65 @@
   <string name="pwd_label">Password</string>
   <string name="pwd_repeat_label">Ripeti Password</string>
   //AccountSinginContent.kt strings Finish
+
+  //GoogleSingIn.kt and GoogleSingInButton.kt strings Start
+  <string name="google_login_label">Registrati con Google</string>
+  //GoogleSingIn.kt and GoogleSingInButton.kt strings Finish
+
+  //KreintoSingIn.kt strings Start
+  <string name="kreinto_login_label">Registrati con Kreinto</string>
+  //KreintoSingIn.kt strings Finish
+
+  //AccountView.kt strings Start
+  <string name="edit_profile_label">Modifica Informazioni</string>
+  <string name="backup_label">BackUp Online</string>
+  <string name="see_sharings_label">Visualizza Condivisioni</string>
+  <string name="see_blacklist_label">Utenti Bloccati</string>
+  <string name="logout_label">Esci dall\'account</string>
+  //AccountView.kt strings Finish
+
+  //DashboardBottomSheetContent.kt strings Start
+  <string name="spots_label">Piante</string> //Green Spots in inglese
+  <string name="map_label">Mappa</string>
+  <string name="camera_label">Camera</string>
+  //DashboardBottomSheetContent.kt strings Finish
+
+  //DashboardContent.kt strings Start
+  <string name="notification_label">Nome Notifica</string> //Notification Name in inglese
+  //DashboardContent.kt strings Finish
+
+  //MapsView.kt strings Start
+  <string name="message_label">Settings denied</string>
+  //MapsView.kt strings Finish
+
+  //PlantDetailBottomSheetContent.kt strings Start
+  <string name="known_as_label">Conosciuta come:</string>
+  //PlantDetailBottomSheetContent.kt strings Finish
+
+  //PoiDetailEvent.kt strings Start
+  <string name="event_1_label">Evento 1</string>
+  //PoiDetailEvent.kt strings Finish
+
+  //SettingsView.kt strings Start
+  <string name="privacy_label">Privacy</string>
+  <string name="copyright_label">Copyright</string>
+  <string name="version_label">Versione</string>
+  <string name="dot_spacer_label">·</string>
+  <string name="auto_delete_label">Autoeliminazione notifiche (30gg)</string>
+  <string name="delete_notifications_title_label">Eliminazione Notifiche</string>
+  <string name="delete_message_label">Vuoi eliminare tutte le notifiche?</string>
+  <string name="positive_label">Sì</string>
+  <string name="negative_label">No</string>
+  <string name="delete_notifications_label">Elimina notifiche</string>
+  <string name="lenguage_label">Lingua</string>
+  <string name="it_label">Italiano</string>
+  <string name="en_label">Inglese</string>
+  <string name="theme_label">Tema:</string>
+  <string name="light_label">Chi</string> //da modif
+  <string name="dark_label">Scu</string> //da modif
+  <string name="defaulf_label">Def</string> //da modif
+  <string name="account_settings_label">Impostazioni Account</string>
+  //SettingsView.kt strings Finish
 
   //text = stringResource(R.string.email_area_edit_label)
 </resources>

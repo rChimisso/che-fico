@@ -3,6 +3,7 @@ package com.kreinto.chefico.components.misc
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -28,7 +30,7 @@ import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.FilledButton
 import com.kreinto.chefico.components.inputs.TextInput
 import com.kreinto.chefico.room.entities.Poi
-import java.io.File
+import java.net.URLDecoder
 
 private fun fixOrientaton(source: Bitmap): ImageBitmap {
   val matrix = Matrix()
@@ -41,8 +43,11 @@ private fun fixOrientaton(source: Bitmap): ImageBitmap {
 
 @Composable
 fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean) {
+  val context = LocalContext.current
   Column {
     if (poi != Poi.NullPoi) {
+      val stream = context.contentResolver.openInputStream(Uri.parse(URLDecoder.decode(poi.image, "utf-8")))
+      val image = BitmapFactory.decodeStream(stream)
       var name by rememberSaveable { mutableStateOf(poi.name) }
       var description by rememberSaveable { mutableStateOf(poi.description) }
       Surface(
@@ -57,9 +62,9 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean) {
                 .height(160.dp)
                 .align(Alignment.TopCenter),
             ) {
-              if (poi.image.isNotBlank() && File(poi.image).exists()) {
+              if (image != null) {
                 Image(
-                  bitmap = fixOrientaton(BitmapFactory.decodeFile(File(poi.image).absolutePath)),
+                  bitmap = fixOrientaton(image),
                   null,
                   contentScale = ContentScale.Crop
                 )
@@ -113,6 +118,7 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean) {
             modifier = Modifier.requiredHeight(128.dp),
             init = description,
             textStyle = TextStyle(fontSize = 18.sp),
+            singleLine = false,
             onFocusChanged = {
               poi.description = description
               updatePoi(poi)

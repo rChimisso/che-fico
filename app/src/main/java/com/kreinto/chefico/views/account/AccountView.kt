@@ -13,12 +13,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kreinto.chefico.CheFicoRoute
+import com.kreinto.chefico.R
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.room.AuthViewModel
 
@@ -56,7 +58,7 @@ fun AccountView(authViewModel: AuthViewModel, onNavigate: (String) -> Unit) {
         verticalAlignment = Alignment.CenterVertically
       ) {
         Text(Firebase.auth.currentUser?.displayName ?: "")
-        Text("#000000")
+        Text("#000000") //da modificare estraendo ID utente
       }
       Text(Firebase.auth.currentUser?.email ?: "")
       Spacer(modifier = Modifier.height(16.dp))
@@ -77,7 +79,7 @@ fun AccountView(authViewModel: AuthViewModel, onNavigate: (String) -> Unit) {
           horizontalArrangement = Arrangement.SpaceBetween,
           verticalAlignment = Alignment.CenterVertically
         ) {
-          Text("Modifica Informazioni", modifier = Modifier.fillMaxWidth())
+          Text(text = stringResource(R.string.edit_profile_label), modifier = Modifier.fillMaxWidth())
         }
         Row(
           modifier = Modifier
@@ -87,7 +89,7 @@ fun AccountView(authViewModel: AuthViewModel, onNavigate: (String) -> Unit) {
           horizontalArrangement = Arrangement.SpaceBetween,
           verticalAlignment = Alignment.CenterVertically
         ) {
-          Text("BackUp Online")
+          Text(text = stringResource(R.string.backup_label))
           Switch(checked = backupOnline, onCheckedChange = { checked -> backupOnline = checked })
         }
         Row(
@@ -100,7 +102,7 @@ fun AccountView(authViewModel: AuthViewModel, onNavigate: (String) -> Unit) {
           horizontalArrangement = Arrangement.SpaceBetween,
           verticalAlignment = Alignment.CenterVertically
         ) {
-          Text("Visualizza Condivisioni", modifier = Modifier.fillMaxWidth())
+          Text(text = stringResource(R.string.see_sharings_label), modifier = Modifier.fillMaxWidth())
         }
         Row(
           modifier = Modifier
@@ -112,7 +114,7 @@ fun AccountView(authViewModel: AuthViewModel, onNavigate: (String) -> Unit) {
           horizontalArrangement = Arrangement.SpaceBetween,
           verticalAlignment = Alignment.CenterVertically
         ) {
-          Text("Utenti Bloccati", modifier = Modifier.fillMaxWidth())
+          Text(text = stringResource(R.string.see_blacklist_label), modifier = Modifier.fillMaxWidth())
         }
       }
 
@@ -123,7 +125,7 @@ fun AccountView(authViewModel: AuthViewModel, onNavigate: (String) -> Unit) {
         },
         contentPadding = ButtonDefaults.ButtonWithIconContentPadding
       ) {
-        Text("Esci dall'account", color = Color.Red, textAlign = TextAlign.Center)
+        Text(text = stringResource(R.string.logout_label), color = Color.Red, textAlign = TextAlign.Center)
       }
     }
   }
