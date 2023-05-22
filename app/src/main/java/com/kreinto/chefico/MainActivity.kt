@@ -130,7 +130,7 @@ class MainActivity : ComponentActivity() {
       }
     }
     val requestCameraPermissionLauncher = getPermissionLauncher(CheFicoRoute.Camera.path)
-    val requestNotificationPermissionLauncher = getPermissionLauncher {
+    val requestGenericPermissionLauncher = getPermissionLauncher {
       if (!it) {
         // Explain to the user that the feature is unavailable because the
         // feature requires a permission that the user has denied. At the
@@ -140,9 +140,10 @@ class MainActivity : ComponentActivity() {
       }
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      requestPermission(POST_NOTIFICATIONS, requestNotificationPermissionLauncher)
+      requestPermission(POST_NOTIFICATIONS, requestGenericPermissionLauncher)
+      requestPermission(READ_MEDIA_IMAGES, requestGenericPermissionLauncher)
     }
-    requestPermission(READ_MEDIA_IMAGES, requestNotificationPermissionLauncher)
+
 
     setContent {
       CheFicoTheme {
@@ -203,7 +204,7 @@ class MainActivity : ComponentActivity() {
             PlantDetailView(
               onNavigate,
               viewModel,
-              imageName = it.arguments?.getString("imageName"),
+              imageURI = it.arguments?.getString("imageName"),
               organ = it.arguments?.getString("organ")
             )
           }

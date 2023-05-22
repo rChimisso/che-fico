@@ -1,8 +1,6 @@
 package com.kreinto.chefico.views.camera
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -36,11 +34,8 @@ import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
-import java.io.InputStream
+import java.net.URLEncoder
 import java.util.concurrent.TimeUnit
 
 
@@ -97,28 +92,14 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
 
   var cameraFlashEnabled by remember { mutableStateOf(false) }
 
-  val coroutine = rememberCoroutineScope()
-
   val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
     if (uri != null) {
-      val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
-      if (inputStream != null) {
-        val selectedImage = BitmapFactory.decodeStream(inputStream)
-        coroutine.launch {
-          val file = withContext(Dispatchers.IO) {
-            File.createTempFile("temp", null, context.cacheDir)
-          }
-          file.outputStream().use {
-            selectedImage.compress(Bitmap.CompressFormat.PNG, 100, it)
-          }
-          onNavigate(
-            CheFicoRoute.PlantDetail.path(
-              file.name,
-              plantOrgan
-            )
-          )
-        }
-      }
+      onNavigate(
+        CheFicoRoute.PlantDetail.path(
+          URLEncoder.encode(uri.toString(), "utf-8"),
+          plantOrgan
+        )
+      )
     }
   }
 
@@ -180,7 +161,12 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
                       context.mainExecutor,
                       object : ImageCapture.OnImageSavedCallback {
                         override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                          onNavigate(CheFicoRoute.PlantDetail.path(file.name, plantOrgan))
+                          onNavigate(
+                            CheFicoRoute.PlantDetail.path(
+                              URLEncoder.encode(outputFileResults.savedUri.toString(), "utf-8"),
+                              plantOrgan
+                            )
+                          )
                         }
 
                         override fun onError(exception: ImageCaptureException) {

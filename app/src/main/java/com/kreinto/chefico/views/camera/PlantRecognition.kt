@@ -1,11 +1,12 @@
 package com.kreinto.chefico.views.camera
 
+import android.graphics.Bitmap
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.*
 
@@ -108,14 +109,17 @@ class PlantRecognition {
       })
     }
 
-    fun recognize(file: File, organ: String, onResult: (result: PlantRecognitionData) -> Unit) {
+    fun recognize(image: Bitmap, organ: String, onResult: (result: PlantRecognitionData) -> Unit) {
+      val stream = ByteArrayOutputStream()
+      image.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+
       val client = OkHttpClient()
       val formBody = MultipartBody.Builder()
         .setType(MultipartBody.FORM)
         .addFormDataPart(
           "images",
-          file.name,
-          file.asRequestBody("image/jpeg".toMediaType())
+          "plant.jpg",
+          stream.toByteArray().toRequestBody("image/jpg".toMediaTypeOrNull(), 0, stream.size())
         )
         .addFormDataPart(
           "organs",

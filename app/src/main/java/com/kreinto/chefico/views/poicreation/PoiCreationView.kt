@@ -20,13 +20,14 @@ import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 import com.kreinto.chefico.components.misc.PoiDetailContent
 import com.kreinto.chefico.room.CheFicoViewModel
-import java.io.File
 import java.io.OutputStream
+import java.net.URLDecoder
 import java.util.*
 
 fun saveImage(path: String, contentResolver: ContentResolver, onUriCreated: (Uri?) -> Unit) {
-  if (path.isNotBlank()) {
-    val image = BitmapFactory.decodeFile(File(path).absolutePath)
+  if (path.isNotBlank() && path.contains("cache")) {
+    val inputStream = contentResolver.openInputStream(Uri.parse(URLDecoder.decode(path, "utf-8")))
+    val image = BitmapFactory.decodeStream(inputStream)
     val outputStream: OutputStream?
     val contentValues = ContentValues()
     contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, "${System.currentTimeMillis()}.jpg")
@@ -36,7 +37,6 @@ fun saveImage(path: String, contentResolver: ContentResolver, onUriCreated: (Uri
       outputStream = contentResolver.openOutputStream(imageUri)
       if (outputStream != null) {
         image.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-        Objects.requireNonNull(outputStream)
       }
       onUriCreated(imageUri)
     }

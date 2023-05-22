@@ -1,5 +1,7 @@
 package com.kreinto.chefico.views.plantdetail
 
+import android.graphics.BitmapFactory
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.fadeOut
@@ -27,7 +29,7 @@ import com.kreinto.chefico.room.entities.Poi
 import com.kreinto.chefico.views.camera.PlantRecognition
 import com.kreinto.chefico.views.plantdetail.components.PlantDetailBottomSheetContent
 import com.kreinto.chefico.views.plantdetail.components.PlantDetailContent
-import java.io.File
+import java.net.URLDecoder
 
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
@@ -35,11 +37,11 @@ import java.io.File
 fun PlantDetailView(
   onNavigate: (String) -> Unit,
   viewModel: CheFicoViewModel,
-  imageName: String?,
+  imageURI: String?,
   organ: String?,
 ) {
-  val cacheDir = LocalContext.current.cacheDir.absolutePath
-  val image = File("$cacheDir/$imageName")
+  val inputStream = LocalContext.current.contentResolver.openInputStream(Uri.parse(URLDecoder.decode(imageURI, "utf-8")))
+  val image = BitmapFactory.decodeStream(inputStream)
   val result = remember { mutableStateOf(PlantRecognition.InvalidData) }
   val description = remember { mutableStateOf("") }
 
@@ -81,7 +83,7 @@ fun PlantDetailView(
           icon = R.drawable.ic_close,
           contentDescription = "Save plant as POI"
         ) {
-          viewModel.setCreatingPoi(Poi(name, description.value, "$cacheDir/$imageName"))
+          viewModel.setCreatingPoi(Poi(name, description.value, imageURI!!))
           onNavigate(CheFicoRoute.PoiCreation.path)
         }
       }
