@@ -31,6 +31,7 @@ import com.kreinto.chefico.room.AuthViewModel
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
@@ -50,7 +51,7 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
           // TODO: cambiare recupero nome utente e visualizzazione ID (#&&&&&& tipo discord).
           Text("${Firebase.auth.currentUser?.displayName}")
         } else {
-          Text("Impostazioni")
+          Text(text = stringResource(R.string.settings_label))
         }
       }
     },
@@ -76,11 +77,11 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
         horizontalArrangement = Arrangement.spacedBy(space = 8.dp, alignment = Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically
       ) {
-        Text("Privacy")
-        Text("·")
-        Text("Copyright")
-        Text("·")
-        Text("Versione")
+        Text(text = stringResource(R.string.privacy_label))
+        Text(text = stringResource(R.string.dot_spacer_label))
+        Text(text = stringResource(R.string.copyright_label))
+        Text(text = stringResource(R.string.dot_spacer_label))
+        Text(text = stringResource(R.string.version_label))
       }
     }
   ) {
@@ -99,7 +100,7 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        Text("Autoeliminazione notifiche (30gg)")
+        Text(text = stringResource(R.string.auto_delete_label))
         Switch(checked = automaticDeletion, onCheckedChange = { checked -> automaticDeletion = checked })
       }
       Row(
@@ -108,10 +109,10 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
           .clickable {
             val alertBuilder = android.app.AlertDialog.Builder(context)
             alertBuilder.setCancelable(true)
-            alertBuilder.setTitle("Eliminazione Notifiche")
-            alertBuilder.setMessage("Vuoi eliminare tutte le notifiche?")
-            alertBuilder.setPositiveButton("Sì") { _, _ -> }
-            alertBuilder.setNegativeButton("No") { _, _ -> }
+            alertBuilder.setTitle(R.string.delete_notifications_title_label)
+            alertBuilder.setMessage(R.string.delete_message_label)
+            alertBuilder.setPositiveButton(R.string.positive_label) { _, _ -> }
+            alertBuilder.setNegativeButton(R.string.negative_label) { _, _ -> }
             val alert = alertBuilder.create()
             alert.show()
           }
@@ -119,7 +120,7 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        Text("Elimina notifiche", modifier = Modifier.fillMaxWidth())
+        Text(text = stringResource(R.string.delete_notifications_label), modifier = Modifier.fillMaxWidth())
       }
       Row(
         modifier = Modifier
@@ -129,18 +130,22 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        Text("Lingua")
+        Text(text = stringResource(R.string.lenguage_label))
         Box {
           Text(text = "${language}", modifier = Modifier.align(Alignment.Center))
           DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
-            DropdownMenuItem(text = { Text("Italiano") }, onClick = { language = "Italiano" })
-            DropdownMenuItem(text = { Text("Inglese") }, onClick = { language = "Inglese" })
+            DropdownMenuItem(text = { Text(text = stringResource(R.string.it_label)) }, onClick = { language =
+              R.string.it_label.toString()
+            })
+            DropdownMenuItem(text = { Text(text = stringResource(R.string.en_label)) }, onClick = { language =
+              R.string.en_label.toString()
+            })
           }
         }
 
       }
 
-      val radioOptions = listOf("Chi", "Scu", "Def")
+      val radioOptions = listOf(stringResource(R.string.light_label), stringResource(R.string.dark_label), stringResource(R.string.defaulf_label))
       val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[2]) }
       Row(
         modifier = Modifier
@@ -156,7 +161,7 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
           horizontalAlignment = Alignment.CenterHorizontally,
           verticalArrangement = Arrangement.Center
         ) {
-          Text("Tema:")
+          Text(text = stringResource(R.string.theme_label))
         }
         Row(
           modifier = Modifier
@@ -194,9 +199,9 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
           contentPadding = ButtonDefaults.ButtonWithIconContentPadding
         ) {
           if (authViewModel.isUserLoggedIn()) {
-            Text("Impostazioni Account")
+            Text(text = stringResource(R.string.account_settings_label))
           } else {
-            Text("Registrati")
+            Text(text = stringResource(R.string.singup_label))
           }
         }
       }

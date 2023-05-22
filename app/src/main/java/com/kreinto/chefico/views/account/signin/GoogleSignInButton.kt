@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -86,6 +87,6 @@ fun GoogleSignInButton(onSuccess: () -> Unit, onFailure: () -> Unit) {
       painter = painterResource(id = R.drawable.ic_google_logo),
       contentDescription = "accedi con google",
     )
-    Text("Registrati con Google", fontSize = 14.sp)
+    Text(text = stringResource(R.string.google_login_label), fontSize = 14.sp)
   }
 }

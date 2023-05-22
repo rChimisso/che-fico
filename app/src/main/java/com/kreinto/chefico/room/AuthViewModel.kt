@@ -32,20 +32,10 @@ If your application supports username/password login, configure an instance of P
 If your application supports federated sign-in using Google ID tokens, configure an instance of GoogleIdTokenRequestOptions accordingly - be sure to supply your server client ID (you can find this in your Google API console project).
 For the sign-in scenario, it is strongly recommended to set GoogleIdTokenRequestOptions.Builder.setFilterByAuthorizedAccounts to true so only the Google accounts that the user has authorized before will show up in the credential list. This can help prevent a new account being created when the user has an existing account registered with the application.
  */
-
-data class UserInfo(
-  val username: String
-)
-
 open class AuthViewModel(application: Application) : AndroidViewModel(application) {
   private val auth = Firebase.auth
-  private var database = Firebase.firestore
-
-  private val blockedUsersDocumentPath = "blocked_users"
 
   val user = MutableStateFlow(auth.currentUser)
-
-  private var blockedUsers: MutableMap<String, String> = mutableMapOf()
 
   fun signIn(email: String, password: String, name: String, onResult: (Throwable?) -> Unit) {
     auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
@@ -79,34 +69,16 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
   }
 
 
-  fun getBlockedUsers(onResult: (Map<String, String>) -> Unit) {
-    if (auth.currentUser != null) {
-      database.collection(auth.currentUser!!.uid).document(blockedUsersDocumentPath).get().addOnCompleteListener {
-        if (it.result.data != null) {
-          blockedUsers = it.result.data as MutableMap<String, String>
-          onResult(blockedUsers)
-        }
-      }
-    }
+  fun backup() {
+//    var db = Firebase.firestore
+//    var test = Poi("ciao", "che fico", "a", 0.0, 0.0)
+//    db.collection("pois").document(auth.currentUser!!.uid).set(test)
   }
 
-  fun blockUser(uid: String) {
-    if (uid.isNotEmpty() && auth.currentUser != null) {
-      getUserInfo(uid) {
-        blockedUsers.putIfAbsent(uid, it.username)
-      }
-    }
-  }
-
-  fun unblockUser(uid: String) {
-    if (uid.isNotEmpty() && auth.currentUser != null) {
-      blockedUsers.remove(uid)
-    }
-  }
-
-  fun getUserInfo(uid: String, onResult: (UserInfo) -> Unit) {
-    database.collection(uid).document("info").get().addOnCompleteListener {
-      onResult(UserInfo(it.result.data?.get("username")!! as String))
-    }
+  fun loadData() {
+    var db = Firebase.firestore
+    println(db.collection("pois").document(auth.currentUser!!.uid).get().addOnSuccessListener { result ->
+      println(result.data)
+    })
   }
 }

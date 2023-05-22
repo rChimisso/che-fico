@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -152,7 +153,7 @@ fun MapsView(
           Looper.getMainLooper()
         )
       } else {
-        println("Settings denied")
+        println(R.string.message_label)
       }
     }
     val refreshMarkers = {
