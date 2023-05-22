@@ -1,7 +1,7 @@
 package com.kreinto.chefico.views.account.blacklist
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ExperimentalMaterialApi
@@ -26,8 +26,12 @@ fun BlackListView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
   var blackList by rememberSaveable {
     mutableStateOf(emptyList<Map.Entry<String, String>>())
   }
+
   LaunchedEffect(Unit) {
-    authViewModel.getBlockedUsers { blackList = it.entries.toList() }
+    authViewModel.getBlockedUsers(
+      { blackList = it.entries.toList() },
+      {}
+    )
   }
 
   StandardFrame(
@@ -37,7 +41,7 @@ fun BlackListView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
     LazyColumn(
       modifier = Modifier
         .padding(top = it.calculateTopPadding())
-        .fillMaxHeight()
+        .fillMaxSize()
     ) {
       items(blackList.size) { index ->
         SwipeableItem(

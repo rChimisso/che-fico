@@ -1,16 +1,8 @@
 package com.kreinto.chefico.views.settings
 
-import android.R.string
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -19,18 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.FilledButton
-import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.frames.StandardFrame
 import com.kreinto.chefico.room.AuthViewModel
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
@@ -46,7 +35,7 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        if (authViewModel.isUserLoggedIn()) {
+        if (authViewModel.isUserSignedIn()) {
           // TODO: cambiare recupero nome utente e visualizzazione ID (#&&&&&& tipo discord).
           Text("${Firebase.auth.currentUser?.displayName}")
         } else {
@@ -55,7 +44,7 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
       }
     },
     actions = {
-      if (authViewModel.isUserLoggedIn()) {
+      if (authViewModel.isUserSignedIn()) {
         FilledButton(
           icon = R.drawable.che_fico_icon,
           contentDescription = ""
@@ -180,12 +169,12 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
         modifier = Modifier
           .fillMaxSize()
           .padding(bottom = it.calculateBottomPadding() + 16.dp, start = 16.dp, top = 16.dp, end = 16.dp),
-      horizontalArrangement = Arrangement.Center,
-      verticalAlignment = Alignment.Bottom
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.Bottom
       ) {
         Button(
           onClick = {
-            if (authViewModel.isUserLoggedIn()) {
+            if (authViewModel.isUserSignedIn()) {
               onNavigate(CheFicoRoute.Account.path)
             } else {
               onNavigate(CheFicoRoute.Login.path)
@@ -193,7 +182,7 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
           },
           contentPadding = ButtonDefaults.ButtonWithIconContentPadding
         ) {
-          if (authViewModel.isUserLoggedIn()) {
+          if (authViewModel.isUserSignedIn()) {
             Text("Impostazioni Account")
           } else {
             Text("Registrati")

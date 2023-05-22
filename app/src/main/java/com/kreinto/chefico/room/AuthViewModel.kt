@@ -1,12 +1,11 @@
 package com.kreinto.chefico.room
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
-import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
 A client for the sign-in API.
@@ -33,38 +32,76 @@ If your application supports federated sign-in using Google ID tokens, configure
 For the sign-in scenario, it is strongly recommended to set GoogleIdTokenRequestOptions.Builder.setFilterByAuthorizedAccounts to true so only the Google accounts that the user has authorized before will show up in the credential list. This can help prevent a new account being created when the user has an existing account registered with the application.
  */
 
-data class UserInfo(
-  val username: String
-)
-
 open class AuthViewModel(application: Application) : AndroidViewModel(application) {
+
+  data class UserInfo(
+    val uid: String,
+    val username: String,
+    val email: String,
+    val photoUrl: Uri
+  )
+
   private val auth = Firebase.auth
-  private var database = Firebase.firestore
+  private val db = Firebase.firestore
 
-  private val blockedUsersDocumentPath = "blocked_users"
+  abstract class DatabaseDocument(val path: String)
 
-  val user = MutableStateFlow(auth.currentUser)
+  private object BlockedUsers : DatabaseDocument("blocked_users")
+  private object Pois : DatabaseDocument("pois")
+  private object Info : DatabaseDocument("info")
 
   private var blockedUsers: MutableMap<String, String> = mutableMapOf()
+  private var currentUser: UserInfo? = null
 
-  fun signIn(email: String, password: String, name: String, onResult: (Throwable?) -> Unit) {
-    auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-      task.result.user!!.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(name).build())
-      onResult(task.exception)
+  fun createUser(email: String, password: String, username: String, onResult: (UserInfo?) -> Unit) {
+    if (email.isNotEmpty() && password.isNotEmpty() && username.isNotEmpty()) {
+      auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
+        if (it.result.user != null) {
+          val collection = db.collection(it.result.user!!.uid)
+          collection.document(Info.path).set(
+            object {
+              val username = username
+              val email = it.result.user!!.email
+              val photoUrl = it.result.user!!.photoUrl
+            }
+          )
+          collection.document(BlockedUsers.path).set(emptyMap<String, String>())
+          currentUser = UserInfo(
+            uid = it.result.user!!.uid,
+            username = username,
+            email = it.result.user!!.email!!,
+            photoUrl = it.result.user!!.photoUrl!!
+          )
+        }
+      }
     }
+    onResult(
+      currentUser
+    )
   }
 
-  fun logIn(email: String, password: String, onResult: (Throwable?) -> Unit) {
-    auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-      onResult(task.exception)
-    }
-  }
-
-  fun isUserLoggedIn(): Boolean {
+  fun isUserSignedIn(): Boolean {
     return auth.currentUser != null
   }
 
-  fun logOut() {
+  fun signIn(email: String, password: String, onSuccess: (UserInfo) -> Unit, onFailure: () -> Unit) {
+    val request = auth.signInWithEmailAndPassword(email, password)
+    request.addOnSuccessListener {
+      onSuccess(
+        UserInfo(
+          uid = it.user!!.uid,
+          username = it.user!!.displayName!!,
+          email = it.user!!.email!!,
+          photoUrl = it.user!!.photoUrl!!
+        )
+      )
+    }
+    request.addOnFailureListener {
+      onFailure()
+    }
+  }
+
+  fun signOut() {
     auth.signOut()
   }
 
@@ -79,13 +116,15 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
   }
 
 
-  fun getBlockedUsers(onResult: (Map<String, String>) -> Unit) {
+  fun getBlockedUsers(onSuccess: (Map<String, String>) -> Unit, onFailure: () -> Unit) {
     if (auth.currentUser != null) {
-      database.collection(auth.currentUser!!.uid).document(blockedUsersDocumentPath).get().addOnCompleteListener {
-        if (it.result.data != null) {
-          blockedUsers = it.result.data as MutableMap<String, String>
-          onResult(blockedUsers)
-        }
+      val result = db.collection(auth.currentUser!!.uid).document(BlockedUsers.path).get()
+      result.addOnSuccessListener {
+        blockedUsers = it.data as MutableMap<String, String>
+        onSuccess(blockedUsers)
+      }
+      result.addOnFailureListener {
+        onFailure()
       }
     }
   }
@@ -105,8 +144,15 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
   }
 
   fun getUserInfo(uid: String, onResult: (UserInfo) -> Unit) {
-    database.collection(uid).document("info").get().addOnCompleteListener {
-      onResult(UserInfo(it.result.data?.get("username")!! as String))
+    db.collection(uid).document(Info.path).get().addOnCompleteListener {
+      onResult(
+        UserInfo(
+          uid = it.result["uid"] as String,
+          username = it.result["username"] as String,
+          email = it.result["email"] as String,
+          photoUrl = it.result["photoUrl"] as Uri
+        )
+      )
     }
   }
 

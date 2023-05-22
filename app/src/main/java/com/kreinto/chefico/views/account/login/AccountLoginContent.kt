@@ -78,21 +78,22 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
         email = it
       },
       singleLine = true,
-      colors = TextFieldDefaults.textFieldColors(
+      colors = TextFieldDefaults.colors(
         unfocusedTextColor = Color(0xff32C896),
-        containerColor = Color.Transparent,
+        focusedContainerColor = Color.Transparent,
+        unfocusedContainerColor = Color.Transparent,
+        disabledContainerColor = Color.Transparent,
         cursorColor = Color(0xff32C896),
-        unfocusedPlaceholderColor = Color(0xff32C896),
         focusedIndicatorColor = Color(0x6632C896),
-        disabledIndicatorColor = Color(0x6632C896),
         unfocusedIndicatorColor = Color(0x6632C896),
+        disabledIndicatorColor = Color(0x6632C896),
         focusedLeadingIconColor = Color(0xff32C896),
-        disabledLabelColor = Color(0xff32C896),
         unfocusedLeadingIconColor = Color(0xff32C896),
         focusedLabelColor = Color.Transparent,
         unfocusedLabelColor = Color(0xff32C896),
-
-        ),
+        disabledLabelColor = Color(0xff32C896),
+        unfocusedPlaceholderColor = Color(0xff32C896),
+      ),
       leadingIcon = {
         Icon(
           painter = painterResource(id = R.drawable.ic_email),
@@ -109,22 +110,23 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
         password = it
       },
       singleLine = true,
-      colors = TextFieldDefaults.textFieldColors(
+      colors = TextFieldDefaults.colors(
         unfocusedTextColor = Color(0xff32C896),
-        containerColor = Color.Transparent,
+        focusedContainerColor = Color.Transparent,
+        unfocusedContainerColor = Color.Transparent,
+        disabledContainerColor = Color.Transparent,
         cursorColor = Color(0xff32C896),
-        unfocusedPlaceholderColor = Color(0xff32C896),
         focusedIndicatorColor = Color(0x6632C896),
-        disabledIndicatorColor = Color(0x6632C896),
         unfocusedIndicatorColor = Color(0x6632C896),
+        disabledIndicatorColor = Color(0x6632C896),
         focusedLeadingIconColor = Color(0xff32C896),
-        disabledLabelColor = Color(0xff32C896),
         unfocusedLeadingIconColor = Color(0xff32C896),
+        focusedTrailingIconColor = Color(0xff32C896),
+        unfocusedTrailingIconColor = Color(0x6632C896),
         focusedLabelColor = Color.Transparent,
         unfocusedLabelColor = Color(0xff32C896),
-        focusedTrailingIconColor = Color(0xff32C896),
-        unfocusedTrailingIconColor = Color(0x6632C896)
-
+        disabledLabelColor = Color(0xff32C896),
+        unfocusedPlaceholderColor = Color(0xff32C896),
       ),
       trailingIcon = {
         IconButton(onClick = { passwordVisible = !passwordVisible }) {
@@ -177,14 +179,15 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
         .height(40.dp),
       onClick = {
         loading.value = true
-        authViewModel.logIn(email, password) {
+        authViewModel.signIn(email, password, {
           loading.value = false
           if (it == null) {
             email = ""
             password = ""
             onNavigate(CheFicoRoute.Account.path)
           }
-        }
+        },
+          {})
 
       }
     ) {
