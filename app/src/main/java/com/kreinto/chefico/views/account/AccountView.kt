@@ -120,7 +120,7 @@ fun AccountView(authViewModel: AuthViewModel, onNavigate: (String) -> Unit) {
 
       Button(
         onClick = {
-          authViewModel.logOut()
+          authViewModel.signOut()
           onNavigate(CheFicoRoute.Settings.path)
         },
         contentPadding = ButtonDefaults.ButtonWithIconContentPadding

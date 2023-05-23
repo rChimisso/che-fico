@@ -1,5 +1,6 @@
 package com.kreinto.chefico.views.account.signin
 
+import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -34,6 +36,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
   var passwordVisible by rememberSaveable { mutableStateOf(false) }
   var repeatedPassword by rememberSaveable { mutableStateOf("") }
   var displayName by rememberSaveable { mutableStateOf("") }
+  var context = LocalContext.current
 
   Column(
     verticalArrangement = Arrangement.Center,
@@ -68,6 +71,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       onValueChange = {
         displayName = it
       },
+      isError = displayName.isEmpty(),
       singleLine = true,
       colors = TextFieldDefaults.colors(
         unfocusedTextColor = Color(0xff32C896),
@@ -99,6 +103,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       onValueChange = {
         email = it
       },
+      isError = email.isEmpty(),
       singleLine = true,
       colors = TextFieldDefaults.colors(
         unfocusedTextColor = Color(0xff32C896),
@@ -130,6 +135,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       onValueChange = {
         password = it
       },
+      isError = password.isEmpty() || password.length <= 6,
       singleLine = true,
       colors = TextFieldDefaults.colors(
         unfocusedTextColor = Color(0xff32C896),
@@ -170,10 +176,11 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
     )
     TextField(
       label = { Text(text = stringResource(R.string.pwd_repeat_label)) },
-      value = password,
+      value = repeatedPassword,
       onValueChange = {
-        password = it
+        repeatedPassword = it
       },
+      isError = !password.equals(repeatedPassword) || repeatedPassword.isEmpty(),
       singleLine = true,
       colors = TextFieldDefaults.colors(
         unfocusedTextColor = Color(0xff32C896),
@@ -229,7 +236,17 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
           .width(208.dp)
           .height(40.dp),
         onClick = {
-          authViewModel.signIn(email, password, displayName) {}
+          if (password == repeatedPassword && password.length >= 6) {
+            authViewModel.createUser(
+              email, password, displayName
+            ) {
+              if (it != null) {
+                onNavigate(CheFicoRoute.Account.path)
+              } else {
+                Toast.makeText(context, "Registrazione fallita", Toast.LENGTH_SHORT).show()
+              }
+            }
+          }
         }
       ) {
         Box(

@@ -47,7 +47,7 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        if (authViewModel.isUserLoggedIn()) {
+        if (authViewModel.isUserSignedIn()) {
           // TODO: cambiare recupero nome utente e visualizzazione ID (#&&&&&& tipo discord).
           Text("${Firebase.auth.currentUser?.displayName}")
         } else {
@@ -56,7 +56,7 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
       }
     },
     actions = {
-      if (authViewModel.isUserLoggedIn()) {
+      if (authViewModel.isUserSignedIn()) {
         FilledButton(
           icon = R.drawable.che_fico_icon,
           contentDescription = ""
@@ -185,12 +185,12 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
         modifier = Modifier
           .fillMaxSize()
           .padding(bottom = it.calculateBottomPadding() + 16.dp, start = 16.dp, top = 16.dp, end = 16.dp),
-      horizontalArrangement = Arrangement.Center,
-      verticalAlignment = Alignment.Bottom
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.Bottom
       ) {
         Button(
           onClick = {
-            if (authViewModel.isUserLoggedIn()) {
+            if (authViewModel.isUserSignedIn()) {
               onNavigate(CheFicoRoute.Account.path)
             } else {
               onNavigate(CheFicoRoute.Login.path)
@@ -198,7 +198,7 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
           },
           contentPadding = ButtonDefaults.ButtonWithIconContentPadding
         ) {
-          if (authViewModel.isUserLoggedIn()) {
+          if (authViewModel.isUserSignedIn()) {
             Text(text = stringResource(R.string.account_settings_label))
           } else {
             Text(text = stringResource(R.string.singup_label))
