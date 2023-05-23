@@ -2,6 +2,8 @@ package com.kreinto.chefico.views.settings
 
 import android.R.string
 import android.annotation.SuppressLint
+import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,6 +34,9 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+
+import androidx.core.os.LocaleListCompat
+import java.util.*
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
@@ -122,10 +127,11 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
       ) {
         Text(text = stringResource(R.string.delete_notifications_label), modifier = Modifier.fillMaxWidth())
       }
+      //val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags("xx-YY")
       Row(
         modifier = Modifier
           .fillMaxWidth()
-          .clickable { showMenu = true }
+          .clickable { showMenu = true}
           .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -134,17 +140,16 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
         Box {
           Text(text = "${language}", modifier = Modifier.align(Alignment.Center))
           DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
-            DropdownMenuItem(text = { Text(text = stringResource(R.string.it_label)) }, onClick = { language =
-              R.string.it_label.toString()
+            DropdownMenuItem(text = { Text(text = stringResource(R.string.it_label)) }, onClick = { language = "Italiano"
+              language("it", context)
             })
-            DropdownMenuItem(text = { Text(text = stringResource(R.string.en_label)) }, onClick = { language =
-              R.string.en_label.toString()
+            DropdownMenuItem(text = { Text(text = stringResource(R.string.en_label)) }, onClick = { language = "English"
+              language("en", context)
             })
           }
         }
 
       }
-
       val radioOptions = listOf(stringResource(R.string.light_label), stringResource(R.string.dark_label), stringResource(R.string.defaulf_label))
       val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[2]) }
       Row(
@@ -207,4 +212,11 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
       }
     }
   }
+}
+
+fun language(language: String, context: Context){
+  val locale = Locale(language)
+  val configuration = context.resources.configuration
+  configuration.setLocale(locale)
+  context.resources.updateConfiguration(configuration, context.resources.displayMetrics)
 }

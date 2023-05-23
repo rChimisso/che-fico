@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.kreinto.chefico.room.entities.Notification
 import com.kreinto.chefico.room.entities.Poi
+import com.kreinto.chefico.room.entities.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -28,12 +29,14 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
   val poisWithin = mapBoundariesFlow.flatMapLatest { selectPoisWithin(it) }
 
   private val creatingPoiFlow = MutableStateFlow(Poi.NullPoi)
+  private var user = MutableStateFlow(User.NullUser)
 
   init {
     val database = CheFicoDatabase.getInstance(application)
     repository = CheFicoRepository(
       database.notificationDao(),
-      database.poiDao()
+      database.poiDao(),
+      database.userDao()
     )
   }
 
@@ -45,6 +48,10 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
 
   fun addNotification(notification: Notification) = launch {
     repository.insertNotification(notification)
+  }
+
+  fun addUser(user: User) = launch {
+    repository.insertUser(user)
   }
 
   fun updatePoi(poi: Poi) = launch {
@@ -63,8 +70,16 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     return repository.selectNotification(id)
   }
 
+  fun getUser(id: Int): Flow<User> {
+    return repository.selectUser(id)
+  }
+
   fun getNotifications(): Flow<List<Notification>> {
     return repository.selectNotifications()
+  }
+
+  fun getUsers(): Flow<List<User>> {
+    return repository.selectUsers()
   }
 
   fun deletePoi(id: Int) = launch {
@@ -75,12 +90,20 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     repository.deleteNotification(id)
   }
 
+  fun deleteUser(id: Int) = launch {
+    repository.deleteUser(id)
+  }
+
   fun deletePois() = launch {
     repository.deletePois()
   }
 
   fun deleteNotifications() = launch {
     repository.deleteNotifications()
+  }
+
+  fun deleteUsers() = launch {
+    repository.deleteUsers()
   }
 
   fun getCreatingPoi(): Poi {

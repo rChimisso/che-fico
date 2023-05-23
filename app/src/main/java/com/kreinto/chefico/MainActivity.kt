@@ -21,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -30,6 +31,7 @@ import androidx.navigation.navArgument
 import com.google.android.gms.location.LocationServices
 import com.kreinto.chefico.room.AuthViewModel
 import com.kreinto.chefico.room.CheFicoViewModel
+import com.kreinto.chefico.room.entities.User
 import com.kreinto.chefico.ui.theme.CheFicoTheme
 import com.kreinto.chefico.views.account.AccountView
 import com.kreinto.chefico.views.account.blacklist.BlackListView
@@ -169,6 +171,7 @@ class MainActivity : ComponentActivity() {
           }
         }
         LaunchedEffect(Unit) {
+          //viewModel.getUser().collectAsStateWithLifecycle(initialValue = User.NullUser) continuare da qui Alberto
           @SuppressLint("SourceLockedOrientationActivity")
           this@MainActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
           PoiNotificationManager.createNotificationChannel(context)
