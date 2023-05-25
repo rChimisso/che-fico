@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -16,10 +15,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.kreinto.chefico.CheFicoRoute
-import com.kreinto.chefico.Language
+import com.kreinto.chefico.*
 import com.kreinto.chefico.R
-import com.kreinto.chefico.SettingsManager
 import com.kreinto.chefico.components.buttons.FilledButton
 import com.kreinto.chefico.components.frames.StandardFrame
 import com.kreinto.chefico.room.AuthViewModel
@@ -32,6 +29,22 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
   val context = LocalContext.current
   val settingsManager = SettingsManager(context)
   var language by remember { mutableStateOf(settingsManager.getLanguage()) }
+  val themeOptions = mapOf(
+    Theme.DARK to stringResource(R.string.dark_label),
+    Theme.LIGHT to stringResource(R.string.light_label),
+    Theme.SYSTEM to stringResource(R.string.defaulf_label)
+  )
+  val (selectedTheme, onThemeSelected) = remember { mutableStateOf(themeOptions[settingsManager.getTheme()]) }
+  var automaticDeletion by remember { mutableStateOf(settingsManager.getAutoDeleteNotification()) }
+  var showMenu by remember { mutableStateOf(false) }
+  LaunchedEffect(selectedTheme) {
+    when (selectedTheme) {
+      themeOptions[Theme.LIGHT] -> settingsManager.useLightTheme()
+      themeOptions[Theme.DARK] -> settingsManager.useDarkTheme()
+      themeOptions[Theme.SYSTEM] -> settingsManager.useSystemTheme()
+    }
+  }
+
   StandardFrame(
     onNavPressed = onNavigate,
     title = {
@@ -41,7 +54,6 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
         verticalAlignment = Alignment.CenterVertically
       ) {
         if (authViewModel.isUserLoggedIn()) {
-          // TODO: cambiare recupero nome utente e visualizzazione ID (#&&&&&& tipo discord).
           Text("${Firebase.auth.currentUser?.displayName}")
         } else {
           Text(text = stringResource(R.string.settings_label))
@@ -78,8 +90,7 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
       }
     }
   ) {
-    var automaticDeletion by rememberSaveable { mutableStateOf(false) }
-    var showMenu by rememberSaveable { mutableStateOf(false) }
+
     Column(
       modifier = Modifier
         .padding(top = it.calculateTopPadding())
@@ -94,7 +105,10 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
         verticalAlignment = Alignment.CenterVertically
       ) {
         Text(text = stringResource(R.string.auto_delete_label))
-        Switch(checked = automaticDeletion, onCheckedChange = { checked -> automaticDeletion = checked })
+        Switch(checked = automaticDeletion, onCheckedChange = { checked ->
+          automaticDeletion = checked
+          settingsManager.setAutoDeleteNotification(checked)
+        })
       }
       Row(
         modifier = Modifier
@@ -115,7 +129,6 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
       ) {
         Text(text = stringResource(R.string.delete_notifications_label), modifier = Modifier.fillMaxWidth())
       }
-      //val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags("xx-YY")
       Row(
         modifier = Modifier
           .fillMaxWidth()
@@ -129,10 +142,12 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
           Text(text = language, modifier = Modifier.align(Alignment.Center))
           DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
             DropdownMenuItem(text = { Text(text = stringResource(R.string.it_label)) }, onClick = {
+              showMenu = false
               language = "Italiano"
               settingsManager.setLanguage(Language.Italian)
             })
             DropdownMenuItem(text = { Text(text = stringResource(R.string.en_label)) }, onClick = {
+              showMenu = false
               language = "English"
               settingsManager.setLanguage(Language.English)
             })
@@ -140,9 +155,8 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
         }
 
       }
-      val radioOptions =
-        listOf(stringResource(R.string.light_label), stringResource(R.string.dark_label), stringResource(R.string.defaulf_label))
-      val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[2]) }
+
+
       Row(
         modifier = Modifier
           .fillMaxWidth()
@@ -152,8 +166,6 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
         verticalAlignment = Alignment.CenterVertically
       ) {
         Column(
-//          modifier = Modifier
-//            .fillMaxHeight(),
           horizontalAlignment = Alignment.CenterHorizontally,
           verticalArrangement = Arrangement.Center
         ) {
@@ -165,13 +177,15 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
           horizontalArrangement = Arrangement.Center,
           verticalAlignment = Alignment.CenterVertically
         ) {
-          radioOptions.forEach { text ->
+          themeOptions.forEach { text ->
             RadioButton(
-              selected = (text == selectedOption),
-              onClick = { onOptionSelected(text) }
+              selected = (text.value == selectedTheme),
+              onClick = {
+                onThemeSelected(text.value)
+              }
             )
             Text(
-              text = text,
+              text = text.value,
             )
             Spacer(modifier = Modifier.width(16.dp))
           }

@@ -2,7 +2,7 @@ package com.kreinto.chefico
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.core.os.LocaleListCompat
 import androidx.preference.PreferenceManager
 
@@ -11,9 +11,19 @@ sealed class Language(val locale: LocaleListCompat) {
   object English : Language(LocaleListCompat.forLanguageTags("en"))
 }
 
-class SettingsManager(val context: Context) {
+class Theme {
+  companion object {
+    const val DARK = MODE_NIGHT_YES
+    const val LIGHT = MODE_NIGHT_NO
+    const val SYSTEM = MODE_NIGHT_FOLLOW_SYSTEM
+  }
+}
 
-  private val languageSetting: String = "language"
+class SettingsManager(context: Context) {
+
+  private val languageSetting = "language"
+  private val autoDeleteNotificationsSetting = "autoDeleteNotifications"
+  private val themeModeSetting = "themeMode"
 
   private val settings: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
@@ -23,7 +33,34 @@ class SettingsManager(val context: Context) {
 
   fun setLanguage(language: Language) {
     settings.edit().putString(languageSetting, language.locale.toLanguageTags()).apply()
-    AppCompatDelegate.setApplicationLocales(language.locale)
+    setApplicationLocales(language.locale)
+  }
+
+  fun getAutoDeleteNotification(): Boolean {
+    return settings.getBoolean(autoDeleteNotificationsSetting, false)
+  }
+
+  fun setAutoDeleteNotification(value: Boolean) {
+    settings.edit().putBoolean(autoDeleteNotificationsSetting, value).apply()
+  }
+
+  fun getTheme(): Int {
+    return settings.getInt(themeModeSetting, Theme.SYSTEM)
+  }
+
+  fun useDarkTheme() {
+    settings.edit().putInt(themeModeSetting, MODE_NIGHT_YES).apply()
+    setDefaultNightMode(MODE_NIGHT_YES)
+  }
+
+  fun useLightTheme() {
+    settings.edit().putInt(themeModeSetting, MODE_NIGHT_NO).apply()
+    setDefaultNightMode(MODE_NIGHT_NO)
+  }
+
+  fun useSystemTheme() {
+    settings.edit().putInt(themeModeSetting, MODE_NIGHT_FOLLOW_SYSTEM).apply()
+    setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
   }
 }
 
