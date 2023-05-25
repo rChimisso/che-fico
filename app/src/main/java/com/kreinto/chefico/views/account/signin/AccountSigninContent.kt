@@ -60,7 +60,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
     ) {
       Divider(color = Color(0x6632C896), modifier = Modifier.width(128.dp))
       Spacer(modifier = Modifier.width(8.dp))
-      Text(text = stringResource(R.string.singup_methods_divider_label), fontSize = 16.sp, color = Color(0xff32C896))
+      Text(text = stringResource(R.string.signup_methods_divider_label), fontSize = 16.sp, color = Color(0xff32C896))
       Spacer(modifier = Modifier.width(8.dp))
       Divider(color = Color(0x6632C896), modifier = Modifier.width(128.dp))
     }
@@ -255,7 +255,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
             .clip(RoundedCornerShape(12.dp))
             .background(Brush.verticalGradient(listOf(Color(0xff32C896), Color(0x6632C896))))
         ) {
-          Text(text = stringResource(R.string.singup_label), fontSize = 16.sp, modifier = Modifier.align(Alignment.Center))
+          Text(text = stringResource(R.string.signup_label), fontSize = 16.sp, modifier = Modifier.align(Alignment.Center))
         }
       }
     }

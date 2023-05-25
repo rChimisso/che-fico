@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 class CheFicoRepository(
   private val notificationDao: NotificationDao,
-  private val poiDao: PoiDao
+  private val poiDao: PoiDao,
 ) {
 
   fun insertPoi(poi: Poi) {
@@ -19,9 +19,11 @@ class CheFicoRepository(
     notificationDao.insert(notification)
   }
 
+
   fun selectPoi(id: Int): Flow<Poi> {
     return poiDao.select(id)
   }
+
 
   fun updatePoi(poi: Poi) {
     poiDao.update(poi)
@@ -31,6 +33,7 @@ class CheFicoRepository(
     return notificationDao.select(id)
   }
 
+
   fun selectPois(): Flow<List<Poi>> {
     return poiDao.selectAll()
   }
@@ -38,6 +41,7 @@ class CheFicoRepository(
   fun selectNotifications(): Flow<List<Notification>> {
     return notificationDao.selectAll()
   }
+
 
   fun deletePoi(id: Int) {
     poiDao.delete(id)
@@ -47,9 +51,11 @@ class CheFicoRepository(
     notificationDao.delete(id)
   }
 
+
   fun deletePois() {
     poiDao.deleteAll()
   }
+
 
   fun deleteNotifications() {
     notificationDao.deleteAll()

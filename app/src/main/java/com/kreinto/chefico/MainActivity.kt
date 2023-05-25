@@ -7,12 +7,12 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
@@ -52,7 +52,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
   private lateinit var navController: NavHostController
 
   /**
@@ -168,12 +168,12 @@ class MainActivity : ComponentActivity() {
             else -> navController.navigate(it)
           }
         }
+
         LaunchedEffect(Unit) {
           @SuppressLint("SourceLockedOrientationActivity")
           this@MainActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
           PoiNotificationManager.createNotificationChannel(context)
         }
-
         NavHost(navController, startDestination = CheFicoRoute.Dashboard.path) {
           composable(CheFicoRoute.Dashboard.path) { DashboardView(onNavigate) }
           composable(CheFicoRoute.Maps.path) {

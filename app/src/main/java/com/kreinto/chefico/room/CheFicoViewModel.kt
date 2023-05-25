@@ -29,6 +29,7 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
 
   private val creatingPoiFlow = MutableStateFlow(Poi.NullPoi)
 
+
   init {
     val database = CheFicoDatabase.getInstance(application)
     repository = CheFicoRepository(
@@ -47,6 +48,7 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     repository.insertNotification(notification)
   }
 
+
   fun updatePoi(poi: Poi) = launch {
     repository.updatePoi(poi)
   }
@@ -63,9 +65,11 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     return repository.selectNotification(id)
   }
 
+
   fun getNotifications(): Flow<List<Notification>> {
     return repository.selectNotifications()
   }
+
 
   fun deletePoi(id: Int) = launch {
     repository.deletePoi(id)
@@ -75,6 +79,7 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     repository.deleteNotification(id)
   }
 
+
   fun deletePois() = launch {
     repository.deletePois()
   }
@@ -82,6 +87,7 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
   fun deleteNotifications() = launch {
     repository.deleteNotifications()
   }
+
 
   fun getCreatingPoi(): Poi {
     return creatingPoiFlow.value

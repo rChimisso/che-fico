@@ -2,7 +2,7 @@
   <string name="app_name">Che Fico!</string>
   <string name="email_label">Email</string>
   <string name="btn_submit_label">Conferma Modifiche</string>
-  <string name="singup_label">Registrati</string>
+  <string name="signup_label">Registrati</string>
   <string name="settings_label">Impostazioni</string>
 
   //SearchInput.kt strings Start
@@ -30,20 +30,20 @@
   <string name="change_pwd_label">Cambia password</string>
   //AccountDetailView.kt strings Finish
 
-  //AccountSinginContent.kt strings Start
-  <string name="singup_methods_divider_label">oppure</string>
+  //AccountSigninContent.kt strings Start
+  <string name="signup_methods_divider_label">oppure</string>
   <string name="name_label">Nome</string>
   <string name="pwd_label">Password</string>
   <string name="pwd_repeat_label">Ripeti Password</string>
-  //AccountSinginContent.kt strings Finish
+  //AccountSigninContent.kt strings Finish
 
-  //GoogleSingIn.kt and GoogleSingInButton.kt strings Start
+  //GoogleSignIn.kt and GoogleSignInButton.kt strings Start
   <string name="google_login_label">Registrati con Google</string>
-  //GoogleSingIn.kt and GoogleSingInButton.kt strings Finish
+  //GoogleSignIn.kt and GoogleSignInButton.kt strings Finish
 
-  //KreintoSingIn.kt strings Start
+  //KreintoSignIn.kt strings Start
   <string name="kreinto_login_label">Registrati con Kreinto</string>
-  //KreintoSingIn.kt strings Finish
+  //KreintoSignIn.kt strings Finish
 
   //AccountView.kt strings Start
   <string name="edit_profile_label">Modifica Informazioni</string>
@@ -90,11 +90,11 @@
   <string name="it_label">Italiano</string>
   <string name="en_label">Inglese</string>
   <string name="theme_label">Tema:</string>
-  <string name="light_label">Chi</string> //da modif
-  <string name="dark_label">Scu</string> //da modif
-  <string name="defaulf_label">Def</string> //da modif
+  <string name="light_label">Chi</string> 
+  <string name="dark_label">Scu</string> 
+  <string name="defaulf_label">Def</string>
   <string name="account_settings_label">Impostazioni Account</string>
+  <string name="signup_or_login_label">Registrati/Accedi</string>
   //SettingsView.kt strings Finish
 
-  //text = stringResource(R.string.email_area_edit_label)
 </resources>
