@@ -1,18 +1,8 @@
 package com.kreinto.chefico.views.settings
 
-import android.R.string
 import android.annotation.SuppressLint
-import android.content.Context
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -21,21 +11,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kreinto.chefico.CheFicoRoute
+import com.kreinto.chefico.Language
 import com.kreinto.chefico.R
+import com.kreinto.chefico.SettingsManager
 import com.kreinto.chefico.components.buttons.FilledButton
-import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.frames.StandardFrame
 import com.kreinto.chefico.room.AuthViewModel
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-
-import androidx.core.os.LocaleListCompat
 import java.util.*
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -43,7 +30,8 @@ import java.util.*
 @Composable
 fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
   val context = LocalContext.current
-  var language by remember { mutableStateOf("Italiano") }
+  val settingsManager = SettingsManager(context)
+  var language by remember { mutableStateOf(settingsManager.getLanguage()) }
   StandardFrame(
     onNavPressed = onNavigate,
     title = {
@@ -131,26 +119,29 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
       Row(
         modifier = Modifier
           .fillMaxWidth()
-          .clickable { showMenu = true}
+          .clickable { showMenu = true }
           .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
         Text(text = stringResource(R.string.lenguage_label))
         Box {
-          Text(text = "${language}", modifier = Modifier.align(Alignment.Center))
+          Text(text = language, modifier = Modifier.align(Alignment.Center))
           DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
-            DropdownMenuItem(text = { Text(text = stringResource(R.string.it_label)) }, onClick = { language = "Italiano"
-              language("it", context)
+            DropdownMenuItem(text = { Text(text = stringResource(R.string.it_label)) }, onClick = {
+              language = "Italiano"
+              settingsManager.setLanguage(Language.Italian)
             })
-            DropdownMenuItem(text = { Text(text = stringResource(R.string.en_label)) }, onClick = { language = "English"
-              language("en", context)
+            DropdownMenuItem(text = { Text(text = stringResource(R.string.en_label)) }, onClick = {
+              language = "English"
+              settingsManager.setLanguage(Language.English)
             })
           }
         }
 
       }
-      val radioOptions = listOf(stringResource(R.string.light_label), stringResource(R.string.dark_label), stringResource(R.string.defaulf_label))
+      val radioOptions =
+        listOf(stringResource(R.string.light_label), stringResource(R.string.dark_label), stringResource(R.string.defaulf_label))
       val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[2]) }
       Row(
         modifier = Modifier
@@ -190,8 +181,8 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
         modifier = Modifier
           .fillMaxSize()
           .padding(bottom = it.calculateBottomPadding() + 16.dp, start = 16.dp, top = 16.dp, end = 16.dp),
-      horizontalArrangement = Arrangement.Center,
-      verticalAlignment = Alignment.Bottom
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.Bottom
       ) {
         Button(
           onClick = {
@@ -214,9 +205,3 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
   }
 }
 
-fun language(language: String, context: Context){
-  val locale = Locale(language)
-  val configuration = context.resources.configuration
-  configuration.setLocale(locale)
-  context.resources.updateConfiguration(configuration, context.resources.displayMetrics)
-}

@@ -6,7 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.kreinto.chefico.room.daos.NotificationDao
 import com.kreinto.chefico.room.daos.PoiDao
-import com.kreinto.chefico.room.daos.UserDao
 import com.kreinto.chefico.room.entities.Notification
 import com.kreinto.chefico.room.entities.Poi
 
@@ -14,7 +13,6 @@ import com.kreinto.chefico.room.entities.Poi
 abstract class CheFicoDatabase : RoomDatabase() {
   abstract fun notificationDao(): NotificationDao
   abstract fun poiDao(): PoiDao
-  abstract fun userDao(): UserDao
 
   companion object {
     private var INSTANCE: CheFicoDatabase? = null

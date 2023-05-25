@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
-  <style name="Theme.CheFico" parent="android:Theme.Material.Light.NoActionBar">
-    <item name="android:windowTranslucentStatus">true</item>
-    <item name="android:fitsSystemWindows">true</item>
-    <item name="android:statusBarColor" tools:targetApi="1">@color/background_light_test</item>
+<resources xmlns:tools = "http://schemas.android.com/tools">
+
+  <style name = "Theme.CheFico" parent = "Theme.AppCompat.NoActionBar">
+    <item name = "android:windowTranslucentStatus">true</item>
+    <item name = "android:fitsSystemWindows">true</item>
+    <item name = "android:statusBarColor" tools:targetApi = "1">@color/background_light_test</item>
   </style>
 </resources>

@@ -7,7 +7,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.kreinto.chefico.room.entities.Notification
 import com.kreinto.chefico.room.entities.Poi
-import com.kreinto.chefico.room.entities.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -29,14 +28,13 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
   val poisWithin = mapBoundariesFlow.flatMapLatest { selectPoisWithin(it) }
 
   private val creatingPoiFlow = MutableStateFlow(Poi.NullPoi)
-  private var user = MutableStateFlow(User.NullUser)
+
 
   init {
     val database = CheFicoDatabase.getInstance(application)
     repository = CheFicoRepository(
       database.notificationDao(),
-      database.poiDao(),
-      database.userDao()
+      database.poiDao()
     )
   }
 
@@ -50,9 +48,6 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     repository.insertNotification(notification)
   }
 
-  fun addUser(user: User) = launch {
-    repository.insertUser(user)
-  }
 
   fun updatePoi(poi: Poi) = launch {
     repository.updatePoi(poi)
@@ -70,17 +65,11 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     return repository.selectNotification(id)
   }
 
-  fun getUser(id: Int): Flow<User> {
-    return repository.selectUser(id)
-  }
 
   fun getNotifications(): Flow<List<Notification>> {
     return repository.selectNotifications()
   }
 
-  fun getUsers(): Flow<List<User>> {
-    return repository.selectUsers()
-  }
 
   fun deletePoi(id: Int) = launch {
     repository.deletePoi(id)
@@ -90,9 +79,6 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     repository.deleteNotification(id)
   }
 
-  fun deleteUser(id: Int) = launch {
-    repository.deleteUser(id)
-  }
 
   fun deletePois() = launch {
     repository.deletePois()
@@ -102,9 +88,6 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     repository.deleteNotifications()
   }
 
-  fun deleteUsers() = launch {
-    repository.deleteUsers()
-  }
 
   fun getCreatingPoi(): Poi {
     return creatingPoiFlow.value

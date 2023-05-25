@@ -7,12 +7,12 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
@@ -21,7 +21,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -31,7 +30,6 @@ import androidx.navigation.navArgument
 import com.google.android.gms.location.LocationServices
 import com.kreinto.chefico.room.AuthViewModel
 import com.kreinto.chefico.room.CheFicoViewModel
-import com.kreinto.chefico.room.entities.User
 import com.kreinto.chefico.ui.theme.CheFicoTheme
 import com.kreinto.chefico.views.account.AccountView
 import com.kreinto.chefico.views.account.blacklist.BlackListView
@@ -54,7 +52,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
   private lateinit var navController: NavHostController
 
   /**
@@ -170,13 +168,12 @@ class MainActivity : ComponentActivity() {
             else -> navController.navigate(it)
           }
         }
+
         LaunchedEffect(Unit) {
-          //viewModel.getUser().collectAsStateWithLifecycle(initialValue = User.NullUser) continuare da qui Alberto
           @SuppressLint("SourceLockedOrientationActivity")
           this@MainActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
           PoiNotificationManager.createNotificationChannel(context)
         }
-
         NavHost(navController, startDestination = CheFicoRoute.Dashboard.path) {
           composable(CheFicoRoute.Dashboard.path) { DashboardView(onNavigate) }
           composable(CheFicoRoute.Maps.path) {
