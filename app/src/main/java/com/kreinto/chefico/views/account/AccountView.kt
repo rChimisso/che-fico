@@ -4,11 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,109 +20,127 @@ import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.room.AuthViewModel
+import com.kreinto.chefico.room.CheFicoViewModel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
 @Composable
-fun AccountView(authViewModel: AuthViewModel, onNavigate: (String) -> Unit) {
+fun AccountView(viewModel: CheFicoViewModel, authViewModel: AuthViewModel, onNavigate: (String) -> Unit) {
+  var loading by remember { mutableStateOf(true) }
   var backupOnline by rememberSaveable { mutableStateOf(false) }
-  SimpleFrame(
-    onBackPressed = onNavigate,
-  ) {
-    Column(
-      horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.Center,
-      modifier = Modifier
-        .padding(top = it.calculateTopPadding(), start = 16.dp, end = 16.dp, bottom = 16.dp)
-        .fillMaxSize()
+  LaunchedEffect(Unit) {
+    authViewModel.isOnlineBackupActive {
+      loading = false
+      backupOnline = it
+    }
+  }
+  var coroutine = rememberCoroutineScope()
+  if (!loading) {
+    SimpleFrame(
+      onBackPressed = onNavigate,
     ) {
-      Spacer(modifier = Modifier.height(16.dp))
-      Surface(
-        tonalElevation = 12.dp,
-        shape = CircleShape
-      ) {
-        AsyncImage(
-          model = Firebase.auth.currentUser?.photoUrl ?: "",
-          contentDescription = "",
-          modifier = Modifier
-            .size(128.dp)
-            .clip(CircleShape)
-        )
-      }
-      Spacer(modifier = Modifier.height(16.dp))
-      Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-      ) {
-        Text(Firebase.auth.currentUser?.displayName ?: "")
-        Text("#000000") //da modificare estraendo ID utente
-      }
-      Text(Firebase.auth.currentUser?.email ?: "")
-      Spacer(modifier = Modifier.height(16.dp))
-      Divider()
-      Spacer(modifier = Modifier.height(16.dp))
       Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier
-          .fillMaxWidth()
-          .weight(1f)
+          .padding(top = it.calculateTopPadding(), start = 16.dp, end = 16.dp, bottom = 16.dp)
+          .fillMaxSize()
       ) {
+        Spacer(modifier = Modifier.height(16.dp))
+        Surface(
+          tonalElevation = 12.dp,
+          shape = CircleShape
+        ) {
+          AsyncImage(
+            model = Firebase.auth.currentUser?.photoUrl ?: "",
+            contentDescription = "",
+            modifier = Modifier
+              .size(128.dp)
+              .clip(CircleShape)
+          )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
         Row(
-          modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-              onNavigate(CheFicoRoute.AccountEdit.path)
-            }
-            .padding(16.dp),
-          horizontalArrangement = Arrangement.SpaceBetween,
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.Center,
           verticalAlignment = Alignment.CenterVertically
         ) {
-          Text(text = stringResource(R.string.edit_profile_label), modifier = Modifier.fillMaxWidth())
+          Text(Firebase.auth.currentUser?.displayName ?: "")
         }
-        Row(
+        Text(Firebase.auth.currentUser?.email ?: "")
+        Spacer(modifier = Modifier.height(16.dp))
+        Divider()
+        Spacer(modifier = Modifier.height(16.dp))
+        Column(
           modifier = Modifier
             .fillMaxWidth()
-            .clickable { backupOnline = !backupOnline }
-            .padding(16.dp),
-          horizontalArrangement = Arrangement.SpaceBetween,
-          verticalAlignment = Alignment.CenterVertically
+            .weight(1f)
         ) {
-          Text(text = stringResource(R.string.backup_label))
-          Switch(checked = backupOnline, onCheckedChange = { checked -> backupOnline = checked })
+          Row(
+            modifier = Modifier
+              .fillMaxWidth()
+              .clickable {
+                onNavigate(CheFicoRoute.AccountEdit.path)
+              }
+              .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Text(text = stringResource(R.string.edit_profile_label), modifier = Modifier.fillMaxWidth())
+          }
+          Row(
+            modifier = Modifier
+              .fillMaxWidth()
+              .clickable { backupOnline = !backupOnline }
+              .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Text(text = stringResource(R.string.backup_label))
+            Switch(checked = backupOnline, onCheckedChange = { checked ->
+              backupOnline = checked
+              authViewModel.setOnlineBackup(checked)
+              if (checked) {
+                coroutine.launch {
+                  viewModel.getPois().first { localPois ->
+                    authViewModel.backup(localPois) {
+                      viewModel.deletePois()
+                      authViewModel.getPois { pois ->
+                        pois.forEach { poi ->
+                          viewModel.addPoi(poi)
+                        }
+                      }
+                    }
+                    return@first true
+                  }
+                }
+              }
+            })
+          }
+          Row(
+            modifier = Modifier
+              .fillMaxWidth()
+              .clickable {
+                onNavigate(CheFicoRoute.BlackList.path)
+              }
+              .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Text(text = stringResource(R.string.see_blacklist_label), modifier = Modifier.fillMaxWidth())
+          }
         }
-        Row(
-          modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-              onNavigate(CheFicoRoute.Sharings.path)
-            }
-            .padding(16.dp),
-          horizontalArrangement = Arrangement.SpaceBetween,
-          verticalAlignment = Alignment.CenterVertically
-        ) {
-          Text(text = stringResource(R.string.see_sharings_label), modifier = Modifier.fillMaxWidth())
-        }
-        Row(
-          modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-              onNavigate(CheFicoRoute.BlackList.path)
-            }
-            .padding(16.dp),
-          horizontalArrangement = Arrangement.SpaceBetween,
-          verticalAlignment = Alignment.CenterVertically
-        ) {
-          Text(text = stringResource(R.string.see_blacklist_label), modifier = Modifier.fillMaxWidth())
-        }
-      }
 
-      Button(
-        onClick = {
-          authViewModel.signOut()
-          onNavigate(CheFicoRoute.Settings.path)
-        },
-        contentPadding = ButtonDefaults.ButtonWithIconContentPadding
-      ) {
-        Text(text = stringResource(R.string.logout_label), color = Color.Red, textAlign = TextAlign.Center)
+        Button(
+          onClick = {
+            authViewModel.signOut()
+            onNavigate(CheFicoRoute.Settings.path)
+          },
+          contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+        ) {
+          Text(text = stringResource(R.string.logout_label), color = Color.Red, textAlign = TextAlign.Center)
+        }
       }
     }
   }

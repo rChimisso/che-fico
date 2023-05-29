@@ -19,6 +19,7 @@ import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 import com.kreinto.chefico.components.misc.PoiDetailContent
+import com.kreinto.chefico.room.AuthViewModel
 import com.kreinto.chefico.room.CheFicoViewModel
 import java.io.OutputStream
 import java.net.URLDecoder
@@ -51,7 +52,8 @@ fun saveImage(path: String, contentResolver: ContentResolver, onUriCreated: (Uri
 fun PoiCreationView(
   onNavigate: (String) -> Unit,
   viewModel: CheFicoViewModel,
-  fusedLocationClient: FusedLocationProviderClient
+  fusedLocationClient: FusedLocationProviderClient,
+  authViewModel: AuthViewModel
 ) {
   val contentResolver = LocalContext.current.contentResolver
   var creatingPoi = viewModel.getCreatingPoi()
@@ -95,6 +97,6 @@ fun PoiCreationView(
       )
     }
   ) {
-    PoiDetailContent(creatingPoi, { creatingPoi = it }, false)
+    PoiDetailContent(creatingPoi, { creatingPoi = it }, false, authViewModel)
   }
 }

@@ -1,6 +1,5 @@
 package com.kreinto.chefico.views.account.signin
 
-import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -49,6 +48,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
     Spacer(modifier = Modifier.height(64.dp))
     GoogleSignInButton(
       onSuccess = {
+        authViewModel.initGoogleAccount()
         onNavigate(CheFicoRoute.Account.path)
       },
       onFailure = {}
@@ -74,6 +74,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       isError = displayName.isEmpty(),
       singleLine = true,
       colors = TextFieldDefaults.colors(
+        errorContainerColor = Color.Transparent,
         unfocusedTextColor = Color(0xff32C896),
         focusedContainerColor = Color.Transparent,
         unfocusedContainerColor = Color.Transparent,
@@ -106,6 +107,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       isError = email.isEmpty(),
       singleLine = true,
       colors = TextFieldDefaults.colors(
+        errorContainerColor = Color.Transparent,
         unfocusedTextColor = Color(0xff32C896),
         focusedContainerColor = Color.Transparent,
         unfocusedContainerColor = Color.Transparent,
@@ -135,9 +137,13 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       onValueChange = {
         password = it
       },
+      supportingText = {
+        Text("Lunghezza minima di 7 caratteri")
+      },
       isError = password.isEmpty() || password.length <= 6,
       singleLine = true,
       colors = TextFieldDefaults.colors(
+        errorContainerColor = Color.Transparent,
         unfocusedTextColor = Color(0xff32C896),
         focusedContainerColor = Color.Transparent,
         unfocusedContainerColor = Color.Transparent,
@@ -155,6 +161,8 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
         disabledLabelColor = Color(0xff32C896),
         unfocusedPlaceholderColor = Color(0xff32C896),
       ),
+      keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+      visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
       trailingIcon = {
         IconButton(onClick = { passwordVisible = !passwordVisible }) {
           Crossfade(targetState = passwordVisible, animationSpec = tween(300)) { visible ->
@@ -177,12 +185,16 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
     TextField(
       label = { Text(text = stringResource(R.string.pwd_repeat_label)) },
       value = repeatedPassword,
+      supportingText = {
+        Text("Le password devono coincidere")
+      },
       onValueChange = {
         repeatedPassword = it
       },
       isError = !password.equals(repeatedPassword) || repeatedPassword.isEmpty(),
       singleLine = true,
       colors = TextFieldDefaults.colors(
+        errorContainerColor = Color.Transparent,
         unfocusedTextColor = Color(0xff32C896),
         focusedContainerColor = Color.Transparent,
         unfocusedContainerColor = Color.Transparent,
@@ -237,14 +249,8 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
           .height(40.dp),
         onClick = {
           if (password == repeatedPassword && password.length >= 6) {
-            authViewModel.createUser(
-              email, password, displayName
-            ) {
-              if (it != null) {
-                onNavigate(CheFicoRoute.Account.path)
-              } else {
-                Toast.makeText(context, "Registrazione fallita", Toast.LENGTH_SHORT).show()
-              }
+            authViewModel.createUser(email, password, displayName) {
+              onNavigate(CheFicoRoute.Account.path)
             }
           }
         }

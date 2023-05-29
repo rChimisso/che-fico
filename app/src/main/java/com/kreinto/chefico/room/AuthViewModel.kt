@@ -2,10 +2,14 @@ package com.kreinto.chefico.room
 
 import android.app.Application
 import android.net.Uri
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.kreinto.chefico.room.entities.Poi
+
 
 /**
 A client for the sign-in API.
@@ -49,35 +53,88 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
   private object BlockedUsers : DatabaseDocument("blocked_users")
   private object Pois : DatabaseDocument("pois")
   private object Info : DatabaseDocument("info")
+  private object Settings : DatabaseDocument("backup_online")
 
   private var blockedUsers: MutableMap<String, String> = mutableMapOf()
   private var currentUser: UserInfo? = null
 
-  fun createUser(email: String, password: String, username: String, onResult: (UserInfo?) -> Unit) {
+  fun createUser(email: String, password: String, username: String, onResult: () -> Unit) {
+    val context = getApplication<Application>().applicationContext
     if (email.isNotEmpty() && password.isNotEmpty() && username.isNotEmpty()) {
-      auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
-        if (it.result.user != null) {
-          val collection = db.collection(it.result.user!!.uid)
+      val request = auth.createUserWithEmailAndPassword(email, password)
+
+      request.addOnSuccessListener {
+        if (it.user != null) {
+          val collection = db.collection(it.user!!.uid)
           collection.document(Info.path).set(
             object {
               val username = username
-              val email = it.result.user!!.email
-              val photoUrl = it.result.user!!.photoUrl
+              val email = it.user!!.email
+              val photoUrl = it.user!!.photoUrl
             }
           )
           collection.document(BlockedUsers.path).set(emptyMap<String, String>())
-          currentUser = UserInfo(
-            uid = it.result.user!!.uid,
-            username = username,
-            email = it.result.user!!.email!!,
-            photoUrl = it.result.user!!.photoUrl!!
+          collection.document(Settings.path).set(
+            object {
+              val backupOnline = false
+            }
           )
+          collection.document(Pois.path).set(
+            object {
+              val data = emptyList<Poi>()
+            }
+          )
+          currentUser = UserInfo(
+            uid = it.user!!.uid,
+            username = username,
+            email = it.user!!.email!!,
+            photoUrl = it.user!!.photoUrl ?: Uri.EMPTY
+          )
+          it.user!!.updateProfile(
+            UserProfileChangeRequest.Builder()
+              .setDisplayName(username)
+              .build()
+          ).addOnCompleteListener {
+            onResult()
+          }
         }
       }
+      request.addOnFailureListener {
+        Toast.makeText(context, "Registrazione fallita", Toast.LENGTH_SHORT).show()
+      }
+    } else {
+      Toast.makeText(context, "Campi non validi", Toast.LENGTH_SHORT).show()
     }
-    onResult(
-      currentUser
-    )
+  }
+
+  fun initGoogleAccount() {
+    if (auth.currentUser != null) {
+      val collection = Firebase.firestore.collection(auth.currentUser!!.uid)
+      collection.document(Info.path).set(
+        object {
+          val username = auth.currentUser!!.displayName
+          val email = auth.currentUser!!.email
+          val photoUrl = auth.currentUser!!.photoUrl
+        }
+      )
+      collection.document(BlockedUsers.path).set(emptyMap<String, String>())
+      collection.document(Settings.path).set(
+        object {
+          val backupOnline = false
+        }
+      )
+      collection.document(Pois.path).set(
+        object {
+          val data = emptyList<Poi>()
+        }
+      )
+      currentUser = UserInfo(
+        uid = auth.currentUser!!.uid,
+        username = auth.currentUser!!.displayName!!,
+        email = auth.currentUser!!.email!!,
+        photoUrl = auth.currentUser!!.photoUrl ?: Uri.EMPTY
+      )
+    }
   }
 
   fun isUserSignedIn(): Boolean {
@@ -92,7 +149,7 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
           uid = it.user!!.uid,
           username = it.user!!.displayName!!,
           email = it.user!!.email!!,
-          photoUrl = it.user!!.photoUrl!!
+          photoUrl = it.user!!.photoUrl ?: Uri.EMPTY
         )
       )
     }
@@ -103,6 +160,28 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
 
   fun signOut() {
     auth.signOut()
+  }
+
+  fun getPois(onSuccess: (List<Poi>) -> Unit) {
+    if (auth.currentUser != null) {
+      db.collection(auth.currentUser!!.uid).document(Pois.path).get().addOnSuccessListener {
+        if (it.data != null && it.data!!["data"] != null) {
+          var pois = mutableListOf<Poi>()
+          (it.data!!["data"] as List<Map<String, Any>>).forEach {
+            pois.add(
+              Poi(
+                it["name"]!! as String,
+                it["description"]!! as String,
+                it["image"]!! as String,
+                it["latitude"]!! as Double,
+                it["longitude"]!! as Double
+              )
+            )
+          }
+          onSuccess(pois)
+        }
+      }
+    }
   }
 
   fun getUserProviderIds(): List<String> {
@@ -129,6 +208,19 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
     }
   }
 
+  fun getUserInfo(uid: String, onResult: (UserInfo) -> Unit) {
+    db.collection(uid).document(Info.path).get().addOnCompleteListener {
+      onResult(
+        UserInfo(
+          uid = it.result["uid"] as String,
+          username = it.result["username"] as String,
+          email = it.result["email"] as String,
+          photoUrl = it.result["photoUrl"] as Uri
+        )
+      )
+    }
+  }
+
   fun blockUser(uid: String) {
     if (uid.isNotEmpty() && auth.currentUser != null) {
       getUserInfo(uid) {
@@ -143,22 +235,90 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
     }
   }
 
-  fun getUserInfo(uid: String, onResult: (UserInfo) -> Unit) {
-    db.collection(uid).document(Info.path).get().addOnCompleteListener {
-      onResult(
-        UserInfo(
-          uid = it.result["uid"] as String,
-          username = it.result["username"] as String,
-          email = it.result["email"] as String,
-          photoUrl = it.result["photoUrl"] as Uri
-        )
+
+  fun isOnlineBackupActive(onResult: (Boolean) -> Unit) {
+    if (auth.currentUser != null) {
+      val result = db.collection(auth.currentUser!!.uid).document(Settings.path).get()
+      result.addOnSuccessListener {
+        onResult(it.data?.get("backupOnline") as Boolean)
+      }
+    }
+  }
+
+  fun setOnlineBackup(value: Boolean) {
+    if (auth.currentUser != null) {
+      db.collection(auth.currentUser!!.uid).document(Settings.path).set(
+        object {
+          val backupOnline = value
+        }
       )
     }
   }
 
-  fun backup() {
+  fun backup(pois: List<Poi>, onResult: () -> Unit) {
     if (auth.currentUser != null) {
-      // deve aggiornare tutto
+      getPois { onlinePois ->
+        var toSave = onlinePois.toMutableList()
+        pois.forEach { localPoi ->
+          toSave = toSave.filter {
+            it.name != localPoi.name &&
+              it.image != localPoi.image &&
+              it.description != localPoi.description &&
+              it.latitude != localPoi.latitude &&
+              it.longitude != localPoi.longitude
+          }.toMutableList()
+        }
+        toSave.addAll(pois)
+        db.collection(auth.currentUser!!.uid).document(Pois.path).set(
+          object {
+            val data = toSave
+          }
+        ).addOnSuccessListener {
+          onResult()
+        }
+      }
+    }
+  }
+
+  fun share(user: String, poi: Poi) {
+    val context = getApplication<Application>().applicationContext
+    var pois: MutableList<Map<String, Any>>
+    if (auth.currentUser != null) {
+      val result = db.collection(user).document(Pois.path).get()
+      result.addOnSuccessListener {
+        if (it.data != null) {
+          pois = (it.data!!["data"] as List<Map<String, Any>>).toMutableList()
+          pois = pois.filter {
+            it["name"] != poi.name &&
+              it["image"] != poi.image &&
+              it["description"] != poi.description &&
+              it["latitude"] != poi.latitude &&
+              it["longitude"] != poi.longitude
+          }.toMutableList()
+          pois.add(
+            mapOf<String, Any>(
+              "name" to poi.name,
+              "image" to poi.image,
+              "description" to poi.description,
+              "latitude" to poi.latitude,
+              "longitude" to poi.longitude,
+              "id" to poi.id
+            )
+          )
+          db.collection(user).document(Pois.path).set(
+            object {
+              val data = pois.toList()
+            }
+          ).addOnFailureListener {
+            Toast.makeText(context, "Qualcosa è andato storto con la condivisione", Toast.LENGTH_SHORT).show()
+          }
+        }
+      }
+      result.addOnFailureListener {
+        Toast.makeText(context, "Qualcosa è andato storto con la condivisione", Toast.LENGTH_SHORT).show()
+      }
+
     }
   }
 }
+

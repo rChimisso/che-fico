@@ -7,13 +7,9 @@ import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.FilledButton
 import com.kreinto.chefico.components.inputs.TextInput
+import com.kreinto.chefico.room.AuthViewModel
 import com.kreinto.chefico.room.entities.Poi
 import java.net.URLDecoder
 
@@ -41,8 +38,11 @@ private fun fixOrientaton(source: Bitmap): ImageBitmap {
   ).asImageBitmap()
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean) {
+fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, authViewModel: AuthViewModel) {
+  //var openBottomSheet by remember { mutableStateOf(false) }
+  //val bottomSheetState = rememberModalBottomSheetState()
   val context = LocalContext.current
   Column {
     if (poi != Poi.NullPoi) {
@@ -84,7 +84,9 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean) {
                 .offset(y = 20.dp)
             ) {
               if (showActions) {
-                FilledButton(icon = R.drawable.ic_share, contentDescription = "Share") {}
+                FilledButton(icon = R.drawable.ic_share, contentDescription = "Share") {
+                  //openBottomSheet = true
+                }
                 Spacer(modifier = Modifier.width(8.dp))
               }
               FilledButton(icon = R.drawable.ic_close, contentDescription = "Change image") {
@@ -102,7 +104,7 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean) {
             ),
             onFocusChanged = {
               poi.name = name
-              updatePoi(poi)
+              //updatePoi(poi)
             },
             onValueChange = { name = it }
           )
@@ -121,7 +123,7 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean) {
             singleLine = false,
             onFocusChanged = {
               poi.description = description
-              updatePoi(poi)
+              //updatePoi(poi)
             },
             onValueChange = { description = it }
           )

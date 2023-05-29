@@ -23,15 +23,15 @@ import com.kreinto.chefico.room.AuthViewModel
 @ExperimentalMaterial3Api
 @Composable
 fun BlackListView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
+  var loading by remember { mutableStateOf(true) }
   var blackList by rememberSaveable {
     mutableStateOf(emptyList<Map.Entry<String, String>>())
   }
-
   LaunchedEffect(Unit) {
-    authViewModel.getBlockedUsers(
-      { blackList = it.entries.toList() },
-      {}
-    )
+    authViewModel.getBlockedUsers({
+      blackList = it.entries.toList()
+      loading = false
+    }, {})
   }
 
   StandardFrame(

@@ -44,6 +44,7 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
       themeOptions[Theme.SYSTEM] -> settingsManager.useSystemTheme()
     }
   }
+  val isUserSignedIn by remember { mutableStateOf(authViewModel.isUserSignedIn()) }
 
   StandardFrame(
     onNavPressed = onNavigate,
@@ -53,7 +54,7 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        if (authViewModel.isUserLoggedIn()) {
+        if (isUserSignedIn) {
           Text("${Firebase.auth.currentUser?.displayName}")
         } else {
           Text(text = stringResource(R.string.settings_label))
@@ -61,7 +62,7 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
       }
     },
     actions = {
-      if (authViewModel.isUserLoggedIn()) {
+      if (isUserSignedIn) {
         FilledButton(
           icon = R.drawable.che_fico_icon,
           contentDescription = ""
@@ -200,7 +201,7 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
       ) {
         Button(
           onClick = {
-            if (authViewModel.isUserLoggedIn()) {
+            if (authViewModel.isUserSignedIn()) {
               onNavigate(CheFicoRoute.Account.path)
             } else {
               onNavigate(CheFicoRoute.Login.path)
@@ -208,7 +209,7 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
           },
           contentPadding = ButtonDefaults.ButtonWithIconContentPadding
         ) {
-          if (authViewModel.isUserLoggedIn()) {
+          if (authViewModel.isUserSignedIn()) {
             Text(text = stringResource(R.string.account_settings_label))
           } else {
             Text(text = stringResource(R.string.signup_or_login_label))

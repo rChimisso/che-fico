@@ -104,7 +104,7 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
     )
     Spacer(modifier = Modifier.height(16.dp))
     TextField(
-      label = { Text(text = stringResource(R.string.email_label)) },
+      label = { Text(text = "Password") },
       value = password,
       onValueChange = {
         password = it

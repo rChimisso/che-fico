@@ -17,5 +17,6 @@ class Poi(
   companion object {
     val NullPoi = Poi("")
   }
+
 }
 

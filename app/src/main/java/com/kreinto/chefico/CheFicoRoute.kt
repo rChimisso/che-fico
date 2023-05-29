@@ -35,9 +35,7 @@ object CheFicoRoute {
 
   object PoiDetail : RouteArgs("poiDetail", "poiId")
 
-  object AccountEdit : Route ("edit")
+  object AccountEdit : Route("edit")
 
-  object BlackList : Route ("blacklist")
-
-  object Sharings : Route ("sharings")
+  object BlackList : Route("blacklist")
 }

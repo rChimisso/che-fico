@@ -18,6 +18,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -35,7 +36,6 @@ import com.kreinto.chefico.views.account.AccountView
 import com.kreinto.chefico.views.account.blacklist.BlackListView
 import com.kreinto.chefico.views.account.edit.AccountEditView
 import com.kreinto.chefico.views.account.login.AccountLoginView
-import com.kreinto.chefico.views.account.sharings.SharingsView
 import com.kreinto.chefico.views.account.signin.AccountSigninView
 import com.kreinto.chefico.views.camera.CameraView
 import com.kreinto.chefico.views.dashboard.DashboardView
@@ -46,6 +46,8 @@ import com.kreinto.chefico.views.poidetail.PoiDetailView
 import com.kreinto.chefico.views.poilist.PoiListView
 import com.kreinto.chefico.views.settings.SettinsView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 @ExperimentalGetImage
 @ExperimentalCoroutinesApi
@@ -169,11 +171,34 @@ class MainActivity : AppCompatActivity() {
           }
         }
 
+        val coroutine = rememberCoroutineScope()
+
         LaunchedEffect(Unit) {
           @SuppressLint("SourceLockedOrientationActivity")
           this@MainActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
           PoiNotificationManager.createNotificationChannel(context)
+
+          if (authViewModel.isUserSignedIn()) {
+            authViewModel.isOnlineBackupActive { onlineBackup ->
+              if (onlineBackup) {
+                coroutine.launch {
+                  viewModel.getPois().first { localPois ->
+                    authViewModel.backup(localPois) {
+                      viewModel.deletePois()
+                      authViewModel.getPois { pois ->
+                        pois.forEach { poi ->
+                          viewModel.addPoi(poi)
+                        }
+                      }
+                    }
+                    return@first true
+                  }
+                }
+              }
+            }
+          }
         }
+
         NavHost(navController, startDestination = CheFicoRoute.Dashboard.path) {
           composable(CheFicoRoute.Dashboard.path) { DashboardView(onNavigate) }
           composable(CheFicoRoute.Maps.path) {
@@ -187,14 +212,15 @@ class MainActivity : AppCompatActivity() {
           composable(CheFicoRoute.Settings.path) { SettinsView(onNavigate, authViewModel) }
           composable(CheFicoRoute.PoiList.path) { PoiListView(onNavigate, viewModel) }
           composable(CheFicoRoute.PoiDetail.path, listOf(navArgument("poiId") { type = NavType.StringType })) {
-            PoiDetailView(onNavigate, viewModel, poiId = it.arguments?.getString("poiId"))
+            PoiDetailView(onNavigate, viewModel, poiId = it.arguments?.getString("poiId"), authViewModel)
           }
           composable(CheFicoRoute.Camera.path) { CameraView(onNavigate) }
           composable(CheFicoRoute.PoiCreation.path) {
             PoiCreationView(
               onNavigate,
               viewModel,
-              fusedLocationClient = LocationServices.getFusedLocationProviderClient(this@MainActivity)
+              fusedLocationClient = LocationServices.getFusedLocationProviderClient(this@MainActivity),
+              authViewModel
             )
           }
           composable(CheFicoRoute.PlantDetail.path, listOf(
@@ -210,10 +236,9 @@ class MainActivity : AppCompatActivity() {
           }
           composable(CheFicoRoute.Signin.path) { AccountSigninView(authViewModel, onNavigate) }
           composable(CheFicoRoute.Login.path) { AccountLoginView(authViewModel, onNavigate) }
-          composable(CheFicoRoute.Account.path) { AccountView(authViewModel, onNavigate) }
+          composable(CheFicoRoute.Account.path) { AccountView(viewModel, authViewModel, onNavigate) }
           composable(CheFicoRoute.AccountEdit.path) { AccountEditView(onNavigate, authViewModel) }
           composable(CheFicoRoute.BlackList.path) { BlackListView(onNavigate, authViewModel) }
-          composable(CheFicoRoute.Sharings.path) { SharingsView(onNavigate, authViewModel) }
         }
       }
     }
