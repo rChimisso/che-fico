@@ -20,12 +20,13 @@ import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.FilledButton
 import com.kreinto.chefico.components.frames.StandardFrame
 import com.kreinto.chefico.room.AuthViewModel
+import com.kreinto.chefico.room.CheFicoViewModel
 import java.util.*
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
 @Composable
-fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
+fun SettinsView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authViewModel: AuthViewModel) {
   val context = LocalContext.current
   val settingsManager = SettingsManager(context)
   var language by remember { mutableStateOf(settingsManager.getLanguage()) }
@@ -119,7 +120,9 @@ fun SettinsView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
             alertBuilder.setCancelable(true)
             alertBuilder.setTitle(R.string.delete_notifications_title_label)
             alertBuilder.setMessage(R.string.delete_message_label)
-            alertBuilder.setPositiveButton(R.string.positive_label) { _, _ -> }
+            alertBuilder.setPositiveButton(R.string.positive_label) { _, _ ->
+              viewModel.deleteNotifications()
+            }
             alertBuilder.setNegativeButton(R.string.negative_label) { _, _ -> }
             val alert = alertBuilder.create()
             alert.show()

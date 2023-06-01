@@ -1,8 +1,9 @@
 package com.kreinto.chefico.views.dashboard.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ExperimentalMaterialApi
@@ -30,7 +31,8 @@ fun DashboardContent(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel) 
     horizontalAlignment = Alignment.CenterHorizontally,
     modifier = Modifier
       .padding(16.dp)
-      .fillMaxWidth()
+      .fillMaxSize()
+      .background(MaterialTheme.colorScheme.background)
   ) {
     items(notifications.value.size) { index ->
       SwipeableItem(
