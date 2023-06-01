@@ -27,6 +27,7 @@ import com.kreinto.chefico.components.buttons.FilledButton
 import com.kreinto.chefico.components.inputs.TextInput
 import com.kreinto.chefico.room.AuthViewModel
 import com.kreinto.chefico.room.entities.Poi
+import java.io.InputStream
 import java.net.URLDecoder
 
 private fun fixOrientaton(source: Bitmap): ImageBitmap {
@@ -46,8 +47,13 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, a
   val context = LocalContext.current
   Column {
     if (poi != Poi.NullPoi) {
-      val stream = context.contentResolver.openInputStream(Uri.parse(URLDecoder.decode(poi.image, "utf-8")))
-      val image = BitmapFactory.decodeStream(stream)
+
+      var stream: InputStream?
+      var image: Bitmap? = null
+      if (poi.image.isNotEmpty()) {
+        stream = context.contentResolver.openInputStream(Uri.parse(URLDecoder.decode(poi.image, "utf-8")))
+        image = BitmapFactory.decodeStream(stream)
+      }
       var name by rememberSaveable { mutableStateOf(poi.name) }
       var description by rememberSaveable { mutableStateOf(poi.description) }
       Surface(

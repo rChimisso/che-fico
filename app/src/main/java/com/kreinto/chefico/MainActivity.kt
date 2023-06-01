@@ -208,7 +208,7 @@ class MainActivity : AppCompatActivity() {
               locationSettingsClient = LocationServices.getSettingsClient(this@MainActivity)
             )
           }
-          composable(CheFicoRoute.Settings.path) { SettinsView(onNavigate, authViewModel) }
+          composable(CheFicoRoute.Settings.path) { SettinsView(onNavigate, viewModel, authViewModel) }
           composable(CheFicoRoute.PoiList.path) { PoiListView(onNavigate, viewModel) }
           composable(CheFicoRoute.PoiDetail.path, listOf(navArgument("poiId") { type = NavType.StringType })) {
             PoiDetailView(onNavigate, viewModel, poiId = it.arguments?.getString("poiId"), authViewModel)

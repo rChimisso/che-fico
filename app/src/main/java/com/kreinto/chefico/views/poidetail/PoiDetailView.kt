@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kreinto.chefico.PoiNotificationManager
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.FilledButton
 import com.kreinto.chefico.components.buttons.TransparentButton
@@ -72,7 +73,9 @@ fun PoiDetailView(
   var openBottomSheet by remember { mutableStateOf(false) }
   val bottomSheetState = rememberModalBottomSheetState()
   var notifications = viewModel.getPoiNotifications(poiId!!.toInt()).collectAsStateWithLifecycle(initialValue = emptyList())
-
+  var openNotificationPopUp by remember {
+    mutableStateOf(false)
+  }
   LaunchedEffect(poiId) {
     if (poiId != null) {
 
@@ -243,6 +246,92 @@ fun PoiDetailView(
 
             )
         }
+        if (openNotificationPopUp) {
+          Dialog(onDismissRequest = { openNotificationPopUp = false }) {
+            val context = LocalContext.current
+            var notificationName by remember {
+              mutableStateOf("")
+            }
+            var notificationMessage by remember { mutableStateOf("") }
+            var dateRangePickerState = rememberDatePickerState()
+            Surface(
+              modifier = Modifier.fillMaxWidth()
+            ) {
+              Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+                TextField(
+                  placeholder = { Text("Titolo") },
+                  value = notificationName, onValueChange = { notificationName = it },
+                  colors = TextFieldDefaults.colors(
+                    errorContainerColor = Color.Transparent,
+                    unfocusedTextColor = Color(0xff32C896),
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    cursorColor = Color(0xff32C896),
+                    focusedIndicatorColor = Color(0x6632C896),
+                    unfocusedIndicatorColor = Color(0x6632C896),
+                    disabledIndicatorColor = Color(0x6632C896),
+                    focusedLeadingIconColor = Color(0xff32C896),
+                    unfocusedLeadingIconColor = Color(0xff32C896),
+                    focusedLabelColor = Color.Transparent,
+                    unfocusedLabelColor = Color(0xff32C896),
+                    disabledLabelColor = Color(0xff32C896),
+                    unfocusedPlaceholderColor = Color(0xff32C896),
+                  )
+                )
+                DatePicker(state = dateRangePickerState)
+                TextField(
+                  placeholder = { Text("Descrizione") },
+                  value = notificationMessage, onValueChange = { notificationMessage = it },
+                  colors = TextFieldDefaults.colors(
+                    errorContainerColor = Color.Transparent,
+                    unfocusedTextColor = Color(0xff32C896),
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    cursorColor = Color(0xff32C896),
+                    focusedIndicatorColor = Color(0x6632C896),
+                    unfocusedIndicatorColor = Color(0x6632C896),
+                    disabledIndicatorColor = Color(0x6632C896),
+                    focusedLeadingIconColor = Color(0xff32C896),
+                    unfocusedLeadingIconColor = Color(0xff32C896),
+                    focusedLabelColor = Color.Transparent,
+                    unfocusedLabelColor = Color(0xff32C896),
+                    disabledLabelColor = Color(0xff32C896),
+                    unfocusedPlaceholderColor = Color(0xff32C896),
+                  )
+                )
+                TextButton(
+                  colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                  ),
+                  contentPadding = PaddingValues(0.dp),
+                  shape = RoundedCornerShape(12.dp),
+                  modifier = Modifier
+                    .padding(16.dp)
+                    .width(208.dp)
+                    .height(40.dp),
+                  enabled = notificationName.isNotEmpty() && notificationMessage.isNotEmpty() && dateRangePickerState.selectedDateMillis != null,
+                  onClick = {
+                    openNotificationPopUp = false
+                    viewModel.addNotification(
+                      Notification("", notificationName, poiId.toInt())
+                    )
+                    PoiNotificationManager.scheduleNotification(
+                      context,
+                      dateRangePickerState.selectedDateMillis!!,
+                      notificationName,
+                      notificationMessage
+                    )
+                  }) {
+                  Text("Aggiungi")
+                }
+              }
+            }
+
+          }
+        }
         LazyColumn(
           verticalArrangement = Arrangement.spacedBy(8.dp),
           horizontalAlignment = Alignment.CenterHorizontally,
@@ -287,13 +376,8 @@ fun PoiDetailView(
 
               onClick = {
                 if (notifications.value.size < 5) {
-                  viewModel.addNotification(
-                    Notification(
-                      "",
-                      "ciaone",
-                      poiId.toInt()
-                    )
-                  )
+                  openNotificationPopUp = true
+
                 }
               }
             ) {

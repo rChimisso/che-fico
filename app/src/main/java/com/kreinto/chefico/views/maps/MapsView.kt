@@ -2,8 +2,10 @@ package com.kreinto.chefico.views.maps
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.content.IntentSender
 import android.location.Location
+import android.net.Uri
 import android.os.Looper
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -21,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -162,9 +165,12 @@ fun MapsView(
       }
     }
 
+
     suspend fun moveCamera() {
       cameraPositionState.animate(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000)
     }
+
+    val context = LocalContext.current
 
     LaunchedEffect(shouldFollow) {
       if (shouldFollow) {
@@ -211,7 +217,8 @@ fun MapsView(
     }
 
     GoogleMap(
-      modifier = Modifier.fillMaxSize(),
+      modifier = Modifier
+        .fillMaxSize(),
       properties = properties,
       uiSettings = uiSettings,
       cameraPositionState = cameraPositionState,
@@ -219,14 +226,23 @@ fun MapsView(
         isMapLoaded = true
         refreshMarkers()
       },
+
       onMapLongClick = {
         viewModel.setCreatingPoi(Poi(name = "New POI", latitude = it.latitude, longitude = it.longitude))
         onNavigate(CheFicoRoute.PoiCreation.path)
       }
     ) {
       // For clustering: https://github.com/googlemaps/android-maps-compose/issues/44
-      poisWithin.value.forEach { Marker(MarkerState(LatLng(it.latitude, it.longitude))) }
+      poisWithin.value.forEach { poi ->
+        Marker(MarkerState(LatLng(poi.latitude, poi.longitude)), onClick = {
+          val intent = Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=${poi.latitude},${poi.longitude}"))
+          intent.setPackage("com.google.android.apps.maps")
+          context.startActivity(intent)
+          return@Marker true
+        })
+      }
     }
+
     AnimatedVisibility(
       modifier = Modifier.fillMaxSize(),
       visible = !isMapLoaded,
