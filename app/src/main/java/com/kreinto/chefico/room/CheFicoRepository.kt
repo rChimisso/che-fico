@@ -11,6 +11,10 @@ class CheFicoRepository(
   private val poiDao: PoiDao,
 ) {
 
+  fun selectPoiNotifications(poiId: Int): Flow<List<Notification>> {
+    return notificationDao.selectAllPoi(poiId)
+  }
+
   fun insertPoi(poi: Poi) {
     poiDao.insert(poi)
   }

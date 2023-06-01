@@ -4,17 +4,21 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
@@ -25,12 +29,18 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.FilledButton
+import com.kreinto.chefico.components.buttons.TransparentButton
+import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.inputs.TextInput
+import com.kreinto.chefico.components.items.SwipeableItem
 import com.kreinto.chefico.room.AuthViewModel
 import com.kreinto.chefico.room.CheFicoViewModel
+import com.kreinto.chefico.room.entities.Notification
 import com.kreinto.chefico.room.entities.Poi
 import java.net.URLDecoder
 
@@ -43,6 +53,7 @@ private fun fixOrientaton(source: Bitmap): ImageBitmap {
   ).asImageBitmap()
 }
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @ExperimentalMaterial3Api
 @Composable
 fun PoiDetailView(
@@ -55,32 +66,43 @@ fun PoiDetailView(
     mutableStateOf(Poi.NullPoi)
   }
   var user by remember {
-    mutableStateOf("VJoSORl1KNP1n7Cs6Alu2qnJg7E3")
+    mutableStateOf("")
   }
   val context = LocalContext.current
   var openBottomSheet by remember { mutableStateOf(false) }
   val bottomSheetState = rememberModalBottomSheetState()
+  var notifications = viewModel.getPoiNotifications(poiId!!.toInt()).collectAsStateWithLifecycle(initialValue = emptyList())
 
   LaunchedEffect(poiId) {
     if (poiId != null) {
+
       viewModel.getPoi(poiId.toInt()).collect {
         poi = it
       }
+
     }
   }
-
+  val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+    if (uri != null) {
+      poi.image = uri.toString()
+      viewModel.updatePoi(poi)
+    }
+  }
   val showActions: Boolean = true
   SimpleFrame(onBackPressed = onNavigate) {
 
     if (openBottomSheet) {
-      ModalBottomSheet(onDismissRequest = { openBottomSheet = false }) {
-        Row(
-          modifier = Modifier.fillMaxWidth(),
-          horizontalArrangement = Arrangement.Center,
-          verticalAlignment = Alignment.CenterVertically
+      Dialog(onDismissRequest = { openBottomSheet = false }) {
+        Column(
+          verticalArrangement = Arrangement.Center,
+          horizontalAlignment = Alignment.CenterHorizontally,
+          modifier = Modifier
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp)),
         ) {
+          Text("Condividi", color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(top = 16.dp))
           TextField(
-            modifier = Modifier.padding(12.dp), value = user, onValueChange = { user = it }, singleLine = true,
+            modifier = Modifier.padding(16.dp),
+            value = user, onValueChange = { user = it }, singleLine = true,
             colors = TextFieldDefaults.colors(
               unfocusedTextColor = Color(0xff32C896),
               focusedContainerColor = Color.Transparent,
@@ -98,7 +120,11 @@ fun PoiDetailView(
               unfocusedLabelColor = Color(0xff32C896),
               disabledLabelColor = Color(0xff32C896),
               unfocusedPlaceholderColor = Color(0xff32C896),
-            ),
+
+              ),
+            placeholder = { Text("ID utente") },
+            enabled = true,
+            readOnly = false,
             leadingIcon = {
               Icon(
                 painter = painterResource(id = R.drawable.ic_account),
@@ -107,31 +133,27 @@ fun PoiDetailView(
               )
             }
           )
-        }
-        TextButton(
-          enabled = user.isNotEmpty(),
-          colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent,
-            contentColor = Color.Black
-          ),
-          contentPadding = PaddingValues(0.dp),
-          shape = RoundedCornerShape(12.dp),
-          modifier = Modifier
-            .width(208.dp)
-            .height(40.dp),
-          onClick = {
-            authViewModel.share(user, poi)
-          }
-        ) {
-          Box(
+          TextButton(
+            enabled = user.isNotEmpty(),
+            colors = ButtonDefaults.buttonColors(
+              containerColor = MaterialTheme.colorScheme.primary,
+              contentColor = MaterialTheme.colorScheme.onPrimary
+            ),
+            contentPadding = PaddingValues(0.dp),
+            shape = RoundedCornerShape(12.dp),
             modifier = Modifier
-              .fillMaxSize()
-              .clip(RoundedCornerShape(12.dp))
-              .background(Brush.verticalGradient(listOf(Color(0xff32C896), Color(0x6632C896))))
+              .padding(bottom = 16.dp)
+              .width(208.dp)
+              .height(40.dp),
+
+            onClick = {
+              authViewModel.share(user, poi)
+            }
           ) {
-            Text(text = "Condividi", fontSize = 16.sp, modifier = Modifier.align(Alignment.Center))
+            Text(text = "Condividi", fontSize = 16.sp)
           }
         }
+
       }
     }
 
@@ -144,6 +166,7 @@ fun PoiDetailView(
         Surface(
           shadowElevation = 12.dp,
           modifier = Modifier.fillMaxWidth(),
+          color = MaterialTheme.colorScheme.surface
         ) {
           Column {
             Box {
@@ -180,8 +203,8 @@ fun PoiDetailView(
                   }
                   Spacer(modifier = Modifier.width(8.dp))
                 }
-                FilledButton(icon = R.drawable.ic_close, contentDescription = "Change image") {
-                  // TODO: Change image (pick from gallery and overwrite)
+                FilledButton(icon = R.drawable.ic_photo_camera, contentDescription = "Change image") {
+                  galleryLauncher.launch("image/*")
                 }
                 Spacer(modifier = Modifier.width(8.dp))
               }
@@ -189,7 +212,7 @@ fun PoiDetailView(
             TextInput(
               modifier = Modifier.fillMaxWidth(2f / 3f),
               init = name,
-              textColor = Color(0xff4caf50),
+              textColor = MaterialTheme.colorScheme.primary,
               textStyle = TextStyle(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
@@ -207,19 +230,75 @@ fun PoiDetailView(
           modifier = Modifier.padding(16.dp),
           shape = RoundedCornerShape(10.dp)
         ) {
-          Column {
-            TextInput(
-              modifier = Modifier.requiredHeight(128.dp),
-              init = description,
-              textStyle = TextStyle(fontSize = 18.sp),
-              singleLine = false,
-              onFocusChanged = {
+          TextField(
+            value = description,
+            textStyle = TextStyle(fontSize = 18.sp),
+            onValueChange = { description = it },
+            modifier = Modifier
+              .height(128.dp)
+              .onFocusChanged {
                 poi.description = description
                 viewModel.updatePoi(poi)
               },
-              onValueChange = { description = it }
+
             )
-            Divider(modifier = Modifier.height(2.dp))
+        }
+        LazyColumn(
+          verticalArrangement = Arrangement.spacedBy(8.dp),
+          horizontalAlignment = Alignment.CenterHorizontally,
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+        ) {
+          items(notifications.value.size) { index ->
+            SwipeableItem(
+              icon = R.drawable.ic_poi,
+              text = notifications.value[index].text,
+              actions = arrayOf({
+                TransparentButton(
+                  ButtonData(
+                    icon = R.drawable.ic_close,
+                    contentDescription = "Elimina",
+                    colors = IconButtonDefaults.iconButtonColors(
+                      contentColor = MaterialTheme.colorScheme.error
+                    ),
+                    onClick = {
+                      viewModel.deleteNotification(notifications.value[index].id)
+                    }
+                  )
+                )
+              }),
+              onClick = {}
+            )
+          }
+          item {
+            TextButton(
+              enabled = notifications.value.size < 5,
+              colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+              ),
+              contentPadding = PaddingValues(0.dp),
+              shape = RoundedCornerShape(12.dp),
+              modifier = Modifier
+                .padding(bottom = 16.dp)
+                .width(208.dp)
+                .height(40.dp),
+
+              onClick = {
+                if (notifications.value.size < 5) {
+                  viewModel.addNotification(
+                    Notification(
+                      "",
+                      "ciaone",
+                      poiId.toInt()
+                    )
+                  )
+                }
+              }
+            ) {
+              Text(text = "Aggiungi notifica", fontSize = 16.sp)
+            }
           }
         }
       }

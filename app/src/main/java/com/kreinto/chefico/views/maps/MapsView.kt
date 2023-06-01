@@ -21,7 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -221,7 +220,7 @@ fun MapsView(
         refreshMarkers()
       },
       onMapLongClick = {
-        viewModel.setCreatingPoi(Poi("New POI", latitude = it.latitude, longitude = it.longitude))
+        viewModel.setCreatingPoi(Poi(name = "New POI", latitude = it.latitude, longitude = it.longitude))
         onNavigate(CheFicoRoute.PoiCreation.path)
       }
     ) {

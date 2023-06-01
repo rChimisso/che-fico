@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,8 +28,8 @@ import com.kreinto.chefico.R
 fun SelectableItem(
   @DrawableRes icon: Int,
   text: String,
-  contentColor: Color = Color(0xff4caf50),
-  containerColor: Color = Color(0xffaaef71),
+  contentColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
+  containerColor: Color = MaterialTheme.colorScheme.primaryContainer,
   selectable: Boolean,
   onClick: () -> Unit,
   onLongClick: () -> Unit,

@@ -45,6 +45,7 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
     val photoUrl: Uri
   )
 
+
   private val auth = Firebase.auth
   private val db = Firebase.firestore
 
@@ -170,6 +171,7 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
           (it.data!!["data"] as List<Map<String, Any>>).forEach {
             pois.add(
               Poi(
+                (it["id"]!! as Long).toInt(),
                 it["name"]!! as String,
                 it["description"]!! as String,
                 it["image"]!! as String,

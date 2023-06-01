@@ -8,7 +8,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,6 +23,7 @@ import com.kreinto.chefico.components.buttons.TransparentButton
 @Composable
 fun SearchInput(onValueChange: (String) -> Unit) {
   TextInput(
+    singleLine = true,
     placeholder = { Text(text = stringResource(R.string.search_placeholder_label), color = MaterialTheme.colorScheme.primary) },
     textColor = MaterialTheme.colorScheme.primary,
     trailingIcon = { value, setter ->
@@ -32,7 +32,7 @@ fun SearchInput(onValueChange: (String) -> Unit) {
           modifier = Modifier.size(24.dp),
           imageVector = Icons.Default.Search,
           contentDescription = "Search",
-          tint = Color(0xff4caf50)
+          tint = MaterialTheme.colorScheme.primary
         )
       } else {
         TransparentButton(

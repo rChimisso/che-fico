@@ -5,17 +5,18 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "pois")
 class Poi(
+  @PrimaryKey(autoGenerate = true)
+  var id: Int = 0,
   var name: String,
   var description: String = "",
   var image: String = "",
   var latitude: Double = 0.0,
   var longitude: Double = 0.0,
 ) {
-  @PrimaryKey(autoGenerate = true)
-  var id: Int = 0
+
 
   companion object {
-    val NullPoi = Poi("")
+    val NullPoi = Poi(name = "")
   }
 
 }

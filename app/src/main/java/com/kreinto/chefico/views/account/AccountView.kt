@@ -105,10 +105,9 @@ fun AccountView(viewModel: CheFicoViewModel, authViewModel: AuthViewModel, onNav
                 coroutine.launch {
                   viewModel.getPois().first { localPois ->
                     authViewModel.backup(localPois) {
-                      viewModel.deletePois()
                       authViewModel.getPois { pois ->
                         pois.forEach { poi ->
-                          viewModel.addPoi(poi)
+                          viewModel.updatePoi(poi)
                         }
                       }
                     }

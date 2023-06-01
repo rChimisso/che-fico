@@ -1,6 +1,7 @@
 package com.kreinto.chefico.views.poilist
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +12,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
@@ -31,7 +33,6 @@ fun PoiListView(
   val pois = viewModel.getPois().collectAsStateWithLifecycle(emptyList())
   val selectedPois = remember { mutableStateListOf<Int>() }
   var filter: String by rememberSaveable { mutableStateOf("") }
-
   StandardFrame(
     onNavPressed = onNavigate,
     title = { SearchInput(onValueChange = { query -> filter = query }) },
@@ -59,9 +60,11 @@ fun PoiListView(
     }
   ) {
     LazyColumn(
+      verticalArrangement = Arrangement.spacedBy(8.dp),
       modifier = Modifier
         .padding(top = it.calculateTopPadding())
         .fillMaxHeight()
+        .padding(16.dp),
     ) {
       if (filter.isEmpty()) {
         items(pois.value.size) { index ->

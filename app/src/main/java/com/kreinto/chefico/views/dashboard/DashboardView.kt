@@ -10,6 +10,7 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.views.dashboard.components.DashboardBottomSheetContent
 import com.kreinto.chefico.views.dashboard.components.DashboardContent
 
@@ -17,7 +18,7 @@ import com.kreinto.chefico.views.dashboard.components.DashboardContent
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
 @Composable
-fun DashboardView(onNavigate: (String) -> Unit) {
+fun DashboardView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel) {
   val scaffoldState = rememberBottomSheetScaffoldState()
   BottomSheetScaffold(
     sheetContent = { DashboardBottomSheetContent(onNavigate) },
@@ -30,5 +31,5 @@ fun DashboardView(onNavigate: (String) -> Unit) {
     sheetSwipeEnabled = true,
     containerColor = Color(0xff20211e),
     contentColor = Color(0xff20211e)
-  ) { DashboardContent() }
+  ) { DashboardContent(onNavigate, viewModel) }
 }

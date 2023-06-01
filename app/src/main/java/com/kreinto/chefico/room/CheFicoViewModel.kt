@@ -65,6 +65,10 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     return repository.selectNotification(id)
   }
 
+  fun getPoiNotifications(poiId: Int): Flow<List<Notification>> {
+    return repository.selectPoiNotifications(poiId)
+  }
+
 
   fun getNotifications(): Flow<List<Notification>> {
     return repository.selectNotifications()

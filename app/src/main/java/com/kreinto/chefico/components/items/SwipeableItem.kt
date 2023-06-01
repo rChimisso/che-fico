@@ -9,6 +9,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -38,8 +39,8 @@ import kotlin.math.roundToInt
 fun SwipeableItem(
   @DrawableRes icon: Int,
   text: String,
-  contentColor: Color = Color(0xff4caf50),
-  containerColor: Color = Color(0xffaaef71),
+  contentColor: Color = MaterialTheme.colorScheme.primaryContainer,
+  containerColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
   actions: Array<@Composable () -> Unit> = arrayOf(),
   onClick: () -> Unit
 ) {

@@ -83,7 +83,7 @@ fun PlantDetailView(
           icon = R.drawable.ic_close,
           contentDescription = "Save plant as POI"
         ) {
-          viewModel.setCreatingPoi(Poi(name, description.value, imageURI!!))
+          viewModel.setCreatingPoi(Poi(name = name, description = description.value, image = imageURI!!))
           onNavigate(CheFicoRoute.PoiCreation.path)
         }
       }

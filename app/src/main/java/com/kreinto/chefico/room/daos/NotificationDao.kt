@@ -22,4 +22,7 @@ interface NotificationDao {
 
   @Query("SELECT * FROM notifications")
   fun selectAll(): Flow<List<Notification>>
+
+  @Query("SELECT * FROM notifications WHERE poiId = :poiId")
+  fun selectAllPoi(poiId: Int): Flow<List<Notification>>
 }

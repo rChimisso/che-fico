@@ -184,10 +184,9 @@ class MainActivity : AppCompatActivity() {
                 coroutine.launch {
                   viewModel.getPois().first { localPois ->
                     authViewModel.backup(localPois) {
-                      viewModel.deletePois()
                       authViewModel.getPois { pois ->
                         pois.forEach { poi ->
-                          viewModel.addPoi(poi)
+                          viewModel.updatePoi(poi)
                         }
                       }
                     }
@@ -200,7 +199,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         NavHost(navController, startDestination = CheFicoRoute.Dashboard.path) {
-          composable(CheFicoRoute.Dashboard.path) { DashboardView(onNavigate) }
+          composable(CheFicoRoute.Dashboard.path) { DashboardView(onNavigate, viewModel) }
           composable(CheFicoRoute.Maps.path) {
             MapsView(
               onNavigate,
