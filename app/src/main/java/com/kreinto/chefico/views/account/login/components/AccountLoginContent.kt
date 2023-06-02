@@ -1,4 +1,4 @@
-package com.kreinto.chefico.views.account.login
+package com.kreinto.chefico.views.account.login.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
@@ -31,15 +31,11 @@ import androidx.compose.ui.unit.sp
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.room.AuthViewModel
-import com.kreinto.chefico.views.account.signin.GoogleLogInButton
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: PaddingValues, onNavigate: (String) -> Unit) {
+  val loading = remember { mutableStateOf(false) }
 
-  val loading = remember {
-    mutableStateOf(false)
-  }
   Column(
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -47,36 +43,33 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
       .fillMaxSize()
       .padding(paddingValues)
   ) {
-    Image(painter = painterResource(id = R.drawable.che_fico_icon), contentDescription = "", Modifier.size(156.dp))
-    Spacer(modifier = Modifier.height(64.dp))
+    Image(painterResource(R.drawable.che_fico_icon), null, Modifier.size(156.dp))
+    Spacer(Modifier.height(64.dp))
     GoogleLogInButton(
       onSuccess = {
         onNavigate(CheFicoRoute.Account.path)
       },
       onFailure = {}
     )
-    Spacer(modifier = Modifier.height(40.dp))
+    Spacer(Modifier.height(40.dp))
     Row(
       horizontalArrangement = Arrangement.Center,
       verticalAlignment = Alignment.CenterVertically
     ) {
       Divider(color = Color(0x6632C896), modifier = Modifier.width(128.dp))
-      Spacer(modifier = Modifier.width(8.dp))
+      Spacer(Modifier.width(8.dp))
       Text(text = stringResource(R.string.login_methods_divider_label), fontSize = 16.sp, color = Color(0xff32C896))
-      Spacer(modifier = Modifier.width(8.dp))
+      Spacer(Modifier.width(8.dp))
       Divider(color = Color(0x6632C896), modifier = Modifier.width(128.dp))
     }
-    Spacer(modifier = Modifier.height(32.dp))
+    Spacer(Modifier.height(32.dp))
     var email: String by rememberSaveable { mutableStateOf("") }
     var password: String by rememberSaveable { mutableStateOf("") }
-
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     TextField(
       label = { Text(text = stringResource(R.string.email_label)) },
       value = email,
-      onValueChange = {
-        email = it
-      },
+      onValueChange = { email = it },
       singleLine = true,
       colors = TextFieldDefaults.colors(
         unfocusedTextColor = Color(0xff32C896),
@@ -106,9 +99,7 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
     TextField(
       label = { Text(text = "Password") },
       value = password,
-      onValueChange = {
-        password = it
-      },
+      onValueChange = { password = it },
       singleLine = true,
       colors = TextFieldDefaults.colors(
         unfocusedTextColor = Color(0xff32C896),
@@ -149,24 +140,21 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
         )
       }
     )
-    Spacer(modifier = Modifier.height(32.dp))
+    Spacer(Modifier.height(32.dp))
     Row(
       horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
     ) {
       Text(text = stringResource(R.string.pwd_forgot_label), fontSize = 16.sp, color = Color(0xff32C896))
-      Spacer(modifier = Modifier.width(8.dp))
+      Spacer(Modifier.width(8.dp))
       ClickableText(
         AnnotatedString(text = stringResource(R.string.pwd_recover_label)),
         style = TextStyle(
           color = Color(0xff32C896),
           fontSize = 16.sp,
-
-
-          )
+        )
       ) {}
-
     }
-    Spacer(modifier = Modifier.height(32.dp))
+    Spacer(Modifier.height(32.dp))
     TextButton(
       colors = ButtonDefaults.buttonColors(
         containerColor = Color.Transparent,
@@ -179,16 +167,19 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
         .height(40.dp),
       onClick = {
         loading.value = true
-        authViewModel.signIn(email, password, {
-          loading.value = false
-          if (it == null) {
-            email = ""
-            password = ""
-            onNavigate(CheFicoRoute.Account.path)
-          }
-        },
-          {})
-
+        authViewModel.signIn(
+          email,
+          password,
+          {
+            loading.value = false
+            if (it == null) {
+              email = ""
+              password = ""
+              onNavigate(CheFicoRoute.Account.path)
+            }
+          },
+          {}
+        )
       }
     ) {
       Box(
@@ -200,7 +191,7 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
         Text(text = stringResource(R.string.login_label), fontSize = 16.sp, modifier = Modifier.align(Alignment.Center))
       }
     }
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(Modifier.height(16.dp))
     TextButton(
       colors = ButtonDefaults.buttonColors(
         containerColor = Color.Transparent,
@@ -212,10 +203,8 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
         .width(208.dp)
         .height(40.dp),
       onClick = { onNavigate(CheFicoRoute.Signin.path) },
-    ) {
-      Text(text = stringResource(R.string.signup_label), fontSize = 16.sp)
-    }
-    Spacer(modifier = Modifier.height(8.dp))
+    ) { Text(text = stringResource(R.string.signup_label), fontSize = 16.sp) }
+    Spacer(Modifier.height(8.dp))
   }
   AnimatedVisibility(
     modifier = Modifier.fillMaxSize(),

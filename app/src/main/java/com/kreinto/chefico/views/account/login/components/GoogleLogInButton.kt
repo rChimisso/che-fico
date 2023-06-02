@@ -1,4 +1,4 @@
-package com.kreinto.chefico.views.account.signin
+package com.kreinto.chefico.views.account.login.components
 
 import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -28,7 +28,7 @@ import com.google.firebase.ktx.Firebase
 import com.kreinto.chefico.R
 
 @Composable
-fun GoogleSignInButton(onSuccess: () -> Unit, onFailure: () -> Unit) {
+fun GoogleLogInButton(onSuccess: () -> Unit, onFailure: () -> Unit) {
   val context = LocalContext.current
   val oneTapClient = Identity.getSignInClient(context)
   val signInRequest =
@@ -47,7 +47,7 @@ fun GoogleSignInButton(onSuccess: () -> Unit, onFailure: () -> Unit) {
       .build()
 
 
-  var launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+  val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
     val googleCredential = oneTapClient.getSignInCredentialFromIntent(result.data)
     val idToken = googleCredential.googleIdToken
 

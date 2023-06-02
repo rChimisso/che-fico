@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
   }
 
   /**
-   * Returns an [ActivityResultLauncher] for permission requests that navigates to the given [Route] if the user grants the permission.
+   * Returns an [ActivityResultLauncher] for permission requests that navigates to the given route if the user grants the permission.
    *
    * @param route path to navigate to if the user grants the permission.
    * @return [ActivityResultLauncher] for permission requests.
@@ -132,21 +132,12 @@ class MainActivity : AppCompatActivity() {
       }
     }
     val requestCameraPermissionLauncher = getPermissionLauncher(CheFicoRoute.Camera.path)
-    val requestGenericPermissionLauncher = getPermissionLauncher {
-      if (!it) {
-        // Explain to the user that the feature is unavailable because the
-        // feature requires a permission that the user has denied. At the
-        // same time, respect the user's decision. Don't link to system
-        // settings in an effort to convince the user to change their
-        // decision.
-      }
-    }
+    val requestGenericPermissionLauncher = getPermissionLauncher {}
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       requestPermission(POST_NOTIFICATIONS, requestGenericPermissionLauncher)
       requestPermission(READ_MEDIA_IMAGES, requestGenericPermissionLauncher)
       requestPermission(SCHEDULE_EXACT_ALARM, requestGenericPermissionLauncher)
     }
-
 
     setContent {
       CheFicoTheme {
@@ -173,12 +164,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         val coroutine = rememberCoroutineScope()
-
         LaunchedEffect(Unit) {
           @SuppressLint("SourceLockedOrientationActivity")
           this@MainActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
           PoiNotificationManager.createNotificationChannel(context)
-
+          SettingsManager(context).applyTheme()
           if (authViewModel.isUserSignedIn()) {
             authViewModel.isOnlineBackupActive { onlineBackup ->
               if (onlineBackup) {

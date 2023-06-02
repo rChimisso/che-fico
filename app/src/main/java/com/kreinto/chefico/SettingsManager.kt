@@ -20,7 +20,6 @@ class Theme {
 }
 
 class SettingsManager(context: Context) {
-
   private val languageSetting = "language"
   private val autoDeleteNotificationsSetting = "autoDeleteNotifications"
   private val themeModeSetting = "themeMode"
@@ -48,32 +47,8 @@ class SettingsManager(context: Context) {
     return settings.getInt(themeModeSetting, Theme.SYSTEM)
   }
 
-  fun useDarkTheme() {
-    settings.edit().putInt(themeModeSetting, MODE_NIGHT_YES).apply()
-    setDefaultNightMode(MODE_NIGHT_YES)
-  }
-
-  fun useLightTheme() {
-    settings.edit().putInt(themeModeSetting, MODE_NIGHT_NO).apply()
-    setDefaultNightMode(MODE_NIGHT_NO)
-  }
-
-  fun useSystemTheme() {
-    settings.edit().putInt(themeModeSetting, MODE_NIGHT_FOLLOW_SYSTEM).apply()
-    setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
+  fun applyTheme(theme: Int = getTheme()) {
+    settings.edit().putInt(themeModeSetting, theme).apply()
+    setDefaultNightMode(theme)
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

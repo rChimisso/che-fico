@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PoiDao {
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  fun insert(poi: Poi)
+  fun insert(poi: Poi): Long
 
   @Query("DELETE FROM pois WHERE id = :id")
   fun delete(id: Int)

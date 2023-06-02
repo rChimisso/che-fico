@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface NotificationDao {
   @Insert
-  fun insert(notification: Notification)
+  fun insert(notification: Notification): Long
 
   @Query("SELECT * FROM notifications WHERE id = :id")
   fun select(id: Int): Flow<Notification>
@@ -28,4 +28,7 @@ interface NotificationDao {
 
   @Query("DELETE FROM notifications WHERE poiId = :poiId")
   fun deleteAllOfPoi(poiId: Int)
+
+  @Query("UPDATE notifications SET poiId = :newId WHERE poiId = 0")
+  fun updateAllOfNewPoi(newId: Long)
 }

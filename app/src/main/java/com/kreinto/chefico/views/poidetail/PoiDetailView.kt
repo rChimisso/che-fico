@@ -11,8 +11,8 @@ import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.room.entities.Poi
 
 @ExperimentalFoundationApi
-@ExperimentalMaterialApi
 @ExperimentalMaterial3Api
+@ExperimentalMaterialApi
 @Composable
 fun PoiDetailView(
   onNavigate: (String) -> Unit,
@@ -20,17 +20,11 @@ fun PoiDetailView(
   poiId: String?,
   authViewModel: AuthViewModel
 ) {
-  var poi by remember {
-    mutableStateOf(Poi.NullPoi)
-  }
+  var poi by remember { mutableStateOf(Poi.NullPoi) }
   LaunchedEffect(poiId) {
     if (poiId != null) {
-      viewModel.getPoi(poiId.toInt()).collect {
-        poi = it
-      }
+      viewModel.getPoi(poiId.toInt()).collect { poi = it }
     }
   }
-  SimpleFrame(onBackPressed = onNavigate) {
-    PoiDetailContent(poi, viewModel::updatePoi, true, viewModel, authViewModel)
-  }
+  SimpleFrame(onNavigate) { PoiDetailContent(poi, viewModel::updatePoi, true, viewModel, authViewModel) }
 }

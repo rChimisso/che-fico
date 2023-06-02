@@ -10,19 +10,19 @@ import com.kreinto.chefico.components.frames.topbars.SimpleTopBar
 /**
  * Simple Frame following Material3 guidelines.
  *
- * @param onBackPressed Function called when back button is clicked.
+ * @param onNavigate Function called when back button is clicked.
  * @param bottomBar Optional overlayed bottom bar to display.
  * @param content [Composable] to display as main content.
  */
 @ExperimentalMaterial3Api
 @Composable
 fun SimpleFrame(
-  onBackPressed: (String) -> Unit,
+  onNavigate: (String) -> Unit,
   bottomBar: @Composable () -> Unit = {},
   content: @Composable ((PaddingValues) -> Unit)
 ) {
   Scaffold(
-    topBar = { SimpleTopBar(onBackPressed = onBackPressed) },
+    topBar = { SimpleTopBar(onNavigate) },
     bottomBar = bottomBar,
     content = content
   )
@@ -35,5 +35,5 @@ fun SimpleFrame(
 @Composable
 @Preview
 private fun SimpleFramePreview() {
-  SimpleFrame(onBackPressed = {}) {}
+  SimpleFrame({}) {}
 }

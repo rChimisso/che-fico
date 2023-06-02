@@ -1,4 +1,4 @@
-package com.kreinto.chefico.views.account.signin
+package com.kreinto.chefico.views.account.signin.components
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
@@ -8,14 +8,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -27,7 +29,6 @@ import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.room.AuthViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: PaddingValues, onNavigate: (String) -> Unit) {
   var email by rememberSaveable { mutableStateOf("") }
@@ -35,7 +36,6 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
   var passwordVisible by rememberSaveable { mutableStateOf(false) }
   var repeatedPassword by rememberSaveable { mutableStateOf("") }
   var displayName by rememberSaveable { mutableStateOf("") }
-  var context = LocalContext.current
 
   Column(
     verticalArrangement = Arrangement.Center,
@@ -44,7 +44,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       .fillMaxSize()
       .padding(paddingValues)
   ) {
-    Image(painter = painterResource(id = R.drawable.che_fico_icon), contentDescription = "", Modifier.size(156.dp))
+    Image(painterResource(R.drawable.che_fico_icon), null, Modifier.size(156.dp))
     Spacer(modifier = Modifier.height(64.dp))
     GoogleSignInButton(
       onSuccess = {

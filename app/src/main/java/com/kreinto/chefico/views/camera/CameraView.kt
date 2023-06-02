@@ -49,18 +49,16 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
   val context = LocalContext.current
   val lifecycleOwner = LocalLifecycleOwner.current
   val cameraProvider = ProcessCameraProvider.getInstance(context).get()
-
-  var preview: Preview = Preview.Builder().build()
+  val preview: Preview = Preview.Builder().build()
   val previewView = remember { PreviewView(context) }
   val imageCapture = remember {
-    ImageCapture.Builder()
+    Builder()
       .setCaptureMode(CAPTURE_MODE_ZERO_SHUTTER_LAG)
       .setJpegQuality(100).build()
   }
   cameraProvider.unbindAll()
 
-  var camera = cameraProvider.bindToLifecycle(lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, preview, imageCapture)
-
+  val camera = cameraProvider.bindToLifecycle(lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, preview, imageCapture)
 
   val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
     override fun onScale(detector: ScaleGestureDetector): Boolean {
@@ -103,9 +101,7 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
     }
   }
 
-  SimpleFrame(
-    onBackPressed = onNavigate,
-  ) {
+  SimpleFrame(onNavigate) {
     Box {
       AndroidView(
         { previewView },
@@ -113,7 +109,6 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
           .fillMaxSize()
           .align(Alignment.Center),
         update = { }
-
       )
       Column(
         modifier = Modifier
@@ -155,12 +150,12 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
                     show = true
                     val file = File.createTempFile("image", ".jpg")
                     imageCapture.takePicture(
-                      ImageCapture.OutputFileOptions
+                      OutputFileOptions
                         .Builder(file)
                         .build(),
                       context.mainExecutor,
-                      object : ImageCapture.OnImageSavedCallback {
-                        override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                      object : OnImageSavedCallback {
+                        override fun onImageSaved(outputFileResults: OutputFileResults) {
                           onNavigate(
                             CheFicoRoute.PlantDetail.path(
                               URLEncoder.encode(outputFileResults.savedUri.toString(), "utf-8"),

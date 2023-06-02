@@ -35,11 +35,9 @@ fun AccountView(viewModel: CheFicoViewModel, authViewModel: AuthViewModel, onNav
       backupOnline = it
     }
   }
-  var coroutine = rememberCoroutineScope()
+  val coroutine = rememberCoroutineScope()
   if (!loading) {
-    SimpleFrame(
-      onBackPressed = onNavigate,
-    ) {
+    SimpleFrame(onNavigate) {
       Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -47,7 +45,7 @@ fun AccountView(viewModel: CheFicoViewModel, authViewModel: AuthViewModel, onNav
           .padding(top = it.calculateTopPadding(), start = 16.dp, end = 16.dp, bottom = 16.dp)
           .fillMaxSize()
       ) {
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(Modifier.height(16.dp))
         Surface(
           tonalElevation = 12.dp,
           shape = CircleShape
@@ -60,18 +58,16 @@ fun AccountView(viewModel: CheFicoViewModel, authViewModel: AuthViewModel, onNav
               .clip(CircleShape)
           )
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(Modifier.height(16.dp))
         Row(
           modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.Center,
           verticalAlignment = Alignment.CenterVertically
-        ) {
-          Text(Firebase.auth.currentUser?.displayName ?: "")
-        }
+        ) { Text(Firebase.auth.currentUser?.displayName ?: "") }
         Text(Firebase.auth.currentUser?.email ?: "")
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(Modifier.height(16.dp))
         Divider()
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(Modifier.height(16.dp))
         Column(
           modifier = Modifier
             .fillMaxWidth()
@@ -80,15 +76,11 @@ fun AccountView(viewModel: CheFicoViewModel, authViewModel: AuthViewModel, onNav
           Row(
             modifier = Modifier
               .fillMaxWidth()
-              .clickable {
-                onNavigate(CheFicoRoute.AccountEdit.path)
-              }
+              .clickable { onNavigate(CheFicoRoute.AccountEdit.path) }
               .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
-          ) {
-            Text(text = stringResource(R.string.edit_profile_label), modifier = Modifier.fillMaxWidth())
-          }
+          ) { Text(text = stringResource(R.string.edit_profile_label), modifier = Modifier.fillMaxWidth()) }
           Row(
             modifier = Modifier
               .fillMaxWidth()
@@ -103,15 +95,8 @@ fun AccountView(viewModel: CheFicoViewModel, authViewModel: AuthViewModel, onNav
               authViewModel.setOnlineBackup(checked)
               if (checked) {
                 coroutine.launch {
-                  viewModel.getPois().first { localPois ->
-                    authViewModel.backup(localPois) {
-                      authViewModel.getPois { pois ->
-                        pois.forEach { poi ->
-                          viewModel.updatePoi(poi)
-                        }
-                      }
-                    }
-                    return@first true
+                  authViewModel.backup(viewModel.getPois().first()) {
+                    authViewModel.getPois { pois -> pois.forEach { poi -> viewModel.updatePoi(poi) } }
                   }
                 }
               }
@@ -120,34 +105,20 @@ fun AccountView(viewModel: CheFicoViewModel, authViewModel: AuthViewModel, onNav
           Row(
             modifier = Modifier
               .fillMaxWidth()
-              .clickable {
-                onNavigate(CheFicoRoute.BlackList.path)
-              }
+              .clickable { onNavigate(CheFicoRoute.BlackList.path) }
               .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
-          ) {
-            Text(text = stringResource(R.string.see_blacklist_label), modifier = Modifier.fillMaxWidth())
-          }
+          ) { Text(stringResource(R.string.see_blacklist_label), Modifier.fillMaxWidth()) }
         }
-
         Button(
           onClick = {
             authViewModel.signOut()
             onNavigate(CheFicoRoute.Settings.path)
           },
           contentPadding = ButtonDefaults.ButtonWithIconContentPadding
-        ) {
-          Text(text = stringResource(R.string.logout_label), color = Color.Red, textAlign = TextAlign.Center)
-        }
+        ) { Text(stringResource(R.string.logout_label), color = Color.Red, textAlign = TextAlign.Center) }
       }
     }
   }
-}
-
-object AccountRoute {
-  const val Detail = "detail"
-  const val Security = "security"
-  const val Notification = "notification"
-
 }

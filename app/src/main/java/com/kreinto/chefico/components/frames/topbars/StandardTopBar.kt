@@ -25,7 +25,7 @@ fun StandardTopBar(
   actions: @Composable (RowScope.() -> Unit) = {}
 ) {
   Surface(tonalElevation = level0) {
-    TopAppBar(
+    CenterAlignedTopAppBar(
       scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
       colors = TopAppBarDefaults.centerAlignedTopAppBarColors(MaterialTheme.colorScheme.surface),
       navigationIcon = {

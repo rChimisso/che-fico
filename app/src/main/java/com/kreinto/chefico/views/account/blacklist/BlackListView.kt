@@ -24,9 +24,7 @@ import com.kreinto.chefico.room.AuthViewModel
 @Composable
 fun BlackListView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
   var loading by remember { mutableStateOf(true) }
-  var blackList by rememberSaveable {
-    mutableStateOf(emptyList<Map.Entry<String, String>>())
-  }
+  var blackList by rememberSaveable { mutableStateOf(emptyList<Map.Entry<String, String>>()) }
   LaunchedEffect(Unit) {
     authViewModel.getBlockedUsers({
       blackList = it.entries.toList()
@@ -35,7 +33,7 @@ fun BlackListView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
   }
 
   StandardFrame(
-    onNavPressed = onNavigate,
+    onNavigate,
     title = { Text("Utenti bloccati") },
   ) {
     LazyColumn(
@@ -51,9 +49,7 @@ fun BlackListView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
             TransparentButton(
               icon = R.drawable.ic_snooze,
               contentDescription = "Sblocca",
-              colors = IconButtonDefaults.iconButtonColors(
-                contentColor = Color(0xFFFFC107)
-              )
+              colors = IconButtonDefaults.iconButtonColors(contentColor = Color(0xFFFFC107))
             ) { authViewModel.unblockUser(blackList[index].key) }
           }),
         ) {}

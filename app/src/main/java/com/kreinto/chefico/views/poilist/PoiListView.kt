@@ -35,7 +35,7 @@ fun PoiListView(
   var filter: String by rememberSaveable { mutableStateOf("") }
   StandardFrame(
     onNavPressed = onNavigate,
-    title = { SearchInput(onValueChange = { query -> filter = query }) },
+    title = { SearchInput { query -> filter = query } },
     bottomBar = {
       if (selectedPois.size > 0) {
         SimpleBottomBar(

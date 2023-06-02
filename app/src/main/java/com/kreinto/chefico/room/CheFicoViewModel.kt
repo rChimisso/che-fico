@@ -21,12 +21,10 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
       LatLng(0.0, 0.0)
     )
   )
+  private val creatingPoiFlow = MutableStateFlow(Poi.NullPoi)
 
   @ExperimentalCoroutinesApi
   val poisWithin = mapBoundariesFlow.flatMapLatest { selectPoisWithin(it) }
-
-  private val creatingPoiFlow = MutableStateFlow(Poi.NullPoi)
-
 
   init {
     val database = CheFicoDatabase.getInstance(application)
@@ -38,14 +36,13 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
 
   fun addPoi(poi: Poi) = launch {
     if (poi != Poi.NullPoi) {
-      repository.insertPoi(poi)
+      repository.updateAllNewPoiNotifications(repository.insertPoi(poi))
     }
   }
 
   fun addNotification(notification: Notification) = launch {
     repository.insertNotification(notification)
   }
-
 
   fun updatePoi(poi: Poi) = launch {
     repository.updatePoi(poi)
@@ -67,11 +64,9 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     return repository.selectPoiNotifications(poiId)
   }
 
-
   fun getNotifications(): Flow<List<Notification>> {
     return repository.selectNotifications()
   }
-
 
   fun deletePoi(id: Int) = launch {
     repository.deletePoi(id)
@@ -85,7 +80,6 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     }
   }
 
-
   fun deletePois() = launch {
     repository.deletePois()
   }
@@ -93,7 +87,6 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
   fun deleteNotifications() = launch {
     repository.deleteNotifications()
   }
-
 
   fun getCreatingPoi(): Poi {
     return creatingPoiFlow.value
@@ -116,17 +109,14 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     return getPois().mapLatest { it.filter { poi -> latLngBounds.contains(LatLng(poi.latitude, poi.longitude)) } }
   }
 
-  private fun launch(block: suspend () -> Unit) {
-    viewModelScope.launch(Dispatchers.IO) { block() }
+  fun deleteAllPoiNotifications(id: Int) = launch {
+    repository.selectPoiNotifications(id).first().forEach {
+      PoiNotificationManager.cancelNotification(getApplication<Application>().applicationContext, it)
+    }
+    repository.deleteAllPoiNotifications(id)
   }
 
-  fun deleteAllPoiNotifications(id: Int) = launch {
-    repository.selectPoiNotifications(id).first {
-      it.forEach { notification ->
-        PoiNotificationManager.cancelNotification(getApplication<Application>().applicationContext, notification)
-      }
-      repository.deleteAllPoiNotifications(id)
-      return@first true
-    }
+  private fun launch(block: suspend () -> Unit) {
+    viewModelScope.launch(Dispatchers.IO) { block() }
   }
 }

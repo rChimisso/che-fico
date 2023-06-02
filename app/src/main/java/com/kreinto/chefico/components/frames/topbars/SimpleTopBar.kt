@@ -1,9 +1,6 @@
 package com.kreinto.chefico.components.frames.topbars
 
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,7 +19,7 @@ import com.kreinto.chefico.components.buttons.data.ButtonData
 @ExperimentalMaterial3Api
 @Composable
 fun SimpleTopBar(onBackPressed: (String) -> Unit) {
-  TopAppBar(
+  CenterAlignedTopAppBar(
     scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
     navigationIcon = {
       TransparentButton(

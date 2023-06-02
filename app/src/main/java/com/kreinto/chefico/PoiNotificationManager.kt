@@ -9,7 +9,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import java.util.*
 
-
 class PoiNotificationManager : BroadcastReceiver() {
   companion object {
     private const val channelId: String = "CheFicoChannel"
@@ -17,7 +16,6 @@ class PoiNotificationManager : BroadcastReceiver() {
     private const val channelDescription: String = "Default channel"
     private const val titleExtra = "titleExtra"
     private const val messageExtra = "messageExtra"
-    private const val idExtra = "idExtra"
     private var notificationId = 0
 
     /**
@@ -58,11 +56,7 @@ class PoiNotificationManager : BroadcastReceiver() {
       )
 
       with(context.getSystemService<AlarmManager>()) {
-        this?.set(
-          AlarmManager.RTC,
-          time,
-          pendingIntent
-        )
+        this?.set(AlarmManager.RTC, time, pendingIntent)
       }
     }
 
@@ -127,17 +121,10 @@ class PoiNotificationManager : BroadcastReceiver() {
           PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
       }.let {
-
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 1)
-        this?.set(
-          AlarmManager.RTC,
-          calendar.timeInMillis,
-          it
-        )
+        this?.set(AlarmManager.RTC, calendar.timeInMillis, it)
       }
     }
-
-
   }
 }

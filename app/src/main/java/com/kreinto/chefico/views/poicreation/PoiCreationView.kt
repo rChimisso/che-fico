@@ -61,13 +61,17 @@ fun PoiCreationView(
 ) {
   val contentResolver = LocalContext.current.contentResolver
   var creatingPoi = viewModel.getCreatingPoi()
-  fun action(path: String = CheFicoRoute.Back.path) {
-    viewModel.deleteAllPoiNotifications(creatingPoi.id)
+  fun action(path: String = CheFicoRoute.Back.path, add: Boolean = false) {
+    if (add) {
+      viewModel.addPoi(creatingPoi)
+    } else {
+      viewModel.deleteAllPoiNotifications(creatingPoi.id)
+    }
     viewModel.removeCreatingPoi()
     onNavigate(path)
   }
   SimpleFrame(
-    onBackPressed = ::action,
+    onNavigate = ::action,
     bottomBar = {
       SimpleBottomBar(
         leftButtonData = ButtonData(
@@ -76,10 +80,7 @@ fun PoiCreationView(
           colors = IconButtonDefaults.filledIconButtonColors(contentColor = Color.Red),
           onClick = ::action
         ),
-        rightButtonData = ButtonData(
-          icon = R.drawable.ic_check,
-          contentDescription = "Confirm"
-        ) {
+        rightButtonData = ButtonData(R.drawable.ic_check, "Confirm") {
           saveImage(creatingPoi.image, contentResolver) {
             if (it != null) {
               creatingPoi.image = it.toString()
@@ -90,18 +91,14 @@ fun PoiCreationView(
                   creatingPoi.latitude = location.latitude
                   creatingPoi.longitude = location.longitude
                 }
-                viewModel.addPoi(creatingPoi)
-                action()
+                action(add = true)
               }
             } else {
-              viewModel.addPoi(creatingPoi)
-              action()
+              action(add = true)
             }
           }
         }
       )
     }
-  ) {
-    PoiDetailContent(creatingPoi, { creatingPoi = it }, false, viewModel, authViewModel)
-  }
+  ) { PoiDetailContent(creatingPoi, { creatingPoi = it }, false, viewModel, authViewModel) }
 }

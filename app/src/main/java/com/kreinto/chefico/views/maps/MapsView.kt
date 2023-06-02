@@ -21,7 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -98,7 +97,7 @@ fun MapsView(
   }
 
   SimpleFrame(
-    onBackPressed = onNavigate,
+    onNavigate = onNavigate,
     bottomBar = {
       SimpleBottomBar(
         leftButtonData = ButtonData(
@@ -163,12 +162,9 @@ fun MapsView(
       }
     }
 
-
     suspend fun moveCamera() {
       cameraPositionState.animate(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000)
     }
-
-    val context = LocalContext.current
 
     LaunchedEffect(shouldFollow) {
       if (shouldFollow) {

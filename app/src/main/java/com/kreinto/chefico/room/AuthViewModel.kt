@@ -10,7 +10,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.kreinto.chefico.room.entities.Poi
 
-
 /**
 A client for the sign-in API.
 The Sign-In APIs can be used for both sign-in and sign-up scenarios. The two scenarios share the same flow in the code, but different BeginSignInRequest should be provided in different scenarios.
@@ -37,7 +36,7 @@ For the sign-in scenario, it is strongly recommended to set GoogleIdTokenRequest
  */
 
 open class AuthViewModel(application: Application) : AndroidViewModel(application) {
-
+  abstract class DatabaseDocument(val path: String)
   data class UserInfo(
     val uid: String,
     val username: String,
@@ -45,11 +44,8 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
     val photoUrl: Uri
   )
 
-
   private val auth = Firebase.auth
   private val db = Firebase.firestore
-
-  abstract class DatabaseDocument(val path: String)
 
   private object BlockedUsers : DatabaseDocument("blocked_users")
   private object Pois : DatabaseDocument("pois")
@@ -61,7 +57,7 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
 
   fun createUser(email: String, password: String, username: String, onResult: () -> Unit) {
     val context = getApplication<Application>().applicationContext
-    if (email.isNotEmpty() && password.isNotEmpty() && username.isNotEmpty()) {
+    if (email.isNotBlank() && password.isNotBlank() && username.isNotBlank()) {
       val request = auth.createUserWithEmailAndPassword(email, password)
 
       request.addOnSuccessListener {
@@ -165,10 +161,10 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
 
   fun getPois(onSuccess: (List<Poi>) -> Unit) {
     if (auth.currentUser != null) {
-      db.collection(auth.currentUser!!.uid).document(Pois.path).get().addOnSuccessListener {
-        if (it.data != null && it.data!!["data"] != null) {
-          var pois = mutableListOf<Poi>()
-          (it.data!!["data"] as List<Map<String, Any>>).forEach {
+      db.collection(auth.currentUser!!.uid).document(Pois.path).get().addOnSuccessListener { document ->
+        if (document.data != null && document.data!!["data"] != null) {
+          val pois = mutableListOf<Poi>()
+          (document.data!!["data"] as List<Map<String, Any>>).forEach {
             pois.add(
               Poi(
                 (it["id"]!! as Long).toInt(),
@@ -187,7 +183,7 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
   }
 
   fun getUserProviderIds(): List<String> {
-    var providersId = mutableListOf<String>()
+    val providersId = mutableListOf<String>()
     if (auth.currentUser != null) {
       auth.currentUser!!.providerData.forEach { data ->
         providersId.add(data.providerId)
@@ -224,7 +220,7 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
   }
 
   fun blockUser(uid: String) {
-    if (uid.isNotEmpty() && auth.currentUser != null) {
+    if (uid.isNotBlank() && auth.currentUser != null) {
       getUserInfo(uid) {
         blockedUsers.putIfAbsent(uid, it.username)
       }
@@ -232,11 +228,10 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
   }
 
   fun unblockUser(uid: String) {
-    if (uid.isNotEmpty() && auth.currentUser != null) {
+    if (uid.isNotBlank() && auth.currentUser != null) {
       blockedUsers.remove(uid)
     }
   }
-
 
   fun isOnlineBackupActive(onResult: (Boolean) -> Unit) {
     if (auth.currentUser != null) {
@@ -319,8 +314,6 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
       result.addOnFailureListener {
         Toast.makeText(context, "Qualcosa è andato storto con la condivisione", Toast.LENGTH_SHORT).show()
       }
-
     }
   }
 }
-

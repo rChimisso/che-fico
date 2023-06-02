@@ -60,30 +60,24 @@ private fun fixOrientaton(source: Bitmap): ImageBitmap {
 @ExperimentalMaterial3Api
 @Composable
 fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, viewModel: CheFicoViewModel, authViewModel: AuthViewModel) {
-
-  var user by remember {
-    mutableStateOf("")
-  }
   val context = LocalContext.current
+  var user by remember { mutableStateOf("") }
   var openBottomSheet by remember { mutableStateOf(false) }
-  val notifications = viewModel.getPoiNotifications(poi.id).collectAsStateWithLifecycle(initialValue = emptyList())
-  var openNotificationPopUp by remember {
-    mutableStateOf(false)
-  }
+  val notifications = viewModel.getPoiNotifications(poi.id).collectAsStateWithLifecycle(emptyList())
+  var openNotificationPopUp by remember { mutableStateOf(false) }
 
   val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
     if (uri != null) {
       poi.image = uri.toString()
-      viewModel.updatePoi(poi)
+      updatePoi(poi)
     }
   }
   if (openBottomSheet) {
-    Dialog(onDismissRequest = { openBottomSheet = false }) {
+    Dialog({ openBottomSheet = false }) {
       Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-          .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp)),
+        modifier = Modifier.background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp)),
       ) {
         Text("Condividi", color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(top = 16.dp))
         TextField(
@@ -106,21 +100,14 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
             unfocusedLabelColor = Color(0xff32C896),
             disabledLabelColor = Color(0xff32C896),
             unfocusedPlaceholderColor = Color(0xff32C896),
-
-            ),
+          ),
           placeholder = { Text("ID utente") },
           enabled = true,
           readOnly = false,
-          leadingIcon = {
-            Icon(
-              painter = painterResource(id = R.drawable.ic_account),
-              contentDescription = "account",
-              modifier = Modifier.size(24.dp)
-            )
-          }
+          leadingIcon = { Icon(painterResource(id = R.drawable.ic_account), "account", Modifier.size(24.dp)) }
         )
         TextButton(
-          enabled = user.isNotEmpty(),
+          enabled = user.isNotBlank(),
           colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary
@@ -131,23 +118,17 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
             .padding(bottom = 16.dp)
             .width(208.dp)
             .height(40.dp),
-
-          onClick = {
-            authViewModel.share(user, poi)
-          }
-        ) {
-          Text(text = "Condividi", fontSize = 16.sp)
-        }
+          onClick = { authViewModel.share(user, poi) }
+        ) { Text("Condividi", fontSize = 16.sp) }
       }
-
     }
   }
 
   Column {
     if (poi != Poi.NullPoi) {
-      var stream: InputStream?
+      val stream: InputStream?
       var image: Bitmap? = null
-      if (poi.image.isNotEmpty()) {
+      if (poi.image.isNotBlank()) {
         stream = context.contentResolver.openInputStream(Uri.parse(URLDecoder.decode(poi.image, "utf-8")))
         image = BitmapFactory.decodeStream(stream)
       }
@@ -168,7 +149,7 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
             ) {
               if (image != null) {
                 Image(
-                  bitmap = fixOrientaton(image),
+                  fixOrientaton(image),
                   null,
                   contentScale = ContentScale.Crop
                 )
@@ -188,34 +169,27 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
                 .offset(y = 20.dp)
             ) {
               if (showActions) {
-                FilledButton(icon = R.drawable.ic_share, contentDescription = "Share") {
-                  openBottomSheet = true
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-                FilledButton(icon = R.drawable.ic_map, contentDescription = "Open Google Maps") {
+                FilledButton(R.drawable.ic_share, "Share") { openBottomSheet = true }
+                Spacer(Modifier.width(8.dp))
+                FilledButton(R.drawable.ic_map, "Open Google Maps") {
                   val intent = Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=${poi.latitude},${poi.longitude}"))
                   intent.setPackage("com.google.android.apps.maps")
                   context.startActivity(intent)
                 }
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(Modifier.width(8.dp))
               }
-              FilledButton(icon = R.drawable.ic_photo_camera, contentDescription = "Change image") {
-                galleryLauncher.launch("image/*")
-              }
-              Spacer(modifier = Modifier.width(8.dp))
+              FilledButton(R.drawable.ic_photo_camera, "Change image") { galleryLauncher.launch("image/*") }
+              Spacer(Modifier.width(8.dp))
             }
           }
           TextInput(
             modifier = Modifier.fillMaxWidth(2f / 3f),
             init = name,
             textColor = MaterialTheme.colorScheme.primary,
-            textStyle = TextStyle(
-              fontSize = 24.sp,
-              fontWeight = FontWeight.Bold
-            ),
+            textStyle = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
             onFocusChanged = {
               poi.name = name
-              viewModel.updatePoi(poi)
+              updatePoi(poi)
             },
             onValueChange = { name = it }
           )
@@ -236,22 +210,16 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
             .height(128.dp)
             .onFocusChanged {
               poi.description = description
-              viewModel.updatePoi(poi)
-            },
-
-          )
+              updatePoi(poi)
+            }
+        )
       }
       if (openNotificationPopUp) {
         Dialog(onDismissRequest = { openNotificationPopUp = false }) {
-          val context = LocalContext.current
-          var notificationName by remember {
-            mutableStateOf("")
-          }
+          var notificationName by remember { mutableStateOf("") }
           var notificationMessage by remember { mutableStateOf("") }
-          var dateRangePickerState = rememberDatePickerState()
-          Surface(
-            modifier = Modifier.fillMaxWidth()
-          ) {
+          val dateRangePickerState = rememberDatePickerState()
+          Surface(Modifier.fillMaxWidth()) {
             Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
               TextField(
                 placeholder = { Text("Titolo") },
@@ -274,7 +242,7 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
                   unfocusedPlaceholderColor = Color(0xff32C896),
                 )
               )
-              DatePicker(state = dateRangePickerState)
+              DatePicker(dateRangePickerState)
               TextField(
                 placeholder = { Text("Descrizione") },
                 value = notificationMessage, onValueChange = { notificationMessage = it },
@@ -307,11 +275,16 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
                   .padding(16.dp)
                   .width(208.dp)
                   .height(40.dp),
-                enabled = notificationName.isNotEmpty() && notificationMessage.isNotEmpty() && dateRangePickerState.selectedDateMillis != null,
+                enabled = notificationName.isNotBlank() && notificationMessage.isNotBlank() && dateRangePickerState.selectedDateMillis != null,
                 onClick = {
                   openNotificationPopUp = false
                   viewModel.addNotification(
-                    Notification("", notificationName, notificationMessage, poi.id)
+                    Notification(
+                      icon = "",
+                      text = notificationName,
+                      message = notificationMessage,
+                      poiId = poi.id
+                    )
                   )
                   PoiNotificationManager.scheduleNotification(
                     context,
@@ -319,12 +292,10 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
                     notificationName,
                     notificationMessage
                   )
-                }) {
-                Text("Aggiungi")
-              }
+                }
+              ) { Text("Aggiungi") }
             }
           }
-
         }
       }
       LazyColumn(
@@ -343,17 +314,12 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
                 ButtonData(
                   icon = R.drawable.ic_close,
                   contentDescription = "Elimina",
-                  colors = IconButtonDefaults.iconButtonColors(
-                    contentColor = MaterialTheme.colorScheme.error
-                  ),
-                  onClick = {
-                    viewModel.deleteNotification(notifications.value[index].id)
-                  }
+                  colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                  onClick = { viewModel.deleteNotification(notifications.value[index].id) }
                 )
               )
-            }),
-            onClick = {}
-          )
+            })
+          ) {}
         }
         item {
           TextButton(
@@ -368,15 +334,12 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
               .padding(bottom = 16.dp)
               .width(208.dp)
               .height(40.dp),
-
             onClick = {
               if (notifications.value.size < 5) {
                 openNotificationPopUp = true
               }
             }
-          ) {
-            Text(text = "Aggiungi notifica", fontSize = 16.sp)
-          }
+          ) { Text("Aggiungi notifica", fontSize = 16.sp) }
         }
       }
     }

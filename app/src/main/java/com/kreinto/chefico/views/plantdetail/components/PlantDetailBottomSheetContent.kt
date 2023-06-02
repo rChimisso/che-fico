@@ -9,8 +9,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kreinto.chefico.views.camera.PlantRecognition
 import com.kreinto.chefico.R
+import com.kreinto.chefico.views.camera.PlantRecognition
 
 @Composable
 fun PlantDetailBottomSheetContent(result: MutableState<PlantRecognition.PlantRecognitionData>, description: MutableState<String>) {

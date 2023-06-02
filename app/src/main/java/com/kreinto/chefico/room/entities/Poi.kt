@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "pois")
 class Poi(
-  @PrimaryKey(autoGenerate = true)
+  @PrimaryKey(true)
   var id: Int = 0,
   var name: String,
   var description: String = "",

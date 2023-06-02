@@ -29,10 +29,8 @@ import com.kreinto.chefico.room.AuthViewModel
 
 @ExperimentalMaterial3Api
 @Composable
-fun AccountEditView (onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
-  SimpleFrame(
-    onBackPressed = onNavigate,
-  ) { it ->
+fun AccountEditView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
+  SimpleFrame(onNavigate) { padding ->
     var email by rememberSaveable { mutableStateOf(Firebase.auth.currentUser?.email ?: "") }
     var userName by rememberSaveable { mutableStateOf(Firebase.auth.currentUser?.displayName ?: "") }
     var modify by remember { mutableStateOf(false) }
@@ -46,17 +44,15 @@ fun AccountEditView (onNavigate: (String) -> Unit, authViewModel: AuthViewModel)
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.Center,
       modifier = Modifier
-        .padding(top = it.calculateTopPadding(), start = 16.dp, end = 16.dp, bottom = 16.dp)
+        .padding(top = padding.calculateTopPadding(), start = 16.dp, end = 16.dp, bottom = 16.dp)
         .fillMaxSize()
     ) {
-      Spacer(modifier = Modifier.height(64.dp))
+      Spacer(Modifier.height(64.dp))
       Surface(
         tonalElevation = 12.dp,
         shape = CircleShape
       ) {
-        Box(
-          modifier =  Modifier.size(128.dp)
-        ){
+        Box(Modifier.size(128.dp)) {
           Icon(
             painter = painterResource(id = R.drawable.ic_photo_camera),
             contentDescription = "Modifica Immagine",
@@ -73,122 +69,89 @@ fun AccountEditView (onNavigate: (String) -> Unit, authViewModel: AuthViewModel)
               .align(Alignment.Center),
           )
         }
-
       }
-      Spacer(modifier = Modifier.height(16.dp))
+      Spacer(Modifier.height(16.dp))
       Column(
-        modifier = Modifier
+        Modifier
           .fillMaxSize()
           .weight(1f)
       ) {
-
         Row(
-          modifier = Modifier
-            .fillMaxWidth(),
+          modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.Center,
           verticalAlignment = Alignment.CenterVertically
         ) {
           TextField(
             value = userName,
             enabled = modify,
-            onValueChange = {
-              userName = it
-            },
-            label = {
-              Text(text = stringResource(R.string.user_name_area_edit_label))
-            },
+            onValueChange = { userName = it },
+            label = { Text(stringResource(R.string.user_name_area_edit_label)) },
             readOnly = authViewModel.getUserProviderIds().contains("google.com") && !modify,
             shape = RoundedCornerShape(0.dp)
           )
         }
-
         Row(
-          modifier = Modifier
-            .fillMaxWidth(),
+          modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.Center,
           verticalAlignment = Alignment.CenterVertically
         ) {
           TextField(
             value = email,
             enabled = modify,
-            onValueChange = {
-              email = it
-            },
-            label = {
-              Text(text = stringResource(R.string.email_label))
-            },
+            onValueChange = { email = it },
+            label = { Text(stringResource(R.string.email_label)) },
             readOnly = authViewModel.getUserProviderIds().contains("google.com") && !modify,
             shape = RoundedCornerShape(0.dp)
           )
         }
-
         Row(
-          modifier = Modifier
-            .fillMaxWidth(),
+          modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.Center,
           verticalAlignment = Alignment.CenterVertically
         ) {
           TextField(
             value = passwordOld,
             enabled = modify,
-            onValueChange = {
-              passwordOld = it
-            },
-            label = {
-              Text(text = stringResource(R.string.old_pwd_area_edit_label))
-            },
+            onValueChange = { passwordOld = it },
+            label = { Text(text = stringResource(R.string.old_pwd_area_edit_label)) },
             singleLine = true,
             placeholder = { Text(text = stringResource(R.string.old_pwd_placeholder_area_edit_label)) },
             visualTransformation = if (oldPasswordVisible && modify) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
-              val image = if (oldPasswordVisible && modify)
-                Icons.Filled.Visibility
-              else Icons.Filled.VisibilityOff
+              val image = if (oldPasswordVisible && modify) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
               val description = if (oldPasswordVisible) "Hide password" else "Show password"
-              IconButton(onClick = {oldPasswordVisible = !oldPasswordVisible}){
-                Icon(imageVector  = image, description)
-              }
+              IconButton({ oldPasswordVisible = !oldPasswordVisible }) { Icon(image, description) }
             },
             readOnly = authViewModel.getUserProviderIds().contains("google.com") && !modify,
             shape = RoundedCornerShape(0.dp)
           )
         }
         Row(
-          modifier = Modifier
-            .fillMaxWidth(),
+          modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.Center,
           verticalAlignment = Alignment.CenterVertically
         ) {
           TextField(
             value = passwordNew1,
             enabled = modify,
-            onValueChange = {
-              passwordNew1 = it
-            },
-            label = {
-              Text(text = stringResource(R.string.new_pwd_area_edit_label))
-            },
+            onValueChange = { passwordNew1 = it },
+            label = { Text(stringResource(R.string.new_pwd_area_edit_label)) },
             singleLine = true,
-            placeholder = { Text(text = stringResource(R.string.new_pwd_placeholder_area_edit_label)) },
+            placeholder = { Text(stringResource(R.string.new_pwd_placeholder_area_edit_label)) },
             visualTransformation = if (newPasswordVisible1 && modify) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
-              val image = if (newPasswordVisible1 && modify)
-                Icons.Filled.Visibility
-              else Icons.Filled.VisibilityOff
+              val image = if (newPasswordVisible1 && modify) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
               val description = if (newPasswordVisible1) "Hide password" else "Show password"
-              IconButton(onClick = {newPasswordVisible1 = !newPasswordVisible1}){
-                Icon(imageVector  = image, description)
-              }
+              IconButton({ newPasswordVisible1 = !newPasswordVisible1 }) { Icon(image, description) }
             },
             readOnly = authViewModel.getUserProviderIds().contains("google.com") && !modify,
             shape = RoundedCornerShape(0.dp)
           )
         }
         Row(
-          modifier = Modifier
-            .fillMaxWidth(),
+          modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.Center,
           verticalAlignment = Alignment.CenterVertically
         ) {
@@ -196,24 +159,16 @@ fun AccountEditView (onNavigate: (String) -> Unit, authViewModel: AuthViewModel)
             value = passwordNew2,
             enabled = modify,
             isError = passwordNew1 != passwordNew2,
-            onValueChange = {
-              passwordNew2 = it
-            },
-            label = {
-              Text(text = stringResource(R.string.new_pwd_area_edit_label))
-            },
+            onValueChange = { passwordNew2 = it },
+            label = { Text(stringResource(R.string.new_pwd_area_edit_label)) },
             singleLine = true,
-            placeholder = { Text(text = stringResource(R.string.new_pwd_placeholder_area_edit_label)) },
+            placeholder = { Text(stringResource(R.string.new_pwd_placeholder_area_edit_label)) },
             visualTransformation = if (newPasswordVisible2 && modify) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
-              val image = if (newPasswordVisible2 && modify)
-                Icons.Filled.Visibility
-              else Icons.Filled.VisibilityOff
+              val image = if (newPasswordVisible2 && modify) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
               val description = if (newPasswordVisible2) "Hide password" else "Show password"
-              IconButton(onClick = {newPasswordVisible2 = !newPasswordVisible2}){
-                Icon(imageVector  = image, description)
-              }
+              IconButton({ newPasswordVisible2 = !newPasswordVisible2 }) { Icon(image, description) }
             },
             readOnly = authViewModel.getUserProviderIds().contains("google.com") && !modify,
             shape = RoundedCornerShape(0.dp)
@@ -221,16 +176,9 @@ fun AccountEditView (onNavigate: (String) -> Unit, authViewModel: AuthViewModel)
         }
       }
       Button(
-        onClick = {
-          modify = !modify
-        },
+        onClick = { modify = !modify },
         contentPadding = ButtonDefaults.ButtonWithIconContentPadding
-      ) {
-        if (!modify)
-          Text(text = stringResource(R.string.btn_edit_label), color = Color.Red)
-        else
-          Text(text = stringResource(R.string.btn_submit_label), color = Color.Red)
-      }
+      ) { Text(stringResource(if (!modify) R.string.btn_edit_label else R.string.btn_submit_label), color = Color.Red) }
     }
   }
 }
