@@ -78,7 +78,11 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
   }
 
   fun deleteNotification(id: Int) = launch {
-    repository.deleteNotification(id)
+    repository.selectNotification(id).first {
+      PoiNotificationManager.cancelNotification(getApplication<Application>().applicationContext, it)
+      repository.deleteNotification(id)
+      return@first true
+    }
   }
 
 

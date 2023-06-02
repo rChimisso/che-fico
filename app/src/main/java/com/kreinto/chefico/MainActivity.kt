@@ -144,6 +144,7 @@ class MainActivity : AppCompatActivity() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       requestPermission(POST_NOTIFICATIONS, requestGenericPermissionLauncher)
       requestPermission(READ_MEDIA_IMAGES, requestGenericPermissionLauncher)
+      requestPermission(SCHEDULE_EXACT_ALARM, requestGenericPermissionLauncher)
     }
 
 
