@@ -25,7 +25,7 @@ import com.kreinto.chefico.room.CheFicoViewModel
 @ExperimentalMaterialApi
 @Composable
 fun DashboardContent(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel) {
-  val notifications = viewModel.getNotifications().collectAsStateWithLifecycle(initialValue = emptyList())
+  val notifications = viewModel.getNotifications().collectAsStateWithLifecycle(emptyList())
   LazyColumn(
     verticalArrangement = Arrangement.spacedBy(8.dp),
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -52,9 +52,7 @@ fun DashboardContent(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel) 
             )
           )
         }),
-        onClick = {
-          onNavigate(CheFicoRoute.PoiDetail.path(notifications.value[index].poiId.toString()))
-        }
+        onClick = { onNavigate(CheFicoRoute.PoiDetail.path(notifications.value[index].poiId.toString())) }
       )
     }
   }

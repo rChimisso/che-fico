@@ -70,6 +70,7 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
 
   fun deletePoi(id: Int) = launch {
     repository.deletePoi(id)
+    repository.deleteAllPoiNotifications(id)
   }
 
   fun deleteNotification(id: Int) = launch {

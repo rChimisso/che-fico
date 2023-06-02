@@ -11,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kreinto.chefico.CheFicoRoute
@@ -42,9 +41,7 @@ fun PoiListView(
           leftButtonData = ButtonData(
             icon = R.drawable.ic_trash,
             contentDescription = "Delete selected",
-            colors = IconButtonDefaults.filledIconButtonColors(
-              contentColor = Color.Red
-            )
+            colors = IconButtonDefaults.filledIconButtonColors(contentColor = Color.Red)
           ) {
             selectedPois.forEach { id -> viewModel.deletePoi(id) }
             selectedPois.clear()
@@ -52,9 +49,7 @@ fun PoiListView(
           rightButtonData = ButtonData(
             icon = R.drawable.ic_share,
             contentDescription = "Share selected",
-          ) {
-            selectedPois.clear()
-          }
+          ) { selectedPois.clear() }
         )
       }
     }
@@ -104,12 +99,4 @@ fun PoiListView(
       }
     }
   }
-}
-
-@ExperimentalFoundationApi
-@ExperimentalMaterial3Api
-@Composable
-@Preview
-private fun PoiListViewPreview() {
-
 }

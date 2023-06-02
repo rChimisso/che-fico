@@ -234,9 +234,3 @@ class MainActivity : AppCompatActivity() {
     }
   }
 }
-
-//fun Context.getActivity(): Activity = when (this) {
-//  is Activity -> this
-//  is ContextWrapper -> baseContext.getActivity()
-//  else -> throw IllegalStateException("Permissions should be called in the context of an Activity")
-//}
