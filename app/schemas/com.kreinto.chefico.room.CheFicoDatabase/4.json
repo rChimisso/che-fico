@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "47998288f33307f0d22bf36fc2aa2e17",
+    "identityHash": "5b461d7ffcb2c611b6ed10ea3bfdf0a0",
     "entities": [
       {
         "tableName": "notifications",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`icon` TEXT NOT NULL, `text` TEXT NOT NULL, `poiId` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`icon` TEXT NOT NULL, `text` TEXT NOT NULL, `message` TEXT NOT NULL, `poiId` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
         "fields": [
           {
             "fieldPath": "icon",
@@ -17,6 +17,12 @@
           {
             "fieldPath": "text",
             "columnName": "text",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "message",
+            "columnName": "message",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -44,8 +50,14 @@
       },
       {
         "tableName": "pois",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `description` TEXT NOT NULL, `image` TEXT NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `image` TEXT NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL)",
         "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
           {
             "fieldPath": "name",
             "columnName": "name",
@@ -75,12 +87,6 @@
             "columnName": "longitude",
             "affinity": "REAL",
             "notNull": true
-          },
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
           }
         ],
         "primaryKey": {
@@ -96,7 +102,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '47998288f33307f0d22bf36fc2aa2e17')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5b461d7ffcb2c611b6ed10ea3bfdf0a0')"
     ]
   }
 }

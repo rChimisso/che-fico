@@ -5,14 +5,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.kreinto.chefico.PoiNotificationManager
 import com.kreinto.chefico.room.entities.Notification
 import com.kreinto.chefico.room.entities.Poi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class CheFicoViewModel(application: Application) : AndroidViewModel(application) {
@@ -80,7 +78,11 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
   }
 
   fun deleteNotification(id: Int) = launch {
-    repository.deleteNotification(id)
+    repository.selectNotification(id).first {
+      PoiNotificationManager.cancelNotification(getApplication<Application>().applicationContext, it)
+      repository.deleteNotification(id)
+      return@first true
+    }
   }
 
 

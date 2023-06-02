@@ -323,7 +323,7 @@ fun PoiDetailView(
                   onClick = {
                     openNotificationPopUp = false
                     viewModel.addNotification(
-                      Notification("", notificationName, poiId.toInt())
+                      Notification("", notificationName, notificationMessage, poiId.toInt())
                     )
                     PoiNotificationManager.scheduleNotification(
                       context,
