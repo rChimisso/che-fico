@@ -24,5 +24,8 @@ interface NotificationDao {
   fun selectAll(): Flow<List<Notification>>
 
   @Query("SELECT * FROM notifications WHERE poiId = :poiId")
-  fun selectAllPoi(poiId: Int): Flow<List<Notification>>
+  fun selectAllOfPoi(poiId: Int): Flow<List<Notification>>
+
+  @Query("DELETE FROM notifications WHERE poiId = :poiId")
+  fun deleteAllOfPoi(poiId: Int)
 }

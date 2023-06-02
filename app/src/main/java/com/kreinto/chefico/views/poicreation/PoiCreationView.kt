@@ -7,6 +7,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
@@ -46,6 +48,8 @@ fun saveImage(path: String, contentResolver: ContentResolver, onUriCreated: (Uri
   }
 }
 
+@ExperimentalFoundationApi
+@ExperimentalMaterialApi
 @SuppressLint("MissingPermission")
 @ExperimentalMaterial3Api
 @Composable
@@ -58,6 +62,7 @@ fun PoiCreationView(
   val contentResolver = LocalContext.current.contentResolver
   var creatingPoi = viewModel.getCreatingPoi()
   fun action(path: String = CheFicoRoute.Back.path) {
+    viewModel.deleteAllPoiNotifications(creatingPoi.id)
     viewModel.removeCreatingPoi()
     onNavigate(path)
   }
@@ -97,6 +102,6 @@ fun PoiCreationView(
       )
     }
   ) {
-    PoiDetailContent(creatingPoi, { creatingPoi = it }, false, authViewModel)
+    PoiDetailContent(creatingPoi, { creatingPoi = it }, false, viewModel, authViewModel)
   }
 }

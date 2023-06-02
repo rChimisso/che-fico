@@ -12,7 +12,7 @@ class CheFicoRepository(
 ) {
 
   fun selectPoiNotifications(poiId: Int): Flow<List<Notification>> {
-    return notificationDao.selectAllPoi(poiId)
+    return notificationDao.selectAllOfPoi(poiId)
   }
 
   fun insertPoi(poi: Poi) {
@@ -63,5 +63,9 @@ class CheFicoRepository(
 
   fun deleteNotifications() {
     notificationDao.deleteAll()
+  }
+
+  fun deleteAllPoiNotifications(id: Int) {
+    notificationDao.deleteAllOfPoi(id)
   }
 }
