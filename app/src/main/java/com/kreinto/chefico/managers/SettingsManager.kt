@@ -1,4 +1,4 @@
-package com.kreinto.chefico
+package com.kreinto.chefico.managers
 
 import android.content.Context
 import android.content.SharedPreferences

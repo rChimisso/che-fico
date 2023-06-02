@@ -14,10 +14,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.kreinto.chefico.*
+import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.FilledButton
 import com.kreinto.chefico.components.frames.StandardFrame
+import com.kreinto.chefico.managers.Language
+import com.kreinto.chefico.managers.SettingsManager
+import com.kreinto.chefico.managers.Theme
 import com.kreinto.chefico.room.AuthViewModel
 import com.kreinto.chefico.room.CheFicoViewModel
 

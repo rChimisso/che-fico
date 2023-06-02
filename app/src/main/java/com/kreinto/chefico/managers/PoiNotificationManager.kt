@@ -1,4 +1,4 @@
-package com.kreinto.chefico
+package com.kreinto.chefico.managers
 
 import android.annotation.SuppressLint
 import android.app.*
@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
+import com.kreinto.chefico.R
 import java.util.*
 
 class PoiNotificationManager : BroadcastReceiver() {

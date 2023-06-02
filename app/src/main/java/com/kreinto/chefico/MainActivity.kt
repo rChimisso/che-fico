@@ -29,6 +29,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.android.gms.location.LocationServices
+import com.kreinto.chefico.managers.PoiNotificationManager
+import com.kreinto.chefico.managers.SettingsManager
 import com.kreinto.chefico.room.AuthViewModel
 import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.ui.theme.CheFicoTheme

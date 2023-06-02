@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
-import com.kreinto.chefico.PoiNotificationManager
+import com.kreinto.chefico.managers.PoiNotificationManager
 import com.kreinto.chefico.room.entities.Notification
 import com.kreinto.chefico.room.entities.Poi
 import kotlinx.coroutines.Dispatchers

@@ -26,7 +26,7 @@
     android:theme = "@style/Theme.CheFico"
     tools:targetApi = "tiramisu">
     <receiver
-      android:name = ".PoiNotificationManager"
+      android:name = ".managers.PoiNotificationManager"
       android:enabled = "true"/>
     <activity
       android:name = ".MainActivity"

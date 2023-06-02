@@ -32,13 +32,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kreinto.chefico.PoiNotificationManager
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.FilledButton
 import com.kreinto.chefico.components.buttons.TransparentButton
 import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.inputs.TextInput
 import com.kreinto.chefico.components.items.SwipeableItem
+import com.kreinto.chefico.managers.PoiNotificationManager
 import com.kreinto.chefico.room.AuthViewModel
 import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.room.entities.Notification
