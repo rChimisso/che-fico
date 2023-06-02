@@ -1,5 +1,6 @@
 package com.kreinto.chefico.views.poidetail
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -203,6 +204,12 @@ fun PoiDetailView(
                 if (showActions) {
                   FilledButton(icon = R.drawable.ic_share, contentDescription = "Share") {
                     openBottomSheet = true
+                  }
+                  Spacer(modifier = Modifier.width(8.dp))
+                  FilledButton(icon = R.drawable.ic_map, contentDescription = "Open Google Maps") {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=${poi.latitude},${poi.longitude}"))
+                    intent.setPackage("com.google.android.apps.maps")
+                    context.startActivity(intent)
                   }
                   Spacer(modifier = Modifier.width(8.dp))
                 }

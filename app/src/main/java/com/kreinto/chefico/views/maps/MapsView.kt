@@ -2,10 +2,8 @@ package com.kreinto.chefico.views.maps
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Intent
 import android.content.IntentSender
 import android.location.Location
-import android.net.Uri
 import android.os.Looper
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -226,7 +224,6 @@ fun MapsView(
         isMapLoaded = true
         refreshMarkers()
       },
-
       onMapLongClick = {
         viewModel.setCreatingPoi(Poi(name = "New POI", latitude = it.latitude, longitude = it.longitude))
         onNavigate(CheFicoRoute.PoiCreation.path)
@@ -235,9 +232,7 @@ fun MapsView(
       // For clustering: https://github.com/googlemaps/android-maps-compose/issues/44
       poisWithin.value.forEach { poi ->
         Marker(MarkerState(LatLng(poi.latitude, poi.longitude)), onClick = {
-          val intent = Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=${poi.latitude},${poi.longitude}"))
-          intent.setPackage("com.google.android.apps.maps")
-          context.startActivity(intent)
+          onNavigate(CheFicoRoute.PoiDetail.path(poi.id.toString()))
           return@Marker true
         })
       }
