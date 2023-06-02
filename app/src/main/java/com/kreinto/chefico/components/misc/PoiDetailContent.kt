@@ -311,7 +311,7 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
                 onClick = {
                   openNotificationPopUp = false
                   viewModel.addNotification(
-                    Notification("", notificationName, poi.id)
+                    Notification("", notificationName, notificationMessage, poi.id)
                   )
                   PoiNotificationManager.scheduleNotification(
                     context,
