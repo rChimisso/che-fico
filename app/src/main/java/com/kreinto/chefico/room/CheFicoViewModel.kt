@@ -29,8 +29,8 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
   init {
     val database = CheFicoDatabase.getInstance(application)
     repository = CheFicoRepository(
-      database.notificationDao(),
-      database.poiDao()
+      database.poiDao(),
+      database.notificationDao()
     )
   }
 
@@ -70,7 +70,7 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
 
   fun deletePoi(id: Int) = launch {
     repository.deletePoi(id)
-    repository.deleteAllPoiNotifications(id)
+    repository.deletePoiNotifications(id)
   }
 
   fun deleteNotification(id: Int) = launch {
@@ -114,7 +114,7 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     repository.selectPoiNotifications(id).first().forEach {
       PoiNotificationManager.cancelNotification(getApplication<Application>().applicationContext, it)
     }
-    repository.deleteAllPoiNotifications(id)
+    repository.deletePoiNotifications(id)
   }
 
   private fun launch(block: suspend () -> Unit) {
