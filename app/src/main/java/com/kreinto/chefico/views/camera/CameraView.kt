@@ -1,6 +1,6 @@
 package com.kreinto.chefico.views.camera
 
-import android.annotation.SuppressLint
+import android.net.Uri
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -34,16 +34,16 @@ import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.net.URLEncoder
 import java.util.concurrent.TimeUnit
 
 
-@androidx.annotation.OptIn(androidx.camera.core.ExperimentalZeroShutterLag::class)
-@OptIn(ExperimentalComposeUiApi::class)
-@SuppressLint("ClickableViewAccessibility")
+@ExperimentalComposeUiApi
 @ExperimentalMaterial3Api
-@ExperimentalGetImage
+@androidx.annotation.OptIn(androidx.camera.core.ExperimentalZeroShutterLag::class)
 @Composable
 fun CameraView(onNavigate: (route: String) -> Unit) {
   val context = LocalContext.current
@@ -71,33 +71,33 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
 
   val scaleGestureDetector = ScaleGestureDetector(previewView.context, listener)
 
-  previewView.setOnTouchListener { _, event ->
+  previewView.setOnTouchListener { view, event ->
     scaleGestureDetector.onTouchEvent(event)
     if (event.action == MotionEvent.ACTION_DOWN) {
-      val factory = previewView.meteringPointFactory
-      val point = factory.createPoint(event.x, event.y)
-      val action = FocusMeteringAction.Builder(point, FocusMeteringAction.FLAG_AF)
+      val action = FocusMeteringAction.Builder(previewView.meteringPointFactory.createPoint(event.x, event.y), FocusMeteringAction.FLAG_AF)
         .setAutoCancelDuration(5, TimeUnit.SECONDS)
         .build()
       camera.cameraControl.startFocusAndMetering(action)
+      view.performClick()
     }
     true
-
   }
   preview.setSurfaceProvider(previewView.surfaceProvider)
 
   var plantOrgan by remember { mutableStateOf(PlantRecognition.PlantOrgan.leaf) }
-
   var cameraFlashEnabled by remember { mutableStateOf(false) }
 
-  val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+  var uri: Uri? = null
+
+  val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
+    if (it != null) {
+      uri = it
+    }
+  }
+
+  LaunchedEffect(uri) {
     if (uri != null) {
-      onNavigate(
-        CheFicoRoute.PlantDetail.path(
-          URLEncoder.encode(uri.toString(), "utf-8"),
-          plantOrgan
-        )
-      )
+      onNavigate(CheFicoRoute.PlantDetail.path(withContext(Dispatchers.IO) { URLEncoder.encode(uri.toString(), "utf-8") }, plantOrgan))
     }
   }
 

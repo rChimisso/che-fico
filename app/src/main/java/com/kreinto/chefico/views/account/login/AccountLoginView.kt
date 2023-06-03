@@ -8,7 +8,7 @@ import com.kreinto.chefico.views.account.login.components.AccountLoginContent
 
 @ExperimentalMaterial3Api
 @Composable
-fun AccountLoginView(authViewModel: AuthViewModel, onNavigate: (String) -> Unit) {
+fun AccountLoginView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
   SimpleFrame(onNavigate) { AccountLoginContent(authViewModel, it, onNavigate) }
 }
 

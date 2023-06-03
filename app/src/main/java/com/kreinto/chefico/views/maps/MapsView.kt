@@ -45,7 +45,7 @@ import kotlinx.coroutines.flow.*
 fun MapsView(
   onNavigate: (String) -> Unit,
   viewModel: CheFicoViewModel,
-  fusedLocationClient: FusedLocationProviderClient,
+  locationClient: FusedLocationProviderClient,
   locationSettingsClient: SettingsClient
 ) {
   var isMapLoaded by remember { mutableStateOf(false) }
@@ -70,13 +70,13 @@ fun MapsView(
 
   val cameraPositionState = rememberCameraPositionState {
     position = cameraPosition
-    fusedLocationClient.lastLocation.addOnSuccessListener {
+    locationClient.lastLocation.addOnSuccessListener {
       if (it != null) {
         position = buildCameraPosition(it)
         cameraPosition = position
       }
     }
-    fusedLocationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null).addOnSuccessListener {
+    locationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null).addOnSuccessListener {
       if (it != null) {
         position = buildCameraPosition(it)
         cameraPosition = position
@@ -113,7 +113,7 @@ fun MapsView(
           contentDescription = "Center camera",
         ) {
           shouldFollow = true
-          fusedLocationClient.getCurrentLocation(
+          locationClient.getCurrentLocation(
             Priority.PRIORITY_BALANCED_POWER_ACCURACY,
             null
           ).addOnSuccessListener {
@@ -146,7 +146,7 @@ fun MapsView(
       .build()
     val settingResultRequest = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
       if (it.resultCode == Activity.RESULT_OK) {
-        fusedLocationClient.requestLocationUpdates(
+        locationClient.requestLocationUpdates(
           locationRequest,
           locationListener,
           Looper.getMainLooper()
@@ -168,11 +168,11 @@ fun MapsView(
 
     LaunchedEffect(shouldFollow) {
       if (shouldFollow) {
-        fusedLocationClient.removeLocationUpdates(locationListener)
+        locationClient.removeLocationUpdates(locationListener)
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
         val task = locationSettingsClient.checkLocationSettings(builder.build())
         task.addOnSuccessListener {
-          fusedLocationClient.requestLocationUpdates(
+          locationClient.requestLocationUpdates(
             locationRequest,
             locationListener,
             Looper.getMainLooper()
@@ -188,7 +188,7 @@ fun MapsView(
         }
         moveCamera()
       } else {
-        fusedLocationClient.removeLocationUpdates(locationListener)
+        locationClient.removeLocationUpdates(locationListener)
       }
     }
     LaunchedEffect(cameraPosition) {
@@ -206,7 +206,7 @@ fun MapsView(
     }
     DisposableEffect(Unit) {
       onDispose {
-        fusedLocationClient.removeLocationUpdates(locationListener)
+        locationClient.removeLocationUpdates(locationListener)
       }
     }
 

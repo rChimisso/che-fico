@@ -16,8 +16,8 @@ import com.kreinto.chefico.room.entities.Poi
 @Composable
 fun PoiDetailView(
   onNavigate: (String) -> Unit,
-  viewModel: CheFicoViewModel,
   poiId: String?,
+  viewModel: CheFicoViewModel,
   authViewModel: AuthViewModel
 ) {
   var poi by remember { mutableStateOf(Poi.NullPoi) }

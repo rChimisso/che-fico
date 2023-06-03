@@ -36,9 +36,9 @@ import java.net.URLDecoder
 @Composable
 fun PlantDetailView(
   onNavigate: (String) -> Unit,
-  viewModel: CheFicoViewModel,
   imageURI: String?,
   organ: String?,
+  viewModel: CheFicoViewModel
 ) {
   val inputStream = LocalContext.current.contentResolver.openInputStream(Uri.parse(URLDecoder.decode(imageURI, "utf-8")))
   val image = BitmapFactory.decodeStream(inputStream)

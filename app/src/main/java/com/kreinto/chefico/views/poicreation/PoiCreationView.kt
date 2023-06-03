@@ -56,8 +56,8 @@ fun saveImage(path: String, contentResolver: ContentResolver, onUriCreated: (Uri
 fun PoiCreationView(
   onNavigate: (String) -> Unit,
   viewModel: CheFicoViewModel,
-  fusedLocationClient: FusedLocationProviderClient,
-  authViewModel: AuthViewModel
+  authViewModel: AuthViewModel,
+  locationClient: FusedLocationProviderClient
 ) {
   val contentResolver = LocalContext.current.contentResolver
   var creatingPoi = viewModel.getCreatingPoi()
@@ -86,7 +86,7 @@ fun PoiCreationView(
               creatingPoi.image = it.toString()
             }
             if (creatingPoi.latitude == 0.0 && creatingPoi.longitude == 0.0) {
-              fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+              locationClient.lastLocation.addOnSuccessListener { location ->
                 if (location != null) {
                   creatingPoi.latitude = location.latitude
                   creatingPoi.longitude = location.longitude

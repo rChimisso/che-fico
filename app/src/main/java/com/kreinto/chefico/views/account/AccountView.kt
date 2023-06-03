@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
 @Composable
-fun AccountView(viewModel: CheFicoViewModel, authViewModel: AuthViewModel, onNavigate: (String) -> Unit) {
+fun AccountView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authViewModel: AuthViewModel) {
   var loading by remember { mutableStateOf(true) }
   var backupOnline by rememberSaveable { mutableStateOf(false) }
   LaunchedEffect(Unit) {
