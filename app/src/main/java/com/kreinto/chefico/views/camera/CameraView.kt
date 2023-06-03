@@ -87,7 +87,7 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
   var plantOrgan by remember { mutableStateOf(PlantRecognition.PlantOrgan.leaf) }
   var cameraFlashEnabled by remember { mutableStateOf(false) }
 
-  var uri: Uri? = null
+  var uri: Uri? by remember { mutableStateOf(null) }
 
   val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
     if (it != null) {

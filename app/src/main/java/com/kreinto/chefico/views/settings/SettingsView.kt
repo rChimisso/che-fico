@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kreinto.chefico.CheFicoRoute
@@ -29,18 +30,18 @@ import com.kreinto.chefico.room.CheFicoViewModel
 fun SettinsView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authViewModel: AuthViewModel) {
   val context = LocalContext.current
   val settingsManager = SettingsManager(context)
-  var language by remember { mutableStateOf(settingsManager.getLanguage()) }
+  val language by remember { mutableStateOf(Language.NAME[settingsManager.language]!!) }
   val themeOptions = mapOf(
-    stringResource(R.string.dark_label) to Theme.DARK,
-    stringResource(R.string.light_label) to Theme.LIGHT,
-    stringResource(R.string.defaulf_label) to Theme.SYSTEM
+    stringResource(R.string.dark_theme) to Theme.DARK,
+    stringResource(R.string.light_theme) to Theme.LIGHT,
+    stringResource(R.string.system_theme) to Theme.SYSTEM
   )
-  val (selectedTheme, onThemeSelected) = remember { mutableStateOf(settingsManager.getTheme()) }
-  var automaticDeletion by remember { mutableStateOf(settingsManager.getAutoDeleteNotification()) }
+  val (selectedTheme, onThemeSelected) = remember { mutableStateOf(settingsManager.theme) }
+  var automaticDeletion by remember { mutableStateOf(settingsManager.autoDeleteNotifications) }
   var showMenu by remember { mutableStateOf(false) }
   val isUserSignedIn by remember { mutableStateOf(authViewModel.isUserSignedIn()) }
 
-  LaunchedEffect(selectedTheme) { settingsManager.applyTheme(selectedTheme) }
+  LaunchedEffect(selectedTheme) { settingsManager.theme = selectedTheme }
 
   StandardFrame(
     onNavPressed = onNavigate,
@@ -63,11 +64,11 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
         horizontalArrangement = Arrangement.spacedBy(space = 8.dp, alignment = Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically
       ) {
-        Text(stringResource(R.string.privacy_label))
-        Text(stringResource(R.string.dot_spacer_label))
-        Text(stringResource(R.string.copyright_label))
-        Text(stringResource(R.string.dot_spacer_label))
-        Text(stringResource(R.string.version_label))
+        Text(stringResource(R.string.privacy))
+        Text(stringResource(R.string.dot_spacer))
+        Text(stringResource(R.string.copyright))
+        Text(stringResource(R.string.dot_spacer))
+        Text(stringResource(R.string.version))
       }
     }
   ) {
@@ -84,12 +85,12 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        Text(stringResource(R.string.auto_delete_label))
+        Text(stringResource(R.string.auto_delete))
         Switch(
           checked = automaticDeletion,
           onCheckedChange = { checked ->
             automaticDeletion = checked
-            settingsManager.setAutoDeleteNotification(checked)
+            settingsManager.autoDeleteNotifications = checked
           }
         )
       }
@@ -99,10 +100,10 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
           .clickable {
             val alertBuilder = android.app.AlertDialog.Builder(context)
             alertBuilder.setCancelable(true)
-            alertBuilder.setTitle(R.string.delete_notifications_title_label)
-            alertBuilder.setMessage(R.string.delete_message_label)
-            alertBuilder.setPositiveButton(R.string.positive_label) { _, _ -> viewModel.deleteNotifications() }
-            alertBuilder.setNegativeButton(R.string.negative_label) { _, _ -> }
+            alertBuilder.setTitle(R.string.delete_notifications_title)
+            alertBuilder.setMessage(R.string.delete_notifications_message)
+            alertBuilder.setPositiveButton(R.string.yes) { _, _ -> viewModel.deleteNotifications() }
+            alertBuilder.setNegativeButton(R.string.no) { _, _ -> }
             alertBuilder
               .create()
               .show()
@@ -110,7 +111,7 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
           .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
-      ) { Text(stringResource(R.string.delete_notifications_label), Modifier.fillMaxWidth()) }
+      ) { Text(stringResource(R.string.delete_notifications), Modifier.fillMaxWidth()) }
       Row(
         modifier = Modifier
           .fillMaxWidth()
@@ -119,24 +120,22 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        Text(stringResource(R.string.lenguage_label))
+        Text(stringResource(R.string.lenguage))
         Box {
           Text(language, Modifier.align(Alignment.Center))
           DropdownMenu(showMenu, { showMenu = false }) {
             DropdownMenuItem(
-              { Text(stringResource(R.string.it_label)) },
+              { Text(stringResource(R.string.italian)) },
               onClick = {
                 showMenu = false
-                language = "Italiano"
-                settingsManager.setLanguage(Language.Italian)
+                settingsManager.language = Language.ITALIAN
               }
             )
             DropdownMenuItem(
-              { Text(stringResource(R.string.en_label)) },
+              { Text(stringResource(R.string.english)) },
               onClick = {
                 showMenu = false
-                language = "English"
-                settingsManager.setLanguage(Language.English)
+                settingsManager.language = Language.ENGLISH
               }
             )
           }
@@ -153,7 +152,7 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
         Column(
           horizontalAlignment = Alignment.CenterHorizontally,
           verticalArrangement = Arrangement.Center
-        ) { Text(stringResource(R.string.theme_label)) }
+        ) { Text(stringResource(R.string.theme)) }
         Row(
           modifier = Modifier.fillMaxHeight(),
           horizontalArrangement = Arrangement.Center,
@@ -165,7 +164,7 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
               onClick = { onThemeSelected(text.value) }
             )
             Text(text.key)
-            Spacer(Modifier.width(16.dp))
+            Spacer(Modifier.width(8.dp))
           }
         }
       }
@@ -178,10 +177,14 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
       ) {
         Button(
           onClick = { onNavigate(if (authViewModel.isUserSignedIn()) CheFicoRoute.Account.path else CheFicoRoute.Login.path) },
-          contentPadding = ButtonDefaults.ButtonWithIconContentPadding
-        ) { Text(stringResource(if (authViewModel.isUserSignedIn()) R.string.account_settings_label else R.string.signup_or_login_label)) }
+          contentPadding = ButtonDefaults.TextButtonContentPadding
+        ) {
+          Text(
+            stringResource(if (authViewModel.isUserSignedIn()) R.string.account_settings else R.string.login),
+            fontSize = 18.sp
+          )
+        }
       }
     }
   }
 }
-

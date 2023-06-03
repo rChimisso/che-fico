@@ -20,14 +20,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -82,25 +80,8 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
         Text("Condividi", color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(top = 16.dp))
         TextField(
           modifier = Modifier.padding(16.dp),
-          value = user, onValueChange = { user = it }, singleLine = true,
-          colors = TextFieldDefaults.colors(
-            unfocusedTextColor = Color(0xff32C896),
-            focusedContainerColor = Color.Transparent,
-            unfocusedContainerColor = Color.Transparent,
-            disabledContainerColor = Color.Transparent,
-            cursorColor = Color(0xff32C896),
-            focusedIndicatorColor = Color(0x6632C896),
-            unfocusedIndicatorColor = Color(0x6632C896),
-            disabledIndicatorColor = Color(0x6632C896),
-            focusedLeadingIconColor = Color(0xff32C896),
-            unfocusedLeadingIconColor = Color(0xff32C896),
-            focusedTrailingIconColor = Color(0xff32C896),
-            unfocusedTrailingIconColor = Color(0x6632C896),
-            focusedLabelColor = Color.Transparent,
-            unfocusedLabelColor = Color(0xff32C896),
-            disabledLabelColor = Color(0xff32C896),
-            unfocusedPlaceholderColor = Color(0xff32C896),
-          ),
+          value = user, onValueChange = { user = it },
+          singleLine = true,
           placeholder = { Text("ID utente") },
           enabled = true,
           readOnly = false,
@@ -142,7 +123,7 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
         Column {
           Box {
             Box(
-              modifier = Modifier
+              Modifier
                 .fillMaxWidth()
                 .height(160.dp)
                 .align(Alignment.TopCenter),
@@ -186,7 +167,7 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
             modifier = Modifier.fillMaxWidth(2f / 3f),
             init = name,
             textColor = MaterialTheme.colorScheme.primary,
-            textStyle = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
+            fontSize = 24.sp,
             onFocusChanged = {
               poi.name = name
               updatePoi(poi)
@@ -215,54 +196,22 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
         )
       }
       if (openNotificationPopUp) {
-        Dialog(onDismissRequest = { openNotificationPopUp = false }) {
+        Dialog({ openNotificationPopUp = false }) {
           var notificationName by remember { mutableStateOf("") }
           var notificationMessage by remember { mutableStateOf("") }
           val dateRangePickerState = rememberDatePickerState()
           Surface(Modifier.fillMaxWidth()) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
               TextField(
                 placeholder = { Text("Titolo") },
-                value = notificationName, onValueChange = { notificationName = it },
-                colors = TextFieldDefaults.colors(
-                  errorContainerColor = Color.Transparent,
-                  unfocusedTextColor = Color(0xff32C896),
-                  focusedContainerColor = Color.Transparent,
-                  unfocusedContainerColor = Color.Transparent,
-                  disabledContainerColor = Color.Transparent,
-                  cursorColor = Color(0xff32C896),
-                  focusedIndicatorColor = Color(0x6632C896),
-                  unfocusedIndicatorColor = Color(0x6632C896),
-                  disabledIndicatorColor = Color(0x6632C896),
-                  focusedLeadingIconColor = Color(0xff32C896),
-                  unfocusedLeadingIconColor = Color(0xff32C896),
-                  focusedLabelColor = Color.Transparent,
-                  unfocusedLabelColor = Color(0xff32C896),
-                  disabledLabelColor = Color(0xff32C896),
-                  unfocusedPlaceholderColor = Color(0xff32C896),
-                )
+                value = notificationName,
+                onValueChange = { notificationName = it }
               )
               DatePicker(dateRangePickerState)
               TextField(
                 placeholder = { Text("Descrizione") },
-                value = notificationMessage, onValueChange = { notificationMessage = it },
-                colors = TextFieldDefaults.colors(
-                  errorContainerColor = Color.Transparent,
-                  unfocusedTextColor = Color(0xff32C896),
-                  focusedContainerColor = Color.Transparent,
-                  unfocusedContainerColor = Color.Transparent,
-                  disabledContainerColor = Color.Transparent,
-                  cursorColor = Color(0xff32C896),
-                  focusedIndicatorColor = Color(0x6632C896),
-                  unfocusedIndicatorColor = Color(0x6632C896),
-                  disabledIndicatorColor = Color(0x6632C896),
-                  focusedLeadingIconColor = Color(0xff32C896),
-                  unfocusedLeadingIconColor = Color(0xff32C896),
-                  focusedLabelColor = Color.Transparent,
-                  unfocusedLabelColor = Color(0xff32C896),
-                  disabledLabelColor = Color(0xff32C896),
-                  unfocusedPlaceholderColor = Color(0xff32C896),
-                )
+                value = notificationMessage,
+                onValueChange = { notificationMessage = it }
               )
               TextButton(
                 colors = ButtonDefaults.buttonColors(

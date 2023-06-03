@@ -83,10 +83,7 @@ fun GoogleSignInButton(onSuccess: () -> Unit, onFailure: () -> Unit) {
     )
   ) {
     // used icon already has padding - AlbeInfo
-    Image(
-      painter = painterResource(id = R.drawable.ic_google_logo),
-      contentDescription = "accedi con google",
-    )
-    Text(text = stringResource(R.string.google_login_label), fontSize = 14.sp)
+    Image(painterResource(R.drawable.ic_google_logo), stringResource(R.string.google_signin))
+    Text(stringResource(R.string.google_signin), fontSize = 14.sp)
   }
 }

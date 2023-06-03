@@ -4,6 +4,5 @@
   <style name = "Theme.CheFico" parent = "Theme.AppCompat.NoActionBar">
     <item name = "android:windowTranslucentStatus">true</item>
     <item name = "android:fitsSystemWindows">false</item>
-    <item name = "android:statusBarColor">@color/background_light_test</item>
   </style>
 </resources>

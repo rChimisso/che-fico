@@ -1,7 +1,6 @@
 package com.kreinto.chefico.components.inputs
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -15,6 +14,8 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
+import com.kreinto.chefico.ui.theme.bodyStyle
 
 /**
  * Standardized [TextField].
@@ -23,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
  * @param init Initial value to display, defaults to `""`
  * @param placeholder Optional placeholder to display.
  * @param textColor Text color.
- * @param textStyle Style to be applied to the input text. The default textStyle uses the LocalTextStyle defined by the theme.
+ * @param fontSize Font size.
  * @param trailingIcon Optional [Composable] traling icon to display. Receives the current input value and a setter to change it.
  * @param onFocusChanged Optional function called when the input loses focus.
  * @param onValueChange Function called when the input value changes.
@@ -34,7 +35,7 @@ fun TextInput(
   init: String = "",
   placeholder: @Composable (() -> Unit)? = null,
   textColor: Color = Color.Black,
-  textStyle: TextStyle = LocalTextStyle.current,
+  fontSize: TextUnit = bodyStyle.fontSize,
   singleLine: Boolean = true,
   trailingIcon: @Composable ((String, (String) -> Unit) -> Unit)? = null,
   onFocusChanged: ((FocusState) -> Unit)? = null,
@@ -58,7 +59,7 @@ fun TextInput(
     maxLines = 1,
     singleLine = singleLine,
     placeholder = placeholder,
-    textStyle = textStyle,
+    textStyle = bodyStyle.merge(TextStyle(fontSize = fontSize)),
     colors = TextFieldDefaults.textFieldColors(
       textColor = textColor,
       cursorColor = Color.Black,

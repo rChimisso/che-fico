@@ -16,12 +16,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -47,6 +45,7 @@ import com.kreinto.chefico.views.poicreation.PoiCreationView
 import com.kreinto.chefico.views.poidetail.PoiDetailView
 import com.kreinto.chefico.views.poilist.PoiListView
 import com.kreinto.chefico.views.settings.SettinsView
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -130,8 +129,24 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
+    val viewModel by viewModels<CheFicoViewModel>()
+    val authViewModel by viewModels<AuthViewModel>()
+
+    SettingsManager(this).refreshTheme()
+    PoiNotificationManager.createNotificationChannel(this)
+    if (authViewModel.isUserSignedIn()) {
+      authViewModel.isOnlineBackupActive { onlineBackup ->
+        if (onlineBackup) {
+          lifecycleScope.launch(Dispatchers.IO) {
+            authViewModel.backup(viewModel.getPois().first()) {
+              authViewModel.getPois { pois -> pois.forEach { poi -> viewModel.updatePoi(poi) } }
+            }
+          }
+        }
+      }
+    }
     @SuppressLint("SourceLockedOrientationActivity")
-    this@MainActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
     val requestLocationPermLauncherMaps = getPermissionLauncher(CheFicoRoute.Maps.path)
     val requestLocationPermLauncherPoi = getPermissionLauncher(CheFicoRoute.PoiCreation.path)
@@ -153,10 +168,6 @@ class MainActivity : AppCompatActivity() {
     setContent {
       CheFicoTheme {
         navController = rememberNavController()
-
-        val context = LocalContext.current
-        val viewModel by viewModels<CheFicoViewModel>()
-        val authViewModel by viewModels<AuthViewModel>()
         val onNavigate: (String) -> Unit = {
           when (it) {
             CheFicoRoute.Back.path -> {
@@ -168,23 +179,6 @@ class MainActivity : AppCompatActivity() {
             CheFicoRoute.Maps.path, CheFicoRoute.PoiCreation.path -> requestPerm(ACCESS_FINE_LOCATION, requestLocationPermLauncher(it))
             CheFicoRoute.Camera.path -> requestPerm(CAMERA, requestCameraPermLauncher)
             else -> navController.navigate(it)
-          }
-        }
-
-        val coroutine = rememberCoroutineScope()
-        LaunchedEffect(Unit) {
-          PoiNotificationManager.createNotificationChannel(context)
-          SettingsManager(context).applyTheme()
-          if (authViewModel.isUserSignedIn()) {
-            authViewModel.isOnlineBackupActive { onlineBackup ->
-              if (onlineBackup) {
-                coroutine.launch {
-                  authViewModel.backup(viewModel.getPois().first()) {
-                    authViewModel.getPois { pois -> pois.forEach { poi -> viewModel.updatePoi(poi) } }
-                  }
-                }
-              }
-            }
           }
         }
 

@@ -25,6 +25,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
@@ -50,7 +51,6 @@ fun MapsView(
 ) {
   var isMapLoaded by remember { mutableStateOf(false) }
   var shouldFollow by rememberSaveable { mutableStateOf(true) }
-  // TODO: Replace base coordinates with saved last location and saved zoom
   var cameraPosition: CameraPosition by rememberSaveable {
     mutableStateOf(
       CameraPosition
@@ -227,10 +227,16 @@ fun MapsView(
     ) {
       // For clustering: https://github.com/googlemaps/android-maps-compose/issues/44
       poisWithin.value.forEach { poi ->
-        Marker(MarkerState(LatLng(poi.latitude, poi.longitude)), onClick = {
-          onNavigate(CheFicoRoute.PoiDetail.path(poi.id.toString()))
-          return@Marker true
-        })
+        Marker(
+          MarkerState(LatLng(poi.latitude, poi.longitude)),
+          title = poi.name,
+          // Color conversion from RGB to Hue: https://stackoverflow.com/questions/23090019/fastest-formula-to-get-hue-from-rgb
+          icon = BitmapDescriptorFactory.defaultMarker(157.24f),
+          onClick = {
+            onNavigate(CheFicoRoute.PoiDetail.path(poi.id.toString()))
+            return@Marker true
+          }
+        )
       }
     }
 

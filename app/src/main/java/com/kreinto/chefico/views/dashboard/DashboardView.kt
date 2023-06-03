@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.R
 import com.kreinto.chefico.room.CheFicoViewModel
@@ -24,7 +25,7 @@ fun DashboardView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel) {
       CenterAlignedTopAppBar(
         scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
         navigationIcon = { Image(painterResource(R.drawable.che_fico_icon), null, Modifier.size(64.dp)) },
-        title = { Text("Che Fico!") }
+        title = { Text(stringResource(R.string.app_name)) }
       )
     },
     bottomBar = { DashboardNavigationContent(onNavigate) },

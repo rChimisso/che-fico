@@ -15,7 +15,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 
@@ -65,6 +64,6 @@ private fun DashboardNavigationItem(
       )
     }
     Spacer(Modifier.height(8.dp))
-    Text(text, fontSize = 12.sp, color = MaterialTheme.colorScheme.primary)
+    Text(text)
   }
 }

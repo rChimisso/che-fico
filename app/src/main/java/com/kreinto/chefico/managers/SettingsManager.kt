@@ -6,12 +6,24 @@ import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.core.os.LocaleListCompat
 import androidx.preference.PreferenceManager
 
-sealed class Language(val locale: LocaleListCompat) {
-  object Italian : Language(LocaleListCompat.forLanguageTags("it"))
-  object English : Language(LocaleListCompat.forLanguageTags("en"))
+/**
+ * Languages.
+ */
+sealed class Language {
+  companion object {
+    const val ITALIAN = "it"
+    const val ENGLISH = "en"
+    val NAME = mapOf(
+      ITALIAN to "Italiano",
+      ENGLISH to "English"
+    )
+  }
 }
 
-class Theme {
+/**
+ * Themes.
+ */
+sealed class Theme {
   companion object {
     const val DARK = MODE_NIGHT_YES
     const val LIGHT = MODE_NIGHT_NO
@@ -19,36 +31,71 @@ class Theme {
   }
 }
 
+/**
+ * Settings Manager.
+ *
+ * @param context
+ */
 class SettingsManager(context: Context) {
-  private val languageSetting = "language"
-  private val autoDeleteNotificationsSetting = "autoDeleteNotifications"
-  private val themeModeSetting = "themeMode"
+  /**
+   * Language setting key.
+   */
+  private val languageKey = "language"
 
+  /**
+   * Auto delete notifications setting key.
+   */
+  private val autoDeleteNotificationsKey = "autoDeleteNotifications"
+
+  /**
+   * Theme setting key.
+   */
+  private val themeKey = "theme"
+
+  /**
+   * Application settings.
+   */
   private val settings: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-  fun getLanguage(): String {
-    return settings.getString(languageSetting, Language.Italian.locale.toLanguageTags())!!
-  }
+  /**
+   * Languaage setting.
+   */
+  var language: String
+    get() {
+      return settings.getString(languageKey, Language.ITALIAN)!!
+    }
+    set(value) {
+      settings.edit().putString(languageKey, value).apply()
+      setApplicationLocales(LocaleListCompat.forLanguageTags(value))
+    }
 
-  fun setLanguage(language: Language) {
-    settings.edit().putString(languageSetting, language.locale.toLanguageTags()).apply()
-    setApplicationLocales(language.locale)
-  }
+  /**
+   * Auto delete notifications setting.
+   */
+  var autoDeleteNotifications: Boolean
+    get() {
+      return settings.getBoolean(autoDeleteNotificationsKey, false)
+    }
+    set(value) {
+      settings.edit().putBoolean(autoDeleteNotificationsKey, value).apply()
+    }
 
-  fun getAutoDeleteNotification(): Boolean {
-    return settings.getBoolean(autoDeleteNotificationsSetting, false)
-  }
+  /**
+   * Theme setting.
+   */
+  var theme: Int
+    get() {
+      return settings.getInt(themeKey, Theme.SYSTEM)
+    }
+    set(value) {
+      settings.edit().putInt(themeKey, value).apply()
+      setDefaultNightMode(value)
+    }
 
-  fun setAutoDeleteNotification(value: Boolean) {
-    settings.edit().putBoolean(autoDeleteNotificationsSetting, value).apply()
-  }
-
-  fun getTheme(): Int {
-    return settings.getInt(themeModeSetting, Theme.SYSTEM)
-  }
-
-  fun applyTheme(theme: Int = getTheme()) {
-    settings.edit().putInt(themeModeSetting, theme).apply()
-    setDefaultNightMode(theme)
+  /**
+   * Refreshes the current theme.
+   */
+  fun refreshTheme() {
+    theme = theme
   }
 }

@@ -59,18 +59,16 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       verticalAlignment = Alignment.CenterVertically
     ) {
       Divider(color = Color(0x6632C896), modifier = Modifier.width(128.dp))
-      Spacer(modifier = Modifier.width(8.dp))
-      Text(text = stringResource(R.string.signup_methods_divider_label), fontSize = 16.sp, color = Color(0xff32C896))
-      Spacer(modifier = Modifier.width(8.dp))
+      Spacer(Modifier.width(8.dp))
+      Text(stringResource(R.string.signup_methods_divider_label), fontSize = 16.sp, color = Color(0xff32C896))
+      Spacer(Modifier.width(8.dp))
       Divider(color = Color(0x6632C896), modifier = Modifier.width(128.dp))
     }
     Spacer(modifier = Modifier.height(32.dp))
     TextField(
-      label = { Text(text = stringResource(R.string.name_label)) },
+      label = { Text(stringResource(R.string.name_label)) },
       value = displayName,
-      onValueChange = {
-        displayName = it
-      },
+      onValueChange = { displayName = it },
       isError = displayName.isEmpty(),
       singleLine = true,
       colors = TextFieldDefaults.colors(
@@ -101,9 +99,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
     TextField(
       label = { Text(text = stringResource(R.string.email_label)) },
       value = email,
-      onValueChange = {
-        email = it
-      },
+      onValueChange = { email = it },
       isError = email.isEmpty(),
       singleLine = true,
       colors = TextFieldDefaults.colors(
@@ -134,12 +130,8 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
     TextField(
       label = { Text(text = stringResource(R.string.pwd_label)) },
       value = password,
-      onValueChange = {
-        password = it
-      },
-      supportingText = {
-        Text("Lunghezza minima di 7 caratteri")
-      },
+      onValueChange = { password = it },
+      supportingText = { Text("Lunghezza minima di 7 caratteri") },
       isError = password.isEmpty() || password.length <= 6,
       singleLine = true,
       colors = TextFieldDefaults.colors(
@@ -185,12 +177,8 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
     TextField(
       label = { Text(text = stringResource(R.string.pwd_repeat_label)) },
       value = repeatedPassword,
-      supportingText = {
-        Text("Le password devono coincidere")
-      },
-      onValueChange = {
-        repeatedPassword = it
-      },
+      supportingText = { Text("Le password devono coincidere") },
+      onValueChange = { repeatedPassword = it },
       isError = !password.equals(repeatedPassword) || repeatedPassword.isEmpty(),
       singleLine = true,
       colors = TextFieldDefaults.colors(

@@ -7,9 +7,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -21,8 +21,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -46,9 +44,7 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
     Image(painterResource(R.drawable.che_fico_icon), null, Modifier.size(156.dp))
     Spacer(Modifier.height(64.dp))
     GoogleLogInButton(
-      onSuccess = {
-        onNavigate(CheFicoRoute.Account.path)
-      },
+      onSuccess = { onNavigate(CheFicoRoute.Account.path) },
       onFailure = {}
     )
     Spacer(Modifier.height(40.dp))
@@ -58,7 +54,7 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
     ) {
       Divider(color = Color(0x6632C896), modifier = Modifier.width(128.dp))
       Spacer(Modifier.width(8.dp))
-      Text(text = stringResource(R.string.login_methods_divider_label), fontSize = 16.sp, color = Color(0xff32C896))
+      Text(stringResource(R.string.login_methods_divider_label), fontSize = 16.sp, color = Color(0xff32C896))
       Spacer(Modifier.width(8.dp))
       Divider(color = Color(0x6632C896), modifier = Modifier.width(128.dp))
     }
@@ -123,9 +119,17 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
         IconButton(onClick = { passwordVisible = !passwordVisible }) {
           Crossfade(targetState = passwordVisible, animationSpec = tween(300)) { visible ->
             if (visible) {
-              Icon(painter = painterResource(id = R.drawable.ic_visible), contentDescription = "", modifier = Modifier.size(24.dp))
+              Icon(
+                painter = painterResource(id = R.drawable.ic_visible),
+                contentDescription = "Hide password",
+                modifier = Modifier.size(24.dp)
+              )
             } else {
-              Icon(painter = painterResource(id = R.drawable.ic_hidden), contentDescription = "", modifier = Modifier.size(24.dp))
+              Icon(
+                painter = painterResource(id = R.drawable.ic_hidden),
+                contentDescription = "Show password",
+                modifier = Modifier.size(24.dp)
+              )
             }
           }
         }
@@ -144,15 +148,9 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
     Row(
       horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
     ) {
-      Text(text = stringResource(R.string.pwd_forgot_label), fontSize = 16.sp, color = Color(0xff32C896))
+      Text(stringResource(R.string.pwd_forgot_label))
       Spacer(Modifier.width(8.dp))
-      ClickableText(
-        AnnotatedString(text = stringResource(R.string.pwd_recover_label)),
-        style = TextStyle(
-          color = Color(0xff32C896),
-          fontSize = 16.sp,
-        )
-      ) {}
+      Text(stringResource(R.string.pwd_recover_label), Modifier.clickable {})
     }
     Spacer(Modifier.height(32.dp))
     TextButton(
@@ -180,16 +178,15 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
           },
           {}
         )
-      }
+      },
+      enabled = email.isNotBlank() && password.isNotBlank()
     ) {
       Box(
         modifier = Modifier
           .fillMaxSize()
           .clip(RoundedCornerShape(12.dp))
           .background(Brush.verticalGradient(listOf(Color(0xff32C896), Color(0x6632C896))))
-      ) {
-        Text(text = stringResource(R.string.login_label), fontSize = 16.sp, modifier = Modifier.align(Alignment.Center))
-      }
+      ) { Text(stringResource(R.string.login_label), fontSize = 16.sp, modifier = Modifier.align(Alignment.Center)) }
     }
     Spacer(Modifier.height(16.dp))
     TextButton(
@@ -203,7 +200,7 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
         .width(208.dp)
         .height(40.dp),
       onClick = { onNavigate(CheFicoRoute.Signin.path) },
-    ) { Text(text = stringResource(R.string.signup_label), fontSize = 16.sp) }
+    ) { Text(stringResource(R.string.signup_label), fontSize = 16.sp) }
     Spacer(Modifier.height(8.dp))
   }
   AnimatedVisibility(

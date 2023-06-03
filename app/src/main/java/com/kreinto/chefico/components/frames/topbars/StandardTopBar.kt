@@ -1,7 +1,10 @@
 package com.kreinto.chefico.components.frames.topbars
 
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material3.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Surface
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.kreinto.chefico.CheFicoRoute
@@ -27,7 +30,6 @@ fun StandardTopBar(
   Surface(tonalElevation = level0) {
     CenterAlignedTopAppBar(
       scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
-      colors = TopAppBarDefaults.centerAlignedTopAppBarColors(MaterialTheme.colorScheme.surface),
       navigationIcon = {
         TransparentButton(
           ButtonData(

@@ -49,12 +49,8 @@ fun PlantDetailView(
     PlantRecognition.recognize(image, organ ?: PlantRecognition.PlantOrgan.leaf) {
       result.value = it
       PlantRecognition.fetchPlantDescription(
-        result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(
-          0
-        ) ?: ""
-      ) { data ->
-        description.value = data.getOrNull(0)?.extract.toString()
-      }
+        result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(0) ?: ""
+      ) { data -> description.value = data.getOrNull(0)?.extract.toString() }
     }
   }
 

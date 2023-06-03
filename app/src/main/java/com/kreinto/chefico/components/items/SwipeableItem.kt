@@ -9,12 +9,10 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -28,8 +26,6 @@ import kotlin.math.roundToInt
  *
  * @param icon Icon to display.
  * @param text Text to display.
- * @param contentColor Optional content color, defaults to TODO.
- * @param containerColor Optional container color, defaults to TODO.
  * @param actions Optional array of actions to display when the item gets swiped.
  * @param onClick Function called when the item is tapped.
  */
@@ -39,8 +35,6 @@ import kotlin.math.roundToInt
 fun SwipeableItem(
   @DrawableRes icon: Int,
   text: String,
-  contentColor: Color = MaterialTheme.colorScheme.primaryContainer,
-  containerColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
   actions: Array<@Composable () -> Unit> = arrayOf(),
   onClick: () -> Unit
 ) {
@@ -76,8 +70,6 @@ fun SwipeableItem(
       icon = icon,
       text = text,
       modifier = Modifier.offset { IntOffset(x = state.offset.value.roundToInt(), y = 0) },
-      contentColor = contentColor,
-      containerColor = containerColor,
       onClick = onClick
     )
   }

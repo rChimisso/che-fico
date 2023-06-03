@@ -35,7 +35,7 @@ If your application supports federated sign-in using Google ID tokens, configure
 For the sign-in scenario, it is strongly recommended to set GoogleIdTokenRequestOptions.Builder.setFilterByAuthorizedAccounts to true so only the Google accounts that the user has authorized before will show up in the credential list. This can help prevent a new account being created when the user has an existing account registered with the application.
  */
 
-open class AuthViewModel(application: Application) : AndroidViewModel(application) {
+class AuthViewModel(application: Application) : AndroidViewModel(application) {
   abstract class DatabaseDocument(val path: String)
   data class UserInfo(
     val uid: String,
@@ -191,7 +191,6 @@ open class AuthViewModel(application: Application) : AndroidViewModel(applicatio
     }
     return providersId
   }
-
 
   fun getBlockedUsers(onSuccess: (Map<String, String>) -> Unit, onFailure: () -> Unit) {
     if (auth.currentUser != null) {
