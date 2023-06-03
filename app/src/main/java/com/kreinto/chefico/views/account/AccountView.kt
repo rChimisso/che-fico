@@ -105,7 +105,7 @@ fun AccountView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
           Row(
             modifier = Modifier
               .fillMaxWidth()
-              .clickable { onNavigate(CheFicoRoute.BlackList.path) }
+              .clickable { onNavigate(CheFicoRoute.Blacklist.path) }
               .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically

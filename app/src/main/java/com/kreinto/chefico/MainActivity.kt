@@ -51,12 +51,19 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
+/**
+ * Che Fico! Main Activity.
+ *
+ */
 @ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
 @ExperimentalComposeUiApi
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
 class MainActivity : AppCompatActivity() {
+  /**
+   * [NavHostController] for views navigation.
+   */
   private lateinit var navController: NavHostController
 
   /**
@@ -123,6 +130,9 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
+    @SuppressLint("SourceLockedOrientationActivity")
+    this@MainActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
     val requestLocationPermLauncherMaps = getPermissionLauncher(CheFicoRoute.Maps.path)
     val requestLocationPermLauncherPoi = getPermissionLauncher(CheFicoRoute.PoiCreation.path)
     val requestLocationPermLauncher: (String) -> ActivityResultLauncher<String> = {
@@ -163,8 +173,6 @@ class MainActivity : AppCompatActivity() {
 
         val coroutine = rememberCoroutineScope()
         LaunchedEffect(Unit) {
-          @SuppressLint("SourceLockedOrientationActivity")
-          this@MainActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
           PoiNotificationManager.createNotificationChannel(context)
           SettingsManager(context).applyTheme()
           if (authViewModel.isUserSignedIn()) {
@@ -212,7 +220,7 @@ class MainActivity : AppCompatActivity() {
           composable(CheFicoRoute.Login.path) { AccountLoginView(onNavigate, authViewModel) }
           composable(CheFicoRoute.Account.path) { AccountView(onNavigate, viewModel, authViewModel) }
           composable(CheFicoRoute.AccountEdit.path) { AccountEditView(onNavigate, authViewModel) }
-          composable(CheFicoRoute.BlackList.path) { BlackListView(onNavigate, authViewModel) }
+          composable(CheFicoRoute.Blacklist.path) { BlackListView(onNavigate, authViewModel) }
         }
       }
     }
