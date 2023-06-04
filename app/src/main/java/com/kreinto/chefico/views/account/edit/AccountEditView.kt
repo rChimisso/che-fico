@@ -13,7 +13,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -119,9 +118,12 @@ fun AccountEditView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) 
             visualTransformation = if (oldPasswordVisible && modify) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
-              val image = if (oldPasswordVisible && modify) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-              val description = if (oldPasswordVisible) "Hide password" else "Show password"
-              IconButton({ oldPasswordVisible = !oldPasswordVisible }) { Icon(image, description) }
+              IconButton({ oldPasswordVisible = !oldPasswordVisible }) {
+                Icon(
+                  if (oldPasswordVisible && modify) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                  if (oldPasswordVisible) "Hide password" else "Show password"
+                )
+              }
             },
             readOnly = authViewModel.getUserProviderIds().contains("google.com") && !modify,
             shape = RoundedCornerShape(0.dp)
@@ -142,9 +144,12 @@ fun AccountEditView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) 
             visualTransformation = if (newPasswordVisible1 && modify) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
-              val image = if (newPasswordVisible1 && modify) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-              val description = if (newPasswordVisible1) "Hide password" else "Show password"
-              IconButton({ newPasswordVisible1 = !newPasswordVisible1 }) { Icon(image, description) }
+              IconButton({ newPasswordVisible1 = !newPasswordVisible1 }) {
+                Icon(
+                  if (newPasswordVisible1 && modify) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                  if (newPasswordVisible1) "Hide password" else "Show password"
+                )
+              }
             },
             readOnly = authViewModel.getUserProviderIds().contains("google.com") && !modify,
             shape = RoundedCornerShape(0.dp)
@@ -166,9 +171,12 @@ fun AccountEditView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) 
             visualTransformation = if (newPasswordVisible2 && modify) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
-              val image = if (newPasswordVisible2 && modify) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-              val description = if (newPasswordVisible2) "Hide password" else "Show password"
-              IconButton({ newPasswordVisible2 = !newPasswordVisible2 }) { Icon(image, description) }
+              IconButton({ newPasswordVisible2 = !newPasswordVisible2 }) {
+                Icon(
+                  if (newPasswordVisible2 && modify) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                  if (newPasswordVisible2) "Hide password" else "Show password"
+                )
+              }
             },
             readOnly = authViewModel.getUserProviderIds().contains("google.com") && !modify,
             shape = RoundedCornerShape(0.dp)
@@ -178,7 +186,7 @@ fun AccountEditView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) 
       Button(
         onClick = { modify = !modify },
         contentPadding = ButtonDefaults.ButtonWithIconContentPadding
-      ) { Text(stringResource(if (!modify) R.string.btn_edit_label else R.string.btn_submit_label), color = Color.Red) }
+      ) { Text(stringResource(if (!modify) R.string.edit_info else R.string.confirm_changes), color = MaterialTheme.colorScheme.error) }
     }
   }
 }

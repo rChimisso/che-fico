@@ -9,7 +9,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -19,6 +18,7 @@ import com.google.firebase.ktx.Firebase
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.frames.SimpleFrame
+import com.kreinto.chefico.components.misc.Loader
 import com.kreinto.chefico.room.AuthViewModel
 import com.kreinto.chefico.room.CheFicoViewModel
 import kotlinx.coroutines.flow.first
@@ -80,7 +80,7 @@ fun AccountView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
               .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
-          ) { Text(text = stringResource(R.string.edit_profile_label), modifier = Modifier.fillMaxWidth()) }
+          ) { Text(stringResource(R.string.edit_profile_label), Modifier.fillMaxWidth()) }
           Row(
             modifier = Modifier
               .fillMaxWidth()
@@ -89,7 +89,7 @@ fun AccountView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
           ) {
-            Text(text = stringResource(R.string.backup_label))
+            Text(stringResource(R.string.backup_label))
             Switch(checked = backupOnline, onCheckedChange = { checked ->
               backupOnline = checked
               authViewModel.setOnlineBackup(checked)
@@ -116,9 +116,10 @@ fun AccountView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
             authViewModel.signOut()
             onNavigate(CheFicoRoute.Settings.path)
           },
-          contentPadding = ButtonDefaults.ButtonWithIconContentPadding
-        ) { Text(stringResource(R.string.logout_label), color = Color.Red, textAlign = TextAlign.Center) }
+          contentPadding = ButtonDefaults.TextButtonContentPadding
+        ) { Text(stringResource(R.string.logout_label), color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center) }
       }
     }
   }
+  Loader(!loading)
 }

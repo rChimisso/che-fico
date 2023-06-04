@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -22,7 +22,7 @@ import com.kreinto.chefico.components.buttons.data.ButtonData
  *
  * @param icon Icon to display.
  * @param contentDescription Text used by accessibility services to describe what the icon button represents.
- * @param colors [IconButtonColors].
+ * @param iconColor Optional Icon color.
  * @param height Button height.
  * @param width Button width.
  * @param enabled Whether the button is enabled.
@@ -31,27 +31,22 @@ import com.kreinto.chefico.components.buttons.data.ButtonData
 @Composable
 fun TransparentButton(
   @DrawableRes icon: Int,
-  contentDescription: String,
-  colors: IconButtonColors = IconButtonDefaults.iconButtonColors(),
+  contentDescription: String? = null,
+  iconColor: Color? = null,
   height: Dp = 40.dp,
   width: Dp = 40.dp,
   enabled: Boolean = true,
   onClick: () -> Unit
 ) {
   IconButton(
-    modifier = Modifier
+    onClick,
+    Modifier
       .height(height)
       .width(width),
-    enabled = enabled,
-    colors = colors,
-    onClick = onClick
-  ) {
-    Icon(
-      painter = painterResource(icon),
-      contentDescription = contentDescription,
-      modifier = Modifier.size(48.dp)
-    )
-  }
+    enabled,
+    colors = if (iconColor != null) IconButtonDefaults.filledIconButtonColors(Color.Transparent, iconColor)
+    else IconButtonDefaults.filledIconButtonColors(Color.Transparent)
+  ) { Icon(painterResource(icon), contentDescription, Modifier.size(48.dp)) }
 }
 
 /**
@@ -62,13 +57,13 @@ fun TransparentButton(
 @Composable
 fun TransparentButton(buttonData: ButtonData) {
   TransparentButton(
-    icon = buttonData.icon,
-    contentDescription = buttonData.contentDescription,
-    colors = buttonData.colors ?: IconButtonDefaults.iconButtonColors(),
-    height = buttonData.height,
-    width = buttonData.width,
-    enabled = buttonData.enabled,
-    onClick = buttonData.onClick
+    buttonData.icon,
+    buttonData.contentDescription,
+    buttonData.iconColor,
+    buttonData.height,
+    buttonData.width,
+    buttonData.enabled,
+    buttonData.onClick
   )
 }
 
@@ -78,8 +73,5 @@ fun TransparentButton(buttonData: ButtonData) {
 @Composable
 @Preview
 private fun TransparentButtonPreview() {
-  TransparentButton(
-    icon = R.drawable.ic_close,
-    contentDescription = "Transparent Button Preview"
-  ) {}
+  TransparentButton(R.drawable.ic_close, "Transparent Button Preview") {}
 }

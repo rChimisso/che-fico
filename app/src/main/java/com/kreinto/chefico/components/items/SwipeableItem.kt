@@ -32,12 +32,7 @@ import kotlin.math.roundToInt
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
-fun SwipeableItem(
-  @DrawableRes icon: Int,
-  text: String,
-  actions: Array<@Composable () -> Unit> = arrayOf(),
-  onClick: () -> Unit
-) {
+fun SwipeableItem(@DrawableRes icon: Int, text: String, actions: Array<@Composable () -> Unit> = arrayOf(), onClick: () -> Unit) {
   val state = rememberSwipeableState(0)
   val offsetPx = with(LocalDensity.current) { (actions.size * 40).dp.toPx() }
   val anchors = mapOf(0f to 0, -offsetPx to 1)
@@ -62,16 +57,9 @@ fun SwipeableItem(
         modifier = Modifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End
-      ) {
-        actions.forEach { it() }
-      }
+      ) { actions.forEach { it() } }
     }
-    BasicItem(
-      icon = icon,
-      text = text,
-      modifier = Modifier.offset { IntOffset(x = state.offset.value.roundToInt(), y = 0) },
-      onClick = onClick
-    )
+    BasicItem(icon, text, Modifier.offset { IntOffset(x = state.offset.value.roundToInt(), y = 0) }, onClick = onClick)
   }
 }
 
@@ -84,21 +72,11 @@ fun SwipeableItem(
 @Preview
 private fun SwipeableItemPreview() {
   SwipeableItem(
-    icon = R.drawable.ic_notification,
-    text = "Swipeable item",
-    actions = arrayOf(
-      {
-        TransparentButton(
-          icon = R.drawable.ic_snooze,
-          contentDescription = "Snooze"
-        ) {}
-      },
-      {
-        TransparentButton(
-          icon = R.drawable.ic_trash,
-          contentDescription = "Delete"
-        ) {}
-      }
+    R.drawable.ic_notification,
+    "Swipeable item",
+    arrayOf(
+      { TransparentButton(R.drawable.ic_snooze, "Snooze") {} },
+      { TransparentButton(R.drawable.ic_trash, "Delete") {} }
     )
   ) {}
 }

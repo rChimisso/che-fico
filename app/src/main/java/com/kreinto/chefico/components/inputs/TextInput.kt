@@ -1,8 +1,10 @@
 package com.kreinto.chefico.components.inputs
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,18 +25,17 @@ import com.kreinto.chefico.ui.theme.bodyStyle
  * @param modifier An ordered, immutable collection of modifier elements that decorate or add behavior to this element.
  * @param init Initial value to display, defaults to `""`
  * @param placeholder Optional placeholder to display.
- * @param textColor Text color.
  * @param fontSize Font size.
  * @param trailingIcon Optional [Composable] traling icon to display. Receives the current input value and a setter to change it.
  * @param onFocusChanged Optional function called when the input loses focus.
  * @param onValueChange Function called when the input value changes.
  */
+@ExperimentalMaterial3Api
 @Composable
 fun TextInput(
   modifier: Modifier = Modifier,
   init: String = "",
   placeholder: @Composable (() -> Unit)? = null,
-  textColor: Color = Color.Black,
   fontSize: TextUnit = bodyStyle.fontSize,
   singleLine: Boolean = true,
   trailingIcon: @Composable ((String, (String) -> Unit) -> Unit)? = null,
@@ -56,17 +57,20 @@ fun TextInput(
       },
     onValueChange = changeValue,
     value = value,
-    maxLines = 1,
     singleLine = singleLine,
     placeholder = placeholder,
     textStyle = bodyStyle.merge(TextStyle(fontSize = fontSize)),
-    colors = TextFieldDefaults.textFieldColors(
-      textColor = textColor,
-      cursorColor = Color.Black,
-      backgroundColor = Color.Transparent,
+    colors = TextFieldDefaults.colors(
+      focusedContainerColor = Color.Transparent,
+      unfocusedContainerColor = Color.Transparent,
+      disabledContainerColor = Color.Transparent,
+      errorContainerColor = Color.Transparent,
       focusedIndicatorColor = Color.Transparent,
       unfocusedIndicatorColor = Color.Transparent,
-      disabledIndicatorColor = Color.Transparent
+      errorIndicatorColor = Color.Transparent,
+      focusedTrailingIconColor = MaterialTheme.colorScheme.primary,
+      unfocusedTrailingIconColor = MaterialTheme.colorScheme.primary,
+      errorTrailingIconColor = MaterialTheme.colorScheme.error,
     ),
     trailingIcon = {
       if (trailingIcon != null) {
@@ -79,6 +83,7 @@ fun TextInput(
 /**
  * [Preview] for [TextInput].
  */
+@ExperimentalMaterial3Api
 @Composable
 @Preview(showBackground = true)
 private fun TextInputPreview() {

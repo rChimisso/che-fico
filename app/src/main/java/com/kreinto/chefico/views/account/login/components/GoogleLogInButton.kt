@@ -28,7 +28,7 @@ import com.google.firebase.ktx.Firebase
 import com.kreinto.chefico.R
 
 @Composable
-fun GoogleLogInButton(onSuccess: () -> Unit, onFailure: () -> Unit) {
+fun GoogleLogInButton(onSuccess: () -> Unit, onFailure: () -> Unit = {}) {
   val context = LocalContext.current
   val oneTapClient = Identity.getSignInClient(context)
   val signInRequest =

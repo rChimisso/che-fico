@@ -6,11 +6,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kreinto.chefico.CheFicoRoute
@@ -33,23 +32,16 @@ fun PoiListView(
   val selectedPois = remember { mutableStateListOf<Int>() }
   var filter: String by rememberSaveable { mutableStateOf("") }
   StandardFrame(
-    onNavPressed = onNavigate,
-    title = { SearchInput { query -> filter = query } },
+    onNavigate,
+    { SearchInput { query -> filter = query } },
     bottomBar = {
       if (selectedPois.size > 0) {
         SimpleBottomBar(
-          leftButtonData = ButtonData(
-            icon = R.drawable.ic_trash,
-            contentDescription = "Delete selected",
-            colors = IconButtonDefaults.filledIconButtonColors(contentColor = Color.Red)
-          ) {
+          leftButtonData = ButtonData(R.drawable.ic_trash, "Delete selected", MaterialTheme.colorScheme.error) {
             selectedPois.forEach { id -> viewModel.deletePoi(id) }
             selectedPois.clear()
           },
-          rightButtonData = ButtonData(
-            icon = R.drawable.ic_share,
-            contentDescription = "Share selected",
-          ) { selectedPois.clear() }
+          rightButtonData = ButtonData(R.drawable.ic_share, "Share selected") { selectedPois.clear() }
         )
       }
     }
@@ -79,7 +71,7 @@ fun PoiListView(
           )
         }
       } else {
-        val filteredPoi = pois.value.filter { poi -> poi.name.contains(filter) }
+        val filteredPoi = pois.value.filter { poi -> poi.name.lowercase().contains(filter.lowercase()) }
         items(filteredPoi.size) { index ->
           SelectableItem(
             icon = R.drawable.ic_poi,

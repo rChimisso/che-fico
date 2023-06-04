@@ -8,7 +8,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -44,24 +43,22 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
   LaunchedEffect(selectedTheme) { settingsManager.theme = selectedTheme }
 
   StandardFrame(
-    onNavPressed = onNavigate,
+    onNavigate = onNavigate,
     title = { Text(if (isUserSignedIn) "${Firebase.auth.currentUser?.displayName}" else stringResource(R.string.settings_label)) },
     actions = {
       if (isUserSignedIn) {
-        FilledButton(
-          icon = R.drawable.che_fico_icon,
-          contentDescription = ""
-        ) { onNavigate(CheFicoRoute.Account.path) }
+        FilledButton(R.drawable.che_fico_icon, "") { onNavigate(CheFicoRoute.Account.path) }
       }
     },
     bottomBar = {
+      val lineColor = MaterialTheme.colorScheme.onBackground
       Row(
         modifier = Modifier
           .height(80.dp)
           .fillMaxWidth()
-          .drawBehind { drawLine(color = Color.White, start = Offset.Zero, end = Offset(size.width, 0f)) }
+          .drawBehind { drawLine(color = lineColor, start = Offset.Zero, end = Offset(size.width, 0f)) }
           .padding(BottomAppBarDefaults.ContentPadding),
-        horizontalArrangement = Arrangement.spacedBy(space = 8.dp, alignment = Alignment.CenterHorizontally),
+        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically
       ) {
         Text(stringResource(R.string.privacy))
@@ -80,6 +77,7 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
       Row(
         modifier = Modifier
           .fillMaxWidth()
+          .height(64.dp)
           .clickable { automaticDeletion = !automaticDeletion }
           .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -97,6 +95,7 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
       Row(
         modifier = Modifier
           .fillMaxWidth()
+          .height(64.dp)
           .clickable {
             val alertBuilder = android.app.AlertDialog.Builder(context)
             alertBuilder.setCancelable(true)
@@ -115,6 +114,7 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
       Row(
         modifier = Modifier
           .fillMaxWidth()
+          .height(64.dp)
           .clickable { showMenu = true }
           .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -126,14 +126,14 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
           DropdownMenu(showMenu, { showMenu = false }) {
             DropdownMenuItem(
               { Text(stringResource(R.string.italian)) },
-              onClick = {
+              {
                 showMenu = false
                 settingsManager.language = Language.ITALIAN
               }
             )
             DropdownMenuItem(
               { Text(stringResource(R.string.english)) },
-              onClick = {
+              {
                 showMenu = false
                 settingsManager.language = Language.ENGLISH
               }
@@ -159,10 +159,7 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
           verticalAlignment = Alignment.CenterVertically
         ) {
           themeOptions.forEach { text ->
-            RadioButton(
-              selected = text.value == selectedTheme,
-              onClick = { onThemeSelected(text.value) }
-            )
+            RadioButton(text.value == selectedTheme, { onThemeSelected(text.value) })
             Text(text.key)
             Spacer(Modifier.width(8.dp))
           }

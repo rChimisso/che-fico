@@ -38,9 +38,9 @@ fun SimpleBottomBar(
         ButtonData(
           icon = centerButtonData.icon,
           contentDescription = centerButtonData.contentDescription,
-          colors = centerButtonData.colors,
-          height = 28.dp,
-          width = 80.dp,
+          iconColor = centerButtonData.iconColor,
+          width = 32.dp,
+          height = 80.dp,
           enabled = centerButtonData.enabled,
           onClick = centerButtonData.onClick
         )
@@ -57,17 +57,8 @@ fun SimpleBottomBar(
 @Preview
 private fun SimpleBottomBarPreview() {
   SimpleBottomBar(
-    leftButtonData = ButtonData(
-      icon = R.drawable.ic_list,
-      contentDescription = ""
-    ) {},
-    centerButtonData = ButtonData(
-      icon = R.drawable.ic_photo_camera,
-      contentDescription = ""
-    ) {},
-    rightButtonData = ButtonData(
-      icon = R.drawable.ic_share,
-      contentDescription = ""
-    ) {}
+    leftButtonData = ButtonData(R.drawable.ic_list, "") {},
+    centerButtonData = ButtonData(R.drawable.ic_photo_camera, "") {},
+    rightButtonData = ButtonData(R.drawable.ic_share, "") {}
   )
 }

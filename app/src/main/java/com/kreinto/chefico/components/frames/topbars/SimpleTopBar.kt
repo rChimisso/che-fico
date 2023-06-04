@@ -10,29 +10,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.TransparentButton
-import com.kreinto.chefico.components.buttons.data.ButtonData
 
 /**
  * Simple Top Bar following Material3 guidelines.
  *
  * Transparent [TopAppBar] with just a [TransparentButton] to go back.
  *
- * @param onBackPressed Function called when the back button is clicked.
+ * @param onNavigate Function called when the back button is clicked.
  */
 @ExperimentalMaterial3Api
 @Composable
-fun SimpleTopBar(onBackPressed: (String) -> Unit) {
+fun SimpleTopBar(onNavigate: (String) -> Unit) {
   CenterAlignedTopAppBar(
     scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
-    navigationIcon = {
-      TransparentButton(
-        ButtonData(
-          icon = R.drawable.ic_arrow_back,
-          contentDescription = "Go back",
-          onClick = { onBackPressed(CheFicoRoute.Back.path) }
-        )
-      )
-    },
+    navigationIcon = { TransparentButton(R.drawable.ic_arrow_back, "Go back") { onNavigate(CheFicoRoute.Back.path) } },
     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Color.Transparent),
     title = {}
   )

@@ -21,11 +21,7 @@ fun SimpleFrame(
   bottomBar: @Composable () -> Unit = {},
   content: @Composable ((PaddingValues) -> Unit)
 ) {
-  Scaffold(
-    topBar = { SimpleTopBar(onNavigate) },
-    bottomBar = bottomBar,
-    content = content
-  )
+  Scaffold(topBar = { SimpleTopBar(onNavigate) }, bottomBar = bottomBar, content = content)
 }
 
 /**

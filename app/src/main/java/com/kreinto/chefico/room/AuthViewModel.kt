@@ -192,7 +192,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     return providersId
   }
 
-  fun getBlockedUsers(onSuccess: (Map<String, String>) -> Unit, onFailure: () -> Unit) {
+  fun getBlockedUsers(onSuccess: (Map<String, String>) -> Unit, onFailure: () -> Unit = {}) {
     if (auth.currentUser != null) {
       val result = db.collection(auth.currentUser!!.uid).document(BlockedUsers.path).get()
       result.addOnSuccessListener {

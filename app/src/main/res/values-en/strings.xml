@@ -2,11 +2,12 @@
 <resources>
   <string name = "app_name">Che Fico!</string>
   <string name = "email_label">Email</string>
-  <string name = "btn_submit_label">Confirm Changes</string>
+  <string name = "confirm_changes">Confirm Changes</string>
   <string name = "signup_label">Sign Up</string>
   <string name = "settings_label">Settings</string>
   //SearchInput.kt strings Start
-  <string name = "search_placeholder_label">Search…</string>
+  <string name = "search_placeholder">Search…</string>
+  <string name = "empty_query">Empty query</string>
   //SearchInput.kt strings Finish
   //AccountEditView.kt strings Start
   <string name = "user_name_area_edit_label">User Name</string>
@@ -14,7 +15,7 @@
   <string name = "old_pwd_placeholder_area_edit_label">Old Password</string>
   <string name = "new_pwd_area_edit_label">New Password</string>
   <string name = "new_pwd_placeholder_area_edit_label">New Password</string>
-  <string name = "btn_edit_label">Edit Data</string>
+  <string name = "edit_info">Edit Data</string>
   //AccountEditView.kt strings Finish
   //AccountLoginContent.kt strings Start
   <string name = "login_methods_divider_label">or</string>

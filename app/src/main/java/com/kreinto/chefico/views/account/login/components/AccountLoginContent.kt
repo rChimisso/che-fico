@@ -1,10 +1,7 @@
 package com.kreinto.chefico.views.account.login.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
+import com.kreinto.chefico.components.misc.Loader
 import com.kreinto.chefico.room.AuthViewModel
 
 @Composable
@@ -43,10 +41,7 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
   ) {
     Image(painterResource(R.drawable.che_fico_icon), null, Modifier.size(156.dp))
     Spacer(Modifier.height(64.dp))
-    GoogleLogInButton(
-      onSuccess = { onNavigate(CheFicoRoute.Account.path) },
-      onFailure = {}
-    )
+    GoogleLogInButton({ onNavigate(CheFicoRoute.Account.path) })
     Spacer(Modifier.height(40.dp))
     Row(
       horizontalArrangement = Arrangement.Center,
@@ -63,58 +58,54 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
     var password: String by rememberSaveable { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     TextField(
-      label = { Text(text = stringResource(R.string.email_label)) },
+      label = { Text(stringResource(R.string.email_label)) },
       value = email,
       onValueChange = { email = it },
       singleLine = true,
-      colors = TextFieldDefaults.colors(
-        unfocusedTextColor = Color(0xff32C896),
-        focusedContainerColor = Color.Transparent,
-        unfocusedContainerColor = Color.Transparent,
-        disabledContainerColor = Color.Transparent,
-        cursorColor = Color(0xff32C896),
-        focusedIndicatorColor = Color(0x6632C896),
-        unfocusedIndicatorColor = Color(0x6632C896),
-        disabledIndicatorColor = Color(0x6632C896),
-        focusedLeadingIconColor = Color(0xff32C896),
-        unfocusedLeadingIconColor = Color(0xff32C896),
-        focusedLabelColor = Color.Transparent,
-        unfocusedLabelColor = Color(0xff32C896),
-        disabledLabelColor = Color(0xff32C896),
-        unfocusedPlaceholderColor = Color(0xff32C896),
-      ),
+//      colors = TextFieldDefaults.colors(
+//        unfocusedTextColor = Color(0xff32C896),
+//        focusedContainerColor = Color.Transparent,
+//        unfocusedContainerColor = Color.Transparent,
+//        disabledContainerColor = Color.Transparent,
+//        cursorColor = Color(0xff32C896),
+//        focusedIndicatorColor = Color(0x6632C896),
+//        unfocusedIndicatorColor = Color(0x6632C896),
+//        disabledIndicatorColor = Color(0x6632C896),
+//        focusedLeadingIconColor = Color(0xff32C896),
+//        unfocusedLeadingIconColor = Color(0xff32C896),
+//        focusedLabelColor = Color.Transparent,
+//        unfocusedLabelColor = Color(0xff32C896),
+//        disabledLabelColor = Color(0xff32C896),
+//        unfocusedPlaceholderColor = Color(0xff32C896),
+//      ),
       leadingIcon = {
-        Icon(
-          painter = painterResource(id = R.drawable.ic_email),
-          contentDescription = "email",
-          modifier = Modifier.size(24.dp)
-        )
+        Icon(painterResource(R.drawable.ic_email), "email", Modifier.size(24.dp))
       }
     )
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(Modifier.height(16.dp))
     TextField(
-      label = { Text(text = "Password") },
+      label = { Text("Password") },
       value = password,
       onValueChange = { password = it },
       singleLine = true,
-      colors = TextFieldDefaults.colors(
-        unfocusedTextColor = Color(0xff32C896),
-        focusedContainerColor = Color.Transparent,
-        unfocusedContainerColor = Color.Transparent,
-        disabledContainerColor = Color.Transparent,
-        cursorColor = Color(0xff32C896),
-        focusedIndicatorColor = Color(0x6632C896),
-        unfocusedIndicatorColor = Color(0x6632C896),
-        disabledIndicatorColor = Color(0x6632C896),
-        focusedLeadingIconColor = Color(0xff32C896),
-        unfocusedLeadingIconColor = Color(0xff32C896),
-        focusedTrailingIconColor = Color(0xff32C896),
-        unfocusedTrailingIconColor = Color(0x6632C896),
-        focusedLabelColor = Color.Transparent,
-        unfocusedLabelColor = Color(0xff32C896),
-        disabledLabelColor = Color(0xff32C896),
-        unfocusedPlaceholderColor = Color(0xff32C896),
-      ),
+//      colors = TextFieldDefaults.colors(
+//        unfocusedTextColor = Color(0xff32C896),
+//        focusedContainerColor = Color.Transparent,
+//        unfocusedContainerColor = Color.Transparent,
+//        disabledContainerColor = Color.Transparent,
+//        cursorColor = Color(0xff32C896),
+//        focusedIndicatorColor = Color(0x6632C896),
+//        unfocusedIndicatorColor = Color(0x6632C896),
+//        disabledIndicatorColor = Color(0x6632C896),
+//        focusedLeadingIconColor = Color(0xff32C896),
+//        unfocusedLeadingIconColor = Color(0xff32C896),
+//        focusedTrailingIconColor = Color(0xff32C896),
+//        unfocusedTrailingIconColor = Color(0x6632C896),
+//        focusedLabelColor = Color.Transparent,
+//        unfocusedLabelColor = Color(0xff32C896),
+//        disabledLabelColor = Color(0xff32C896),
+//        unfocusedPlaceholderColor = Color(0xff32C896),
+//      ),
       trailingIcon = {
         IconButton(onClick = { passwordVisible = !passwordVisible }) {
           Crossfade(targetState = passwordVisible, animationSpec = tween(300)) { visible ->
@@ -145,19 +136,17 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
       }
     )
     Spacer(Modifier.height(32.dp))
-    Row(
-      horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
-    ) {
+    Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
       Text(stringResource(R.string.pwd_forgot_label))
       Spacer(Modifier.width(8.dp))
       Text(stringResource(R.string.pwd_recover_label), Modifier.clickable {})
     }
     Spacer(Modifier.height(32.dp))
     TextButton(
-      colors = ButtonDefaults.buttonColors(
-        containerColor = Color.Transparent,
-        contentColor = Color.Black
-      ),
+//      colors = ButtonDefaults.buttonColors(
+//        containerColor = Color.Transparent,
+//        contentColor = Color.Black
+//      ),
       contentPadding = PaddingValues(0.dp),
       shape = RoundedCornerShape(12.dp),
       modifier = Modifier
@@ -190,10 +179,10 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
     }
     Spacer(Modifier.height(16.dp))
     TextButton(
-      colors = ButtonDefaults.buttonColors(
-        containerColor = Color.Transparent,
-        contentColor = Color(0xff32C896)
-      ),
+//      colors = ButtonDefaults.buttonColors(
+//        containerColor = Color.Transparent,
+//        contentColor = Color(0xff32C896)
+//      ),
       contentPadding = PaddingValues(0.dp),
       shape = RoundedCornerShape(12.dp),
       modifier = Modifier
@@ -203,17 +192,6 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
     ) { Text(stringResource(R.string.signup_label), fontSize = 16.sp) }
     Spacer(Modifier.height(8.dp))
   }
-  AnimatedVisibility(
-    modifier = Modifier.fillMaxSize(),
-    visible = loading.value,
-    enter = EnterTransition.None,
-    exit = fadeOut()
-  ) {
-    CircularProgressIndicator(
-      modifier = Modifier
-        .background(MaterialTheme.colorScheme.background)
-        .wrapContentSize()
-    )
-  }
+  Loader(loading.value)
 }
 

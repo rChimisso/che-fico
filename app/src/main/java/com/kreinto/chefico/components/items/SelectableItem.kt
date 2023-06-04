@@ -4,7 +4,6 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,18 +47,7 @@ fun SelectableItem(
   }
   if (selectable) {
     BasicItem(
-      icon = {
-        Checkbox(
-          selected,
-          onCheckedChange = null,
-          modifier = it,
-          colors = CheckboxDefaults.colors(
-            checkedColor = MaterialTheme.colorScheme.surface,
-            uncheckedColor = MaterialTheme.colorScheme.surface,
-            checkmarkColor = MaterialTheme.colorScheme.primary
-          )
-        )
-      },
+      icon = { Checkbox(selected, null, it) },
       text = text,
       border = if (selected) BorderStroke(2.dp, MaterialTheme.colorScheme.inverseSurface) else null,
       onClick = onClickAction,

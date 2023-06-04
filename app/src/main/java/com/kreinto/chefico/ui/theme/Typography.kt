@@ -15,7 +15,7 @@ val headlineStyle = TextStyle.Default.copy(
   fontFamily = LuckiestGuyFont,
   fontSize = 32.sp,
   lineHeight = 32.sp,
-  letterSpacing = 2.sp,
+  letterSpacing = 2.sp
 )
 
 val titleStyle = TextStyle.Default.copy(

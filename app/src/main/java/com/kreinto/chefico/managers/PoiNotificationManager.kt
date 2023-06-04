@@ -75,7 +75,7 @@ class PoiNotificationManager : BroadcastReceiver() {
         .setContentText(message)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         .setBadgeIconType(NotificationCompat.BADGE_ICON_LARGE)
-        .setColor(0xFF4CAF50.toInt())
+        .setColor(0xFF4CAF50.toInt()) // TODO
         .build()
 
       with(context.getSystemService<NotificationManager>()) {

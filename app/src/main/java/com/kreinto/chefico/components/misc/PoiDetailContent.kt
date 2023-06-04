@@ -33,7 +33,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.FilledButton
 import com.kreinto.chefico.components.buttons.TransparentButton
-import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.inputs.TextInput
 import com.kreinto.chefico.components.items.SwipeableItem
 import com.kreinto.chefico.managers.PoiNotificationManager
@@ -89,10 +88,10 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
         )
         TextButton(
           enabled = user.isNotBlank(),
-          colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
-          ),
+//          colors = ButtonDefaults.buttonColors(
+//            containerColor = MaterialTheme.colorScheme.primary,
+//            contentColor = MaterialTheme.colorScheme.onPrimary
+//          ),
           contentPadding = PaddingValues(0.dp),
           shape = RoundedCornerShape(12.dp),
           modifier = Modifier
@@ -117,8 +116,7 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
       var description by rememberSaveable { mutableStateOf(poi.description) }
       Surface(
         shadowElevation = 12.dp,
-        modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surface
+        modifier = Modifier.fillMaxWidth()
       ) {
         Column {
           Box {
@@ -166,7 +164,6 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
           TextInput(
             modifier = Modifier.fillMaxWidth(2f / 3f),
             init = name,
-            textColor = MaterialTheme.colorScheme.primary,
             fontSize = 24.sp,
             onFocusChanged = {
               poi.name = name
@@ -203,22 +200,22 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
           Surface(Modifier.fillMaxWidth()) {
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
               TextField(
-                placeholder = { Text("Titolo") },
                 value = notificationName,
+                placeholder = { Text("Titolo") },
                 onValueChange = { notificationName = it }
               )
               DatePicker(dateRangePickerState)
               TextField(
-                placeholder = { Text("Descrizione") },
                 value = notificationMessage,
+                placeholder = { Text("Descrizione") },
                 onValueChange = { notificationMessage = it }
               )
               TextButton(
-                colors = ButtonDefaults.buttonColors(
-                  containerColor = MaterialTheme.colorScheme.primary,
-                  contentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                contentPadding = PaddingValues(0.dp),
+//                colors = ButtonDefaults.buttonColors(
+//                  containerColor = MaterialTheme.colorScheme.primary,
+//                  contentColor = MaterialTheme.colorScheme.onPrimary
+//                ),
+                contentPadding = ButtonDefaults.TextButtonContentPadding,
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                   .padding(16.dp)
@@ -259,25 +256,20 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
             icon = R.drawable.ic_poi,
             text = notifications.value[index].text,
             actions = arrayOf({
-              TransparentButton(
-                ButtonData(
-                  icon = R.drawable.ic_close,
-                  contentDescription = "Elimina",
-                  colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.error),
-                  onClick = { viewModel.deleteNotification(notifications.value[index].id) }
-                )
-              )
+              TransparentButton(R.drawable.ic_close, "Elimina", MaterialTheme.colorScheme.error) {
+                viewModel.deleteNotification(notifications.value[index].id)
+              }
             })
           ) {}
         }
         item {
           TextButton(
             enabled = notifications.value.size < 5,
-            colors = ButtonDefaults.buttonColors(
-              containerColor = MaterialTheme.colorScheme.primary,
-              contentColor = MaterialTheme.colorScheme.onPrimary
-            ),
-            contentPadding = PaddingValues(0.dp),
+//            colors = ButtonDefaults.buttonColors(
+//              containerColor = MaterialTheme.colorScheme.primary,
+//              contentColor = MaterialTheme.colorScheme.onPrimary
+//            ),
+            contentPadding = ButtonDefaults.TextButtonContentPadding,
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier
               .padding(bottom = 16.dp)

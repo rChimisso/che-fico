@@ -28,7 +28,6 @@ fun DashboardView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel) {
         title = { Text(stringResource(R.string.app_name)) }
       )
     },
-    bottomBar = { DashboardNavigationContent(onNavigate) },
-    content = { DashboardContent(onNavigate, viewModel) }
-  )
+    bottomBar = { DashboardNavigationContent(onNavigate) }
+  ) { DashboardContent(onNavigate, viewModel) }
 }

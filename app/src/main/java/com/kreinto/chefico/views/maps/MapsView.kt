@@ -8,14 +8,8 @@ import android.os.Looper
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
@@ -34,8 +28,10 @@ import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
+import com.kreinto.chefico.components.misc.Loader
 import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.room.entities.Poi
+import com.kreinto.chefico.ui.theme.colorToHue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
@@ -97,21 +93,14 @@ fun MapsView(
   }
 
   SimpleFrame(
-    onNavigate = onNavigate,
+    onNavigate,
     bottomBar = {
       SimpleBottomBar(
-        leftButtonData = ButtonData(
-          icon = R.drawable.ic_list,
-          contentDescription = "Go to POI list",
-        ) { onNavigate(CheFicoRoute.PoiList.path) },
-        centerButtonData = ButtonData(
-          icon = R.drawable.ic_photo_camera,
-          contentDescription = "Open Plant Recognition",
-        ) { onNavigate(CheFicoRoute.Camera.path) },
-        rightButtonData = ButtonData(
-          icon = if (shouldFollow) R.drawable.ic_check else R.drawable.ic_close,
-          contentDescription = "Center camera",
-        ) {
+        leftButtonData = ButtonData(R.drawable.ic_list, "Go to POI list") { onNavigate(CheFicoRoute.PoiList.path) },
+        centerButtonData = ButtonData(R.drawable.ic_photo_camera, "Open Plant Recognition") {
+          onNavigate(CheFicoRoute.Camera.path)
+        },
+        rightButtonData = ButtonData(if (shouldFollow) R.drawable.my_location else R.drawable.location_searching, "Center camera") {
           shouldFollow = true
           locationClient.getCurrentLocation(
             Priority.PRIORITY_BALANCED_POWER_ACCURACY,
@@ -133,12 +122,7 @@ fun MapsView(
     val properties by remember { mutableStateOf(MapProperties(isMyLocationEnabled = true)) }
     val uiSettings by remember {
       mutableStateOf(
-        MapUiSettings(
-          compassEnabled = false,
-          myLocationButtonEnabled = false,
-          mapToolbarEnabled = false,
-          zoomControlsEnabled = false
-        )
+        MapUiSettings(compassEnabled = false, myLocationButtonEnabled = false, mapToolbarEnabled = false, zoomControlsEnabled = false)
       )
     }
     val locationRequest = LocationRequest
@@ -231,7 +215,7 @@ fun MapsView(
           MarkerState(LatLng(poi.latitude, poi.longitude)),
           title = poi.name,
           // Color conversion from RGB to Hue: https://stackoverflow.com/questions/23090019/fastest-formula-to-get-hue-from-rgb
-          icon = BitmapDescriptorFactory.defaultMarker(157.24f),
+          icon = BitmapDescriptorFactory.defaultMarker(colorToHue(MaterialTheme.colorScheme.primary)),
           onClick = {
             onNavigate(CheFicoRoute.PoiDetail.path(poi.id.toString()))
             return@Marker true
@@ -239,18 +223,6 @@ fun MapsView(
         )
       }
     }
-
-    AnimatedVisibility(
-      modifier = Modifier.fillMaxSize(),
-      visible = !isMapLoaded,
-      enter = EnterTransition.None,
-      exit = fadeOut()
-    ) {
-      CircularProgressIndicator(
-        modifier = Modifier
-          .background(MaterialTheme.colorScheme.background)
-          .wrapContentSize()
-      )
-    }
+    Loader(!isMapLoaded)
   }
 }

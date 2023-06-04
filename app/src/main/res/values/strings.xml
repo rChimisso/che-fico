@@ -1,11 +1,12 @@
 <resources>
   <string name = "app_name">Che Fico!</string>
   <string name = "email_label">Email</string>
-  <string name = "btn_submit_label">Conferma Modifiche</string>
+  <string name = "confirm_changes">Conferma Modifiche</string>
   <string name = "signup_label">Registrati</string>
   <string name = "settings_label">Impostazioni</string>
   //SearchInput.kt strings Start
-  <string name = "search_placeholder_label">Cerca…</string>
+  <string name = "search_placeholder">Cerca…</string>
+  <string name = "empty_query">Svuota</string>
   //SearchInput.kt strings Finish
   //AccountEditView.kt strings Start
   <string name = "user_name_area_edit_label">Nome Utente</string>
@@ -13,7 +14,7 @@
   <string name = "old_pwd_placeholder_area_edit_label">La vecchia Password</string>
   <string name = "new_pwd_area_edit_label">Password Nuova</string>
   <string name = "new_pwd_placeholder_area_edit_label">La nuova Password</string>
-  <string name = "btn_edit_label">Modifica Dati</string>
+  <string name = "edit_info">Modifica Dati</string>
   //AccountEditView.kt strings Finish
   //AccountLoginContent.kt strings Start
   <string name = "login_methods_divider_label">oppure</string>

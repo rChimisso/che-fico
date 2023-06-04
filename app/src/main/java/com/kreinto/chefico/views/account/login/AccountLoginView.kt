@@ -11,4 +11,3 @@ import com.kreinto.chefico.views.account.login.components.AccountLoginContent
 fun AccountLoginView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
   SimpleFrame(onNavigate) { AccountLoginContent(authViewModel, it, onNavigate) }
 }
-

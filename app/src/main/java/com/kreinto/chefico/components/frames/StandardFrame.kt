@@ -11,7 +11,7 @@ import com.kreinto.chefico.components.frames.topbars.StandardTopBar
 /**
  * Standard Frame following Material3 guidelines.
  *
- * @param onNavPressed Function called when the top bar navigation button is clicked.
+ * @param onNavigate Function called when the top bar navigation button is clicked.
  * @param title [Composable] to show at [StandardTopBar] center.
  * @param actions list of actions.
  * @param bottomBar Optional overlayed bottom bar to display.
@@ -20,23 +20,13 @@ import com.kreinto.chefico.components.frames.topbars.StandardTopBar
 @ExperimentalMaterial3Api
 @Composable
 fun StandardFrame(
-  onNavPressed: (String) -> Unit,
+  onNavigate: (String) -> Unit,
   title: @Composable () -> Unit,
   actions: @Composable (RowScope.() -> Unit) = {},
   bottomBar: @Composable () -> Unit = {},
   content: @Composable ((PaddingValues) -> Unit)
 ) {
-  Scaffold(
-    topBar = {
-      StandardTopBar(
-        title = title,
-        actions = actions,
-        onNavPressed = onNavPressed
-      )
-    },
-    bottomBar = bottomBar,
-    content = content
-  )
+  Scaffold(topBar = { StandardTopBar(onNavigate, title, actions) }, bottomBar = bottomBar, content = content)
 }
 
 /**
@@ -46,5 +36,5 @@ fun StandardFrame(
 @Composable
 @Preview
 private fun StandardFramePreview() {
-  StandardFrame(title = {}, onNavPressed = {}) {}
+  StandardFrame({}, {}) {}
 }

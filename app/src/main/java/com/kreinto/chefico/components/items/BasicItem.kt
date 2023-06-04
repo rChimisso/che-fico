@@ -6,7 +6,10 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,7 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kreinto.chefico.R
-import com.kreinto.chefico.ui.theme.level1
 
 /**
  * Basic item with an icon and text.
@@ -37,7 +39,7 @@ fun BasicItem(
   onClick: () -> Unit
 ) {
   BasicItem(
-    icon = { Icon(painter = painterResource(icon), contentDescription = null, modifier = it) },
+    icon = { Icon(painterResource(icon), null, it) },
     text = text,
     modifier = modifier,
     onLongClick = onLongClick,
@@ -70,9 +72,6 @@ internal fun BasicItem(
       .fillMaxWidth()
       .combinedClickable(onClick = onClick, onLongClick = onLongClick),
     shape = RoundedCornerShape(12.dp),
-    color = MaterialTheme.colorScheme.onSurface,
-    contentColor = MaterialTheme.colorScheme.surface,
-    tonalElevation = level1,
     border = border
   ) {
     Row(

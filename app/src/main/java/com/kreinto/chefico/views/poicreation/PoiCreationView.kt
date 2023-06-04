@@ -10,9 +10,8 @@ import android.provider.MediaStore
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.kreinto.chefico.CheFicoRoute
@@ -74,12 +73,7 @@ fun PoiCreationView(
     onNavigate = ::action,
     bottomBar = {
       SimpleBottomBar(
-        leftButtonData = ButtonData(
-          icon = R.drawable.ic_close,
-          contentDescription = "Cancel",
-          colors = IconButtonDefaults.filledIconButtonColors(contentColor = Color.Red),
-          onClick = ::action
-        ),
+        leftButtonData = ButtonData(R.drawable.ic_close, "Cancel", MaterialTheme.colorScheme.error, onClick = ::action),
         rightButtonData = ButtonData(R.drawable.ic_check, "Confirm") {
           saveImage(creatingPoi.image, contentResolver) {
             if (it != null) {
