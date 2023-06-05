@@ -12,7 +12,7 @@ import com.kreinto.chefico.room.entities.Poi
 /**
  * Che Fico! Database.
  */
-@Database(entities = [(Notification::class), (Poi::class)], version = 5)
+@Database(entities = [(Notification::class), (Poi::class)], version = 6)
 abstract class CheFicoDatabase : RoomDatabase() {
   /**
    * Gets the [NotificationDao].

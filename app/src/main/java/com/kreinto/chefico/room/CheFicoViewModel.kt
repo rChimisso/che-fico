@@ -48,7 +48,7 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     repository.updatePoi(poi)
   }
 
-  fun getPoi(id: Int): Flow<Poi> {
+  fun getPoi(id: Long): Flow<Poi> {
     return repository.selectPoi(id)
   }
 
@@ -56,11 +56,11 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     return repository.selectPois()
   }
 
-  fun getNotification(id: Int): Flow<Notification> {
+  fun getNotification(id: Long): Flow<Notification> {
     return repository.selectNotification(id)
   }
 
-  fun getPoiNotifications(poiId: Int): Flow<List<Notification>> {
+  fun getPoiNotifications(poiId: Long): Flow<List<Notification>> {
     return repository.selectPoiNotifications(poiId)
   }
 
@@ -68,12 +68,12 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     return repository.selectNotifications()
   }
 
-  fun deletePoi(id: Int) = launch {
+  fun deletePoi(id: Long) = launch {
     repository.deletePoi(id)
     repository.deletePoiNotifications(id)
   }
 
-  fun deleteNotification(id: Int) = launch {
+  fun deleteNotification(id: Long) = launch {
     repository.selectNotification(id).first {
       PoiNotificationManager.cancelNotification(getApplication<Application>().applicationContext, it)
       repository.deleteNotification(id)
@@ -110,7 +110,7 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
     return getPois().mapLatest { it.filter { poi -> latLngBounds.contains(LatLng(poi.latitude, poi.longitude)) } }
   }
 
-  fun deleteAllPoiNotifications(id: Int) = launch {
+  fun deleteAllPoiNotifications(id: Long) = launch {
     repository.selectPoiNotifications(id).first().forEach {
       PoiNotificationManager.cancelNotification(getApplication<Application>().applicationContext, it)
     }

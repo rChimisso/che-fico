@@ -23,7 +23,7 @@ fun PoiDetailView(
   var poi by remember { mutableStateOf(Poi.NullPoi) }
   LaunchedEffect(poiId) {
     if (poiId != null) {
-      viewModel.getPoi(poiId.toInt()).collect { poi = it }
+      viewModel.getPoi(poiId.toLong()).collect { poi = it }
     }
   }
   SimpleFrame(onNavigate) { PoiDetailContent(poi, viewModel::updatePoi, true, viewModel, authViewModel) }

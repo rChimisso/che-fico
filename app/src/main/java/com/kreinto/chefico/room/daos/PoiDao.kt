@@ -25,7 +25,7 @@ interface PoiDao {
    * @return
    */
   @Query("SELECT * FROM pois WHERE id = :id")
-  fun select(id: Int): Flow<Poi>
+  fun select(id: Long): Flow<Poi>
 
   /**
    * Selects all specified POIs.
@@ -33,7 +33,7 @@ interface PoiDao {
    * @return
    */
   @Query("SELECT * FROM pois WHERE id IN (:ids)")
-  fun selectAll(ids: List<Int>): Flow<List<Poi>>
+  fun selectAll(ids: List<Long>): Flow<List<Poi>>
 
   /**
    * Selects all POIs.
@@ -49,7 +49,7 @@ interface PoiDao {
    * @param id
    */
   @Query("DELETE FROM pois WHERE id = :id")
-  fun delete(id: Int)
+  fun delete(id: Long)
 
   /**
    * Deletes all POIs.

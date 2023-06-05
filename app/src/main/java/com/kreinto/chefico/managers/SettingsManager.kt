@@ -54,7 +54,7 @@ class SettingsManager(context: Context) {
   private val themeKey = "theme"
 
   /**
-   * Last update time key.
+   * Last update time setting key.
    */
   private val lastUpdateKey = "lastUpdate"
 

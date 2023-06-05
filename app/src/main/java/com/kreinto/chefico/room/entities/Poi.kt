@@ -16,7 +16,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "pois")
 class Poi(
   @PrimaryKey(true)
-  var id: Int = 0,
+  var id: Long = 0,
   var name: String,
   var description: String = "",
   var image: String = "",

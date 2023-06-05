@@ -193,7 +193,26 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         if (document.data != null && document.data!!["data"] != null) {
           onSuccess((document.data!!["data"] as List<Map<String, Any>>).map {
             Poi(
-              (it["id"]!! as Long).toInt(),
+              it["id"]!! as Long,
+              it["name"]!! as String,
+              it["description"]!! as String,
+              it["image"]!! as String,
+              it["latitude"]!! as Double,
+              it["longitude"]!! as Double
+            )
+          })
+        }
+      }
+    }
+  }
+
+  fun getSharedPois(onSuccess: (List<Poi>) -> Unit) {
+    if (auth.currentUser != null) {
+      db.collection(auth.currentUser!!.uid).document(SharedPois.path).get().addOnSuccessListener { document ->
+        if (document.data != null && document.data!!["data"] != null) {
+          onSuccess((document.data!!["data"] as List<Map<String, Any>>).map {
+            Poi(
+              it["id"]!! as Long,
               it["name"]!! as String,
               it["description"]!! as String,
               it["image"]!! as String,
@@ -275,42 +294,48 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     }
   }
 
-  fun backup(onResult: (List<Poi>) -> Unit) = launch {
+  fun sync() = launch {
     if (auth.currentUser != null) {
       val settings = SettingsManager(getApplication())
-      val localPois = repository.selectPois().first()
+      val localPois = repository.selectPois().first().sortedBy { it.id }
       val notifications = repository.selectNotifications().first()
-      getLastUpdate { onlineLastUpdate ->
-        if (onlineLastUpdate < Timestamp(settings.lastUpdate, 0)) {
-          settings.lastUpdate = onlineLastUpdate.toDate().time
-          getPois { onlinePois ->
-            var toSave = onlinePois.toMutableList()
-            localPois.forEach { localPoi ->
-              toSave = toSave.filter {
-                it.name != localPoi.name &&
-                  it.image != localPoi.image &&
-                  it.description != localPoi.description &&
-                  it.latitude != localPoi.latitude &&
-                  it.longitude != localPoi.longitude
-              }.toMutableList()
+      getLastUpdate { lastUpdate ->
+        getPois { onlinePois ->
+          val localLastUpdate = Timestamp(settings.lastUpdate, 0)
+          val pois = localPois.toMutableList()
+          val timestamp = Timestamp.now()
+          if (lastUpdate >= localLastUpdate) {
+            for (poi in onlinePois) {
+              val index = pois.indexOfFirst { it.id == poi.id }
+              if (index >= 0) {
+                pois[index] = poi
+                repository.updatePoi(poi)
+              } else {
+                pois.add(poi)
+                repository.insertPoi(poi)
+              }
             }
-            toSave.addAll(localPois)
-            db.collection(auth.currentUser!!.uid).document(Pois.path).set(
+          }
+          settings.lastUpdate = timestamp.seconds
+          getSharedPois { sharedPois ->
+            for (poi in sharedPois) {
+              pois.add(Poi(repository.insertPoi(poi), poi.name, poi.description, poi.image, poi.latitude, poi.longitude))
+            }
+            db.collection(auth.currentUser!!.uid).document(SharedPois.path).set(mapOf("data" to listOf<Poi>())).addOnSuccessListener {
+              db.collection(auth.currentUser!!.uid).document(Settings.path).update("lastUpdate", timestamp)
+            }
+            db.collection(auth.currentUser!!.uid).document(Pois.path).set(mapOf("data" to pois.map { poi ->
               mapOf(
-                "data" to toSave.map { poi ->
-                  mapOf(
-                    "id" to poi.id,
-                    "image" to poi.image,
-                    "longitude" to poi.longitude,
-                    "latitude" to poi.latitude,
-                    "description" to poi.description,
-                    "name" to poi.name,
-                    "notifications" to notifications.filter { it.poiId == poi.id }
-                  )
-                }
+                "id" to poi.id,
+                "image" to poi.image,
+                "longitude" to poi.longitude,
+                "latitude" to poi.latitude,
+                "description" to poi.description,
+                "name" to poi.name,
+                "notifications" to notifications.filter { it.poiId == poi.id }
               )
-            ).addOnSuccessListener {
-              onResult(toSave)
+            })).addOnSuccessListener {
+              db.collection(auth.currentUser!!.uid).document(Settings.path).update("lastUpdate", timestamp)
             }
           }
         }
@@ -318,8 +343,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     }
   }
 
-
-  fun share(user: String, vararg ids: Int, onResult: (Boolean) -> Unit) = launch {
+  fun share(user: String, vararg ids: Long, onResult: (Boolean) -> Unit) = launch {
     if (auth.currentUser != null) {
       val result = db.collection(user).document(SharedPois.path).get()
       val toShare = repository.selectPois(ids.toList()).first()

@@ -27,7 +27,7 @@ interface NotificationDao {
    * @return
    */
   @Query("SELECT * FROM notifications WHERE id = :id")
-  fun select(id: Int): Flow<Notification>
+  fun select(id: Long): Flow<Notification>
 
   /**
    * Selects all notification associated with the specified POI.
@@ -36,7 +36,7 @@ interface NotificationDao {
    * @return
    */
   @Query("SELECT * FROM notifications WHERE poiId = :poiId")
-  fun selectAllOfPoi(poiId: Int): Flow<List<Notification>>
+  fun selectAllOfPoi(poiId: Long): Flow<List<Notification>>
 
   /**
    * Selects all notifications.
@@ -52,7 +52,7 @@ interface NotificationDao {
    * @param id
    */
   @Query("DELETE FROM notifications WHERE id = :id")
-  fun delete(id: Int)
+  fun delete(id: Long)
 
   /**
    * Deletes all notifications associated with the specified POI.
@@ -60,7 +60,7 @@ interface NotificationDao {
    * @param poiId
    */
   @Query("DELETE FROM notifications WHERE poiId = :poiId")
-  fun deleteAllOfPoi(poiId: Int)
+  fun deleteAllOfPoi(poiId: Long)
 
   /**
    * Deletes all notifications.

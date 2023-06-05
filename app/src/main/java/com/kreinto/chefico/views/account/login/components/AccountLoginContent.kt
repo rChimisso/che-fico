@@ -162,14 +162,7 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
         authViewModel.signIn(
           email,
           password,
-          {
-            loading.value = false
-            if (it == null) {
-              email = ""
-              password = ""
-              onNavigate(CheFicoRoute.Account.path)
-            }
-          },
+          { loading.value = false },
           {
             loading.value = false
             Toast.makeText(context, "Nome utente o password errati", Toast.LENGTH_SHORT).show()

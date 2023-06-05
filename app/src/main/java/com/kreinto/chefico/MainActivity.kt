@@ -133,9 +133,7 @@ class MainActivity : AppCompatActivity() {
     if (authViewModel.isUserSignedIn()) {
       authViewModel.isOnlineBackupActive { onlineBackup ->
         if (onlineBackup) {
-          authViewModel.backup {
-            it.forEach { poi -> viewModel.updatePoi(poi) }
-          }
+          authViewModel.sync()
         }
       }
     }
@@ -163,11 +161,22 @@ class MainActivity : AppCompatActivity() {
       CheFicoTheme {
         navController = rememberNavController()
         val onNavigate: (String) -> Unit = {
+          if (authViewModel.isUserSignedIn()) {
+            authViewModel.isOnlineBackupActive { onlineBackup ->
+              if (onlineBackup) {
+                authViewModel.sync()
+              }
+            }
+          }
           when (it) {
             CheFicoRoute.Back.path -> {
               navController.popBackStack()
-              if (navController.currentDestination?.route == CheFicoRoute.PlantDetail.path) {
-                navController.popBackStack()
+              when (navController.currentDestination?.route) {
+                CheFicoRoute.PlantDetail.path, CheFicoRoute.Login.path -> navController.popBackStack()
+                CheFicoRoute.Signin.path -> {
+                  navController.popBackStack()
+                  navController.popBackStack()
+                }
               }
             }
             CheFicoRoute.Maps.path, CheFicoRoute.PoiCreation.path -> requestPerm(ACCESS_FINE_LOCATION, requestLocationPermLauncher(it))
@@ -206,7 +215,7 @@ class MainActivity : AppCompatActivity() {
           )) { PlantDetailView(onNavigate, it.arguments?.getString("imageName"), it.arguments?.getString("organ"), viewModel) }
           composable(CheFicoRoute.Signin.path) { AccountSigninView(onNavigate, authViewModel) }
           composable(CheFicoRoute.Login.path) { AccountLoginView(onNavigate, authViewModel) }
-          composable(CheFicoRoute.Account.path) { AccountView(onNavigate, viewModel, authViewModel) }
+          composable(CheFicoRoute.Account.path) { AccountView(onNavigate, authViewModel) }
           composable(CheFicoRoute.AccountEdit.path) { AccountEditView(onNavigate, authViewModel) }
           composable(CheFicoRoute.Blacklist.path) { BlackListView(onNavigate, authViewModel) }
         }

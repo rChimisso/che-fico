@@ -37,7 +37,7 @@ fun PoiListView(
 ) {
   val context = LocalContext.current
   val pois = viewModel.getPois().collectAsStateWithLifecycle(emptyList())
-  val selectedPois = remember { mutableStateListOf<Int>() }
+  val selectedPois = remember { mutableStateListOf<Long>() }
   var filter: String by rememberSaveable { mutableStateOf("") }
   var openShareDialog by remember {
     mutableStateOf(false)
@@ -75,7 +75,7 @@ fun PoiListView(
             .width(208.dp)
             .height(40.dp),
           onClick = {
-            authViewModel.share(user, *selectedPois.toIntArray()) {
+            authViewModel.share(user, *selectedPois.toLongArray()) {
               if (it) {
                 Toast.makeText(context, "Condivisione riuscita", Toast.LENGTH_SHORT).show()
               } else {

@@ -31,7 +31,7 @@ class CheFicoRepository(private val poiDao: PoiDao, private val notificationDao:
    * @param id
    * @return
    */
-  fun selectPoi(id: Int): Flow<Poi> {
+  fun selectPoi(id: Long): Flow<Poi> {
     return poiDao.select(id)
   }
 
@@ -40,7 +40,7 @@ class CheFicoRepository(private val poiDao: PoiDao, private val notificationDao:
    *
    * @return
    */
-  fun selectPois(ids: List<Int>): Flow<List<Poi>> {
+  fun selectPois(ids: List<Long>): Flow<List<Poi>> {
     return poiDao.selectAll(ids)
   }
 
@@ -58,7 +58,7 @@ class CheFicoRepository(private val poiDao: PoiDao, private val notificationDao:
    *
    * @param id
    */
-  fun deletePoi(id: Int) {
+  fun deletePoi(id: Long) {
     poiDao.delete(id)
   }
 
@@ -94,7 +94,7 @@ class CheFicoRepository(private val poiDao: PoiDao, private val notificationDao:
    * @param id
    * @return
    */
-  fun selectNotification(id: Int): Flow<Notification> {
+  fun selectNotification(id: Long): Flow<Notification> {
     return notificationDao.select(id)
   }
 
@@ -104,7 +104,7 @@ class CheFicoRepository(private val poiDao: PoiDao, private val notificationDao:
    * @param poiId
    * @return
    */
-  fun selectPoiNotifications(poiId: Int): Flow<List<Notification>> {
+  fun selectPoiNotifications(poiId: Long): Flow<List<Notification>> {
     return notificationDao.selectAllOfPoi(poiId)
   }
 
@@ -122,7 +122,7 @@ class CheFicoRepository(private val poiDao: PoiDao, private val notificationDao:
    *
    * @param id
    */
-  fun deleteNotification(id: Int) {
+  fun deleteNotification(id: Long) {
     notificationDao.delete(id)
   }
 
@@ -131,7 +131,7 @@ class CheFicoRepository(private val poiDao: PoiDao, private val notificationDao:
    *
    * @param id
    */
-  fun deletePoiNotifications(id: Int) {
+  fun deletePoiNotifications(id: Long) {
     notificationDao.deleteAllOfPoi(id)
   }
 

@@ -20,12 +20,10 @@ import com.kreinto.chefico.R
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.misc.Loader
 import com.kreinto.chefico.room.AuthViewModel
-import com.kreinto.chefico.room.CheFicoViewModel
-import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
 @Composable
-fun AccountView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authViewModel: AuthViewModel) {
+fun AccountView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
   var loading by remember { mutableStateOf(true) }
   var backupOnline by rememberSaveable { mutableStateOf(false) }
   LaunchedEffect(Unit) {
@@ -34,7 +32,6 @@ fun AccountView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
       backupOnline = it
     }
   }
-  val coroutine = rememberCoroutineScope()
   if (!loading) {
     SimpleFrame(onNavigate) {
       Column(
@@ -92,13 +89,6 @@ fun AccountView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
             Switch(checked = backupOnline, onCheckedChange = { checked ->
               backupOnline = checked
               authViewModel.setOnlineBackup(checked)
-              if (checked) {
-                coroutine.launch {
-                  //authViewModel.backup(viewModel.getPois().first()) {
-                  //authViewModel.getPois { pois -> pois.forEach { poi -> viewModel.updatePoi(poi) } }
-                  //}
-                }
-              }
             })
           }
           Row(
