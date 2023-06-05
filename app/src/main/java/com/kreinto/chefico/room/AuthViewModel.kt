@@ -74,36 +74,13 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
   private var blockedUsers: MutableMap<String, String> = mutableMapOf()
   private var currentUser: UserInfo? = null
 
-  fun initAccount(user: FirebaseUser) {
+  private fun initAccount(user: FirebaseUser) {
     val collection = db.collection(user.uid)
-    collection.document(Info.path).set(
-      mapOf(
-        "username" to user.displayName,
-        "email" to user.email,
-        "photoUrl" to user.photoUrl
-      )
-    )
-    collection.document(BlockedUsers.path).set(
-      mapOf(
-        "data" to emptyList<String>()
-      )
-    )
-    collection.document(Settings.path).set(
-      mapOf(
-        "backupOnline" to false,
-        "lastUpdate" to Timestamp.now()
-      )
-    )
-    collection.document(Pois.path).set(
-      mapOf(
-        "data" to emptyList<Poi>()
-      )
-    )
-    collection.document(SharedPois.path).set(
-      mapOf(
-        "data" to emptyList<Poi>()
-      )
-    )
+    collection.document(Info.path).set(mapOf("username" to user.displayName, "email" to user.email, "photoUrl" to user.photoUrl))
+    collection.document(BlockedUsers.path).set(mapOf("data" to emptyList<String>()))
+    collection.document(Settings.path).set(mapOf("backupOnline" to false, "lastUpdate" to Timestamp.now()))
+    collection.document(Pois.path).set(mapOf("data" to emptyList<Poi>()))
+    collection.document(SharedPois.path).set(mapOf("data" to emptyList<Poi>()))
     currentUser = UserInfo(
       uid = user.uid,
       username = user.displayName!!,
