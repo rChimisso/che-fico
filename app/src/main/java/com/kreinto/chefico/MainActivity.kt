@@ -171,6 +171,7 @@ class MainActivity : AppCompatActivity() {
           when (it) {
             CheFicoRoute.Back.path -> {
               navController.popBackStack()
+              println(navController.currentDestination?.route)
               when (navController.currentDestination?.route) {
                 CheFicoRoute.PlantDetail.path, CheFicoRoute.Login.path -> navController.popBackStack()
                 CheFicoRoute.Signin.path -> {

@@ -34,8 +34,6 @@ import com.kreinto.chefico.R
 import com.kreinto.chefico.room.AuthViewModel
 
 fun String.isValidEmail(): Boolean {
-  println("MATCH? ${matches(Patterns.EMAIL_ADDRESS.toRegex())}")
-  println("EMPTY? ${isNotEmpty()}")
   return isNotEmpty() && matches(Patterns.EMAIL_ADDRESS.toRegex())
 }
 
@@ -263,7 +261,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
     ) {
       TextButton(
-        enabled = displayName.isNotEmpty() && password == repeatedPassword && password.length >= 6 && !email.isValidEmail(),
+        enabled = displayName.isNotEmpty() && password == repeatedPassword && password.length >= 6 && email.isValidEmail(),
         colors = ButtonDefaults.buttonColors(
           containerColor = Color.Transparent,
           contentColor = Color.Black

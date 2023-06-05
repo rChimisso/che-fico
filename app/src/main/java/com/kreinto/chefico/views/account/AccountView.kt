@@ -103,7 +103,7 @@ fun AccountView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
         Button(
           onClick = {
             authViewModel.signOut()
-            onNavigate(CheFicoRoute.Settings.path)
+            onNavigate(CheFicoRoute.Back.path)
           },
           contentPadding = ButtonDefaults.TextButtonContentPadding
         ) { Text(stringResource(R.string.logout_label), color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center) }

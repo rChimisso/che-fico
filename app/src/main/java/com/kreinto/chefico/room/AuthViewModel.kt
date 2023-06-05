@@ -360,12 +360,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
               "id" to it.id
             )
           })
-          val setData = db.collection(user).document(SharedPois.path).set(
-            mapOf(
-              "data" to toSave.toList()
-            )
-          )
+          val setData = db.collection(user).document(SharedPois.path).set(mapOf("data" to toSave.toList()))
           setData.addOnSuccessListener {
+            db.collection(user).document(Settings.path).update("lastUpdate", Timestamp.now())
             onResult(true)
           }
           setData.addOnFailureListener {

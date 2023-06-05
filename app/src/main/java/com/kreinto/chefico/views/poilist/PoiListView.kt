@@ -30,21 +30,13 @@ import com.kreinto.chefico.room.CheFicoViewModel
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @Composable
-fun PoiListView(
-  onNavigate: (String) -> Unit,
-  viewModel: CheFicoViewModel,
-  authViewModel: AuthViewModel
-) {
+fun PoiListView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authViewModel: AuthViewModel) {
   val context = LocalContext.current
   val pois = viewModel.getPois().collectAsStateWithLifecycle(emptyList())
   val selectedPois = remember { mutableStateListOf<Long>() }
   var filter: String by rememberSaveable { mutableStateOf("") }
-  var openShareDialog by remember {
-    mutableStateOf(false)
-  }
-  var user by remember {
-    mutableStateOf("")
-  }
+  var openShareDialog by remember { mutableStateOf(false) }
+  var user by remember { mutableStateOf("") }
   if (openShareDialog) {
     Dialog({ openShareDialog = false }) {
       Column(
@@ -60,7 +52,7 @@ fun PoiListView(
           placeholder = { Text("ID utente") },
           enabled = true,
           readOnly = false,
-          leadingIcon = { Icon(painterResource(id = R.drawable.ic_account), "account", Modifier.size(24.dp)) }
+          leadingIcon = { Icon(painterResource(R.drawable.ic_account), "account", Modifier.size(24.dp)) }
         )
         TextButton(
           enabled = user.isNotBlank(),
@@ -76,11 +68,8 @@ fun PoiListView(
             .height(40.dp),
           onClick = {
             authViewModel.share(user, *selectedPois.toLongArray()) {
-              if (it) {
-                Toast.makeText(context, "Condivisione riuscita", Toast.LENGTH_SHORT).show()
-              } else {
-                Toast.makeText(context, "Condivisione non riuscita", Toast.LENGTH_SHORT).show()
-              }
+              Toast.makeText(context, if (it) "Condivisione riuscita" else "Condivisione non riuscita", Toast.LENGTH_SHORT).show()
+              openShareDialog = false
             }
           }
         ) { Text("Condividi", fontSize = 16.sp) }

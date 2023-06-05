@@ -132,13 +132,7 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
       },
       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
       visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-      leadingIcon = {
-        Icon(
-          painter = painterResource(id = R.drawable.ic_lock),
-          contentDescription = "email",
-          modifier = Modifier.size(24.dp)
-        )
-      }
+      leadingIcon = { Icon(painterResource(id = R.drawable.ic_lock), "email", Modifier.size(24.dp)) }
     )
     Spacer(Modifier.height(32.dp))
     Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
@@ -162,7 +156,10 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
         authViewModel.signIn(
           email,
           password,
-          { loading.value = false },
+          {
+            loading.value = false
+            onNavigate(CheFicoRoute.Back.path)
+          },
           {
             loading.value = false
             Toast.makeText(context, "Nome utente o password errati", Toast.LENGTH_SHORT).show()
