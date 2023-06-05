@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -98,7 +99,15 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
             .padding(bottom = 16.dp)
             .width(208.dp)
             .height(40.dp),
-          onClick = { authViewModel.share(user, poi) }
+          onClick = {
+            authViewModel.share(user, poi.id) {
+              if (it) {
+                Toast.makeText(context, "Condivisione riuscita", Toast.LENGTH_SHORT).show()
+              } else {
+                Toast.makeText(context, "Condivisione non riuscita", Toast.LENGTH_SHORT).show()
+              }
+            }
+          }
         ) { Text("Condividi", fontSize = 16.sp) }
       }
     }

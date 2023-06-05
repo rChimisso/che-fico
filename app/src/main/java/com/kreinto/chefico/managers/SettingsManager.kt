@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.core.os.LocaleListCompat
 import androidx.preference.PreferenceManager
+import java.util.*
 
 /**
  * Languages.
@@ -53,6 +54,11 @@ class SettingsManager(context: Context) {
   private val themeKey = "theme"
 
   /**
+   * Last update time key.
+   */
+  private val lastUpdateKey = "lastUpdate"
+
+  /**
    * Application settings.
    */
   private val settings: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -90,6 +96,17 @@ class SettingsManager(context: Context) {
     set(value) {
       settings.edit().putInt(themeKey, value).apply()
       setDefaultNightMode(value)
+    }
+
+  /**
+   * Last update setting.
+   */
+  var lastUpdate: Long
+    get() {
+      return settings.getLong(lastUpdateKey, Date(0).time / 1000)
+    }
+    set(value) {
+      settings.edit().putLong(lastUpdateKey, value).apply()
     }
 
   /**

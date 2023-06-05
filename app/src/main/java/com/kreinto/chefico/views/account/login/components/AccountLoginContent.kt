@@ -1,5 +1,6 @@
 package com.kreinto.chefico.views.account.login.components
 
+import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -31,7 +33,7 @@ import com.kreinto.chefico.room.AuthViewModel
 @Composable
 internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: PaddingValues, onNavigate: (String) -> Unit) {
   val loading = remember { mutableStateOf(false) }
-
+  val context = LocalContext.current
   Column(
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -39,9 +41,12 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
       .fillMaxSize()
       .padding(paddingValues)
   ) {
-    Image(painterResource(R.drawable.che_fico_icon), null, Modifier.size(156.dp))
+    Image(painterResource(R.drawable.che_fico_icon), null, Modifier.size(128.dp))
     Spacer(Modifier.height(64.dp))
-    GoogleLogInButton({ onNavigate(CheFicoRoute.Account.path) })
+    GoogleLogInButton({
+      authViewModel.initGoogleAccount()
+      onNavigate(CheFicoRoute.Account.path)
+    })
     Spacer(Modifier.height(40.dp))
     Row(
       horizontalArrangement = Arrangement.Center,
@@ -165,10 +170,13 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
               onNavigate(CheFicoRoute.Account.path)
             }
           },
-          {}
+          {
+            loading.value = false
+            Toast.makeText(context, "Nome utente o password errati", Toast.LENGTH_SHORT).show()
+          }
         )
       },
-      enabled = email.isNotBlank() && password.isNotBlank()
+      enabled = email.isNotEmpty() && password.isNotEmpty()
     ) {
       Box(
         modifier = Modifier

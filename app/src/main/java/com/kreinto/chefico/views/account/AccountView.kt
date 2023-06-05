@@ -21,7 +21,6 @@ import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.misc.Loader
 import com.kreinto.chefico.room.AuthViewModel
 import com.kreinto.chefico.room.CheFicoViewModel
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
@@ -95,9 +94,9 @@ fun AccountView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
               authViewModel.setOnlineBackup(checked)
               if (checked) {
                 coroutine.launch {
-                  authViewModel.backup(viewModel.getPois().first()) {
-                    authViewModel.getPois { pois -> pois.forEach { poi -> viewModel.updatePoi(poi) } }
-                  }
+                  //authViewModel.backup(viewModel.getPois().first()) {
+                  //authViewModel.getPois { pois -> pois.forEach { poi -> viewModel.updatePoi(poi) } }
+                  //}
                 }
               }
             })
@@ -121,5 +120,5 @@ fun AccountView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authV
       }
     }
   }
-  Loader(!loading)
+  Loader(loading)
 }

@@ -1,5 +1,7 @@
 package com.kreinto.chefico.views.account.signin.components
 
+import android.util.Patterns
+import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -16,8 +18,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -29,13 +33,26 @@ import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.room.AuthViewModel
 
+fun String.isValidEmail(): Boolean {
+  println("MATCH? ${matches(Patterns.EMAIL_ADDRESS.toRegex())}")
+  println("EMPTY? ${isNotEmpty()}")
+  return isNotEmpty() && matches(Patterns.EMAIL_ADDRESS.toRegex())
+}
+
 @Composable
 internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: PaddingValues, onNavigate: (String) -> Unit) {
+  val context = LocalContext.current
+
   var email by rememberSaveable { mutableStateOf("") }
   var password by rememberSaveable { mutableStateOf("") }
   var passwordVisible by rememberSaveable { mutableStateOf(false) }
   var repeatedPassword by rememberSaveable { mutableStateOf("") }
   var displayName by rememberSaveable { mutableStateOf("") }
+
+  var isEmailFieldClicked by rememberSaveable { mutableStateOf(false) }
+  var isPasswordFieldClicked by rememberSaveable { mutableStateOf(false) }
+  var isRepeatedPasswordFieldClicked by rememberSaveable { mutableStateOf(false) }
+  var isDisplaNameFieldClicked by rememberSaveable { mutableStateOf(false) }
 
   Column(
     verticalArrangement = Arrangement.Center,
@@ -44,7 +61,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       .fillMaxSize()
       .padding(paddingValues)
   ) {
-    Image(painterResource(R.drawable.che_fico_icon), null, Modifier.size(156.dp))
+    Image(painterResource(R.drawable.che_fico_icon), null, Modifier.size(128.dp))
     Spacer(modifier = Modifier.height(64.dp))
     GoogleSignInButton(
       onSuccess = {
@@ -66,10 +83,15 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
     }
     Spacer(modifier = Modifier.height(32.dp))
     TextField(
+      modifier = Modifier.onFocusChanged {
+        if (it.hasFocus) {
+          isDisplaNameFieldClicked = true
+        }
+      },
       label = { Text(stringResource(R.string.name_label)) },
       value = displayName,
       onValueChange = { displayName = it },
-      isError = displayName.isEmpty(),
+      isError = isDisplaNameFieldClicked && displayName.isEmpty(),
       singleLine = true,
       colors = TextFieldDefaults.colors(
         errorContainerColor = Color.Transparent,
@@ -97,10 +119,15 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       }
     )
     TextField(
+      modifier = Modifier.onFocusChanged {
+        if (it.hasFocus) {
+          isEmailFieldClicked = true
+        }
+      },
       label = { Text(text = stringResource(R.string.email_label)) },
       value = email,
       onValueChange = { email = it },
-      isError = email.isEmpty(),
+      isError = isEmailFieldClicked && !email.isValidEmail(),
       singleLine = true,
       colors = TextFieldDefaults.colors(
         errorContainerColor = Color.Transparent,
@@ -128,11 +155,16 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       }
     )
     TextField(
+      modifier = Modifier.onFocusChanged {
+        if (it.hasFocus) {
+          isPasswordFieldClicked = true
+        }
+      },
       label = { Text(text = stringResource(R.string.pwd_label)) },
       value = password,
       onValueChange = { password = it },
       supportingText = { Text("Lunghezza minima di 7 caratteri") },
-      isError = password.isEmpty() || password.length <= 6,
+      isError = isPasswordFieldClicked && (password.isEmpty() || password.length <= 6),
       singleLine = true,
       colors = TextFieldDefaults.colors(
         errorContainerColor = Color.Transparent,
@@ -175,11 +207,16 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       }
     )
     TextField(
+      modifier = Modifier.onFocusChanged {
+        if (it.hasFocus) {
+          isRepeatedPasswordFieldClicked = true
+        }
+      },
       label = { Text(text = stringResource(R.string.pwd_repeat_label)) },
       value = repeatedPassword,
       supportingText = { Text("Le password devono coincidere") },
       onValueChange = { repeatedPassword = it },
-      isError = !password.equals(repeatedPassword) || repeatedPassword.isEmpty(),
+      isError = isRepeatedPasswordFieldClicked && (password != repeatedPassword || repeatedPassword.isEmpty()),
       singleLine = true,
       colors = TextFieldDefaults.colors(
         errorContainerColor = Color.Transparent,
@@ -226,6 +263,7 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
     ) {
       TextButton(
+        enabled = displayName.isNotEmpty() && password == repeatedPassword && password.length >= 6 && !email.isValidEmail(),
         colors = ButtonDefaults.buttonColors(
           containerColor = Color.Transparent,
           contentColor = Color.Black
@@ -236,9 +274,11 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
           .width(208.dp)
           .height(40.dp),
         onClick = {
-          if (password == repeatedPassword && password.length >= 6) {
-            authViewModel.createUser(email, password, displayName) {
+          authViewModel.createUser(email, password, displayName) {
+            if (it) {
               onNavigate(CheFicoRoute.Account.path)
+            } else {
+              Toast.makeText(context, "Registrazione non andata a buon fine", Toast.LENGTH_SHORT).show()
             }
           }
         }
@@ -255,4 +295,3 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
     }
   }
 }
-

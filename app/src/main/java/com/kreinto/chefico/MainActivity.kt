@@ -19,7 +19,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -45,10 +44,7 @@ import com.kreinto.chefico.views.poicreation.PoiCreationView
 import com.kreinto.chefico.views.poidetail.PoiDetailView
 import com.kreinto.chefico.views.poilist.PoiListView
 import com.kreinto.chefico.views.settings.SettinsView
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 /**
  * Che Fico! Main Activity.
@@ -137,10 +133,8 @@ class MainActivity : AppCompatActivity() {
     if (authViewModel.isUserSignedIn()) {
       authViewModel.isOnlineBackupActive { onlineBackup ->
         if (onlineBackup) {
-          lifecycleScope.launch(Dispatchers.IO) {
-            authViewModel.backup(viewModel.getPois().first()) {
-              authViewModel.getPois { pois -> pois.forEach { poi -> viewModel.updatePoi(poi) } }
-            }
+          authViewModel.backup {
+            it.forEach { poi -> viewModel.updatePoi(poi) }
           }
         }
       }
@@ -193,7 +187,7 @@ class MainActivity : AppCompatActivity() {
             )
           }
           composable(CheFicoRoute.Settings.path) { SettinsView(onNavigate, viewModel, authViewModel) }
-          composable(CheFicoRoute.PoiList.path) { PoiListView(onNavigate, viewModel) }
+          composable(CheFicoRoute.PoiList.path) { PoiListView(onNavigate, viewModel, authViewModel) }
           composable(CheFicoRoute.PoiDetail.path, listOf(navArgument("poiId") { type = NavType.StringType })) {
             PoiDetailView(onNavigate, it.arguments?.getString("poiId"), viewModel, authViewModel)
           }

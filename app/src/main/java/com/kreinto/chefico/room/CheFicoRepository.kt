@@ -36,6 +36,15 @@ class CheFicoRepository(private val poiDao: PoiDao, private val notificationDao:
   }
 
   /**
+   * Gets all specified POIs.
+   *
+   * @return
+   */
+  fun selectPois(ids: List<Int>): Flow<List<Poi>> {
+    return poiDao.selectAll(ids)
+  }
+
+  /**
    * Gets all POIs.
    *
    * @return

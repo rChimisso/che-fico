@@ -53,8 +53,9 @@ fun GoogleLogInButton(onSuccess: () -> Unit, onFailure: () -> Unit = {}) {
 
     if (result.resultCode == Activity.RESULT_OK) {
       val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
-      Firebase.auth.signInWithCredential(firebaseCredential)
-      onSuccess()
+      Firebase.auth.signInWithCredential(firebaseCredential).addOnSuccessListener {
+        onSuccess()
+      }
     } else {
       onFailure()
     }

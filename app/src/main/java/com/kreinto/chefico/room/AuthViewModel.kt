@@ -2,13 +2,20 @@ package com.kreinto.chefico.room
 
 import android.app.Application
 import android.net.Uri
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.kreinto.chefico.managers.SettingsManager
 import com.kreinto.chefico.room.entities.Poi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import java.util.*
 
 /**
 A client for the sign-in API.
@@ -35,7 +42,10 @@ If your application supports federated sign-in using Google ID tokens, configure
 For the sign-in scenario, it is strongly recommended to set GoogleIdTokenRequestOptions.Builder.setFilterByAuthorizedAccounts to true so only the Google accounts that the user has authorized before will show up in the credential list. This can help prevent a new account being created when the user has an existing account registered with the application.
  */
 
+@Suppress("UNCHECKED_CAST")
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
+  private val repository: CheFicoRepository
+
   abstract class DatabaseDocument(val path: String)
   data class UserInfo(
     val uid: String,
@@ -44,6 +54,14 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     val photoUrl: Uri
   )
 
+  init {
+    val database = CheFicoDatabase.getInstance(application)
+    repository = CheFicoRepository(
+      database.poiDao(),
+      database.notificationDao()
+    )
+  }
+
   private val auth = Firebase.auth
   private val db = Firebase.firestore
 
@@ -51,86 +69,96 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
   private object Pois : DatabaseDocument("pois")
   private object Info : DatabaseDocument("info")
   private object Settings : DatabaseDocument("backup_online")
+  private object SharedPois : DatabaseDocument("shared_pois")
 
   private var blockedUsers: MutableMap<String, String> = mutableMapOf()
   private var currentUser: UserInfo? = null
 
-  fun createUser(email: String, password: String, username: String, onResult: () -> Unit) {
-    val context = getApplication<Application>().applicationContext
-    if (email.isNotBlank() && password.isNotBlank() && username.isNotBlank()) {
-      val request = auth.createUserWithEmailAndPassword(email, password)
+  fun initAccount(user: FirebaseUser) {
+    val collection = db.collection(user.uid)
+    collection.document(Info.path).set(
+      mapOf(
+        "username" to user.displayName,
+        "email" to user.email,
+        "photoUrl" to user.photoUrl
+      )
+    )
+    collection.document(BlockedUsers.path).set(
+      mapOf(
+        "data" to emptyList<String>()
+      )
+    )
+    collection.document(Settings.path).set(
+      mapOf(
+        "backupOnline" to false,
+        "lastUpdate" to Timestamp.now()
+      )
+    )
+    collection.document(Pois.path).set(
+      mapOf(
+        "data" to emptyList<Poi>()
+      )
+    )
+    collection.document(SharedPois.path).set(
+      mapOf(
+        "data" to emptyList<Poi>()
+      )
+    )
+    currentUser = UserInfo(
+      uid = user.uid,
+      username = user.displayName!!,
+      email = user.email!!,
+      photoUrl = user.photoUrl ?: Uri.EMPTY
+    )
+  }
 
-      request.addOnSuccessListener {
-        if (it.user != null) {
-          val collection = db.collection(it.user!!.uid)
-          collection.document(Info.path).set(
-            object {
-              val username = username
-              val email = it.user!!.email
-              val photoUrl = it.user!!.photoUrl
-            }
-          )
-          collection.document(BlockedUsers.path).set(emptyMap<String, String>())
-          collection.document(Settings.path).set(
-            object {
-              val backupOnline = false
-            }
-          )
-          collection.document(Pois.path).set(
-            object {
-              val data = emptyList<Poi>()
-            }
-          )
-          currentUser = UserInfo(
-            uid = it.user!!.uid,
-            username = username,
-            email = it.user!!.email!!,
-            photoUrl = it.user!!.photoUrl ?: Uri.EMPTY
-          )
-          it.user!!.updateProfile(
-            UserProfileChangeRequest.Builder()
-              .setDisplayName(username)
-              .build()
-          ).addOnCompleteListener {
-            onResult()
-          }
+  fun getLastUpdate(onResult: (Timestamp) -> Unit) {
+    if (isUserSignedIn()) {
+      val request = db.collection(auth.currentUser!!.uid).document(Settings.path).get()
+      request.addOnSuccessListener { document ->
+        if (document.data != null && document.data!!["lastUpdate"] != null) {
+          onResult(document.data!!["lastUpdate"] as Timestamp)
         }
       }
       request.addOnFailureListener {
-        Toast.makeText(context, "Registrazione fallita", Toast.LENGTH_SHORT).show()
+        onResult(Timestamp(Date(0)))
+      }
+    }
+  }
+
+  fun createUser(email: String, password: String, username: String, onResult: (Boolean) -> Unit) {
+    if (email.isNotBlank() && password.isNotBlank() && username.isNotBlank()) {
+      val creationRequest = auth.createUserWithEmailAndPassword(email, password)
+      creationRequest.addOnSuccessListener { result ->
+        if (result.user != null) {
+          val userProfileChangeRequest = result.user!!.updateProfile(
+            UserProfileChangeRequest.Builder()
+              .setDisplayName(username)
+              .build()
+          )
+          userProfileChangeRequest.addOnSuccessListener {
+            initAccount(result.user!!)
+            onResult(true)
+          }
+          userProfileChangeRequest.addOnFailureListener {
+            result.user!!.delete()
+            onResult(false)
+          }
+        } else {
+          onResult(false)
+        }
+      }
+      creationRequest.addOnFailureListener {
+        onResult(false)
       }
     } else {
-      Toast.makeText(context, "Campi non validi", Toast.LENGTH_SHORT).show()
+      onResult(false)
     }
   }
 
   fun initGoogleAccount() {
     if (auth.currentUser != null) {
-      val collection = Firebase.firestore.collection(auth.currentUser!!.uid)
-      collection.document(Info.path).set(
-        object {
-          val username = auth.currentUser!!.displayName
-          val email = auth.currentUser!!.email
-          val photoUrl = auth.currentUser!!.photoUrl
-        }
-      )
-      collection.document(BlockedUsers.path).set(emptyMap<String, String>())
-      collection.document(Settings.path).set(
-        object {
-          val backupOnline = false
-        }
-      )
-      collection.document(Pois.path).set(
-        object {
-          val data = emptyList<Poi>()
-        }
-      )
-      currentUser = UserInfo(
-        uid = auth.currentUser!!.uid,
-        username = auth.currentUser!!.displayName!!,
-        email = auth.currentUser!!.email!!,
-        photoUrl = auth.currentUser!!.photoUrl ?: Uri.EMPTY
-      )
+      initAccount(auth.currentUser!!)
     }
   }
 
@@ -163,20 +191,16 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     if (auth.currentUser != null) {
       db.collection(auth.currentUser!!.uid).document(Pois.path).get().addOnSuccessListener { document ->
         if (document.data != null && document.data!!["data"] != null) {
-          val pois = mutableListOf<Poi>()
-          (document.data!!["data"] as List<Map<String, Any>>).forEach {
-            pois.add(
-              Poi(
-                (it["id"]!! as Long).toInt(),
-                it["name"]!! as String,
-                it["description"]!! as String,
-                it["image"]!! as String,
-                it["latitude"]!! as Double,
-                it["longitude"]!! as Double
-              )
+          onSuccess((document.data!!["data"] as List<Map<String, Any>>).map {
+            Poi(
+              (it["id"]!! as Long).toInt(),
+              it["name"]!! as String,
+              it["description"]!! as String,
+              it["image"]!! as String,
+              it["latitude"]!! as Double,
+              it["longitude"]!! as Double
             )
-          }
-          onSuccess(pois)
+          })
         }
       }
     }
@@ -244,75 +268,94 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
   fun setOnlineBackup(value: Boolean) {
     if (auth.currentUser != null) {
       db.collection(auth.currentUser!!.uid).document(Settings.path).set(
-        object {
-          val backupOnline = value
-        }
+        mapOf(
+          "backupOnline" to value
+        )
       )
     }
   }
 
-  fun backup(pois: List<Poi>, onResult: () -> Unit) {
+  fun backup(onResult: (List<Poi>) -> Unit) = launch {
     if (auth.currentUser != null) {
-      getPois { onlinePois ->
-        var toSave = onlinePois.toMutableList()
-        pois.forEach { localPoi ->
-          toSave = toSave.filter {
-            it.name != localPoi.name &&
-              it.image != localPoi.image &&
-              it.description != localPoi.description &&
-              it.latitude != localPoi.latitude &&
-              it.longitude != localPoi.longitude
-          }.toMutableList()
-        }
-        toSave.addAll(pois)
-        db.collection(auth.currentUser!!.uid).document(Pois.path).set(
-          object {
-            val data = toSave
+      val settings = SettingsManager(getApplication())
+      val localPois = repository.selectPois().first()
+      val notifications = repository.selectNotifications().first()
+      getLastUpdate { onlineLastUpdate ->
+        if (onlineLastUpdate < Timestamp(settings.lastUpdate, 0)) {
+          settings.lastUpdate = onlineLastUpdate.toDate().time
+          getPois { onlinePois ->
+            var toSave = onlinePois.toMutableList()
+            localPois.forEach { localPoi ->
+              toSave = toSave.filter {
+                it.name != localPoi.name &&
+                  it.image != localPoi.image &&
+                  it.description != localPoi.description &&
+                  it.latitude != localPoi.latitude &&
+                  it.longitude != localPoi.longitude
+              }.toMutableList()
+            }
+            toSave.addAll(localPois)
+            db.collection(auth.currentUser!!.uid).document(Pois.path).set(
+              mapOf(
+                "data" to toSave.map { poi ->
+                  mapOf(
+                    "id" to poi.id,
+                    "image" to poi.image,
+                    "longitude" to poi.longitude,
+                    "latitude" to poi.latitude,
+                    "description" to poi.description,
+                    "name" to poi.name,
+                    "notifications" to notifications.filter { it.poiId == poi.id }
+                  )
+                }
+              )
+            ).addOnSuccessListener {
+              onResult(toSave)
+            }
           }
-        ).addOnSuccessListener {
-          onResult()
         }
       }
     }
   }
 
-  fun share(user: String, poi: Poi) {
-    val context = getApplication<Application>().applicationContext
-    var pois: MutableList<Map<String, Any>>
+
+  fun share(user: String, vararg ids: Int, onResult: (Boolean) -> Unit) = launch {
     if (auth.currentUser != null) {
-      val result = db.collection(user).document(Pois.path).get()
-      result.addOnSuccessListener {
-        if (it.data != null) {
-          pois = (it.data!!["data"] as List<Map<String, Any>>).toMutableList()
-          pois = pois.filter {
-            it["name"] != poi.name &&
-              it["image"] != poi.image &&
-              it["description"] != poi.description &&
-              it["latitude"] != poi.latitude &&
-              it["longitude"] != poi.longitude
-          }.toMutableList()
-          pois.add(
-            mapOf<String, Any>(
-              "name" to poi.name,
-              "image" to poi.image,
-              "description" to poi.description,
-              "latitude" to poi.latitude,
-              "longitude" to poi.longitude,
-              "id" to poi.id
+      val result = db.collection(user).document(SharedPois.path).get()
+      val toShare = repository.selectPois(ids.toList()).first()
+      result.addOnSuccessListener { document ->
+        if (document.data != null) {
+          val toSave = (document.data!!["data"] as List<Map<String, Any>>).toMutableList()
+          toSave.addAll(toShare.map {
+            mapOf(
+              "name" to it.name,
+              "image" to it.image,
+              "description" to it.description,
+              "latitude" to it.latitude,
+              "longitude" to it.longitude,
+              "id" to it.id
+            )
+          })
+          val setData = db.collection(user).document(SharedPois.path).set(
+            mapOf(
+              "data" to toSave.toList()
             )
           )
-          db.collection(user).document(Pois.path).set(
-            object {
-              val data = pois.toList()
-            }
-          ).addOnFailureListener {
-            Toast.makeText(context, "Qualcosa è andato storto con la condivisione", Toast.LENGTH_SHORT).show()
+          setData.addOnSuccessListener {
+            onResult(true)
+          }
+          setData.addOnFailureListener {
+            onResult(false)
           }
         }
       }
       result.addOnFailureListener {
-        Toast.makeText(context, "Qualcosa è andato storto con la condivisione", Toast.LENGTH_SHORT).show()
+        onResult(false)
       }
     }
+  }
+
+  private fun launch(block: suspend () -> Unit) {
+    viewModelScope.launch(Dispatchers.IO) { block() }
   }
 }

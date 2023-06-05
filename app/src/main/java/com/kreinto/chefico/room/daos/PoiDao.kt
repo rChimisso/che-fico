@@ -28,6 +28,14 @@ interface PoiDao {
   fun select(id: Int): Flow<Poi>
 
   /**
+   * Selects all specified POIs.
+   *
+   * @return
+   */
+  @Query("SELECT * FROM pois WHERE id IN (:ids)")
+  fun selectAll(ids: List<Int>): Flow<List<Poi>>
+
+  /**
    * Selects all POIs.
    *
    * @return
