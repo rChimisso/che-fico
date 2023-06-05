@@ -10,11 +10,8 @@
   //SearchInput.kt strings Finish
   //AccountEditView.kt strings Start
   <string name = "user_name_area_edit_label">Nome Utente</string>
-  <string name = "old_pwd_area_edit_label">Password Vecchia</string>
-  <string name = "old_pwd_placeholder_area_edit_label">La vecchia Password</string>
   <string name = "new_pwd_area_edit_label">Password Nuova</string>
   <string name = "new_pwd_placeholder_area_edit_label">La nuova Password</string>
-  <string name = "edit_info">Modifica Dati</string>
   //AccountEditView.kt strings Finish
   //AccountLoginContent.kt strings Start
   <string name = "login_methods_divider_label">oppure</string>

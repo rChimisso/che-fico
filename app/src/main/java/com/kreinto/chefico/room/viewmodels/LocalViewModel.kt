@@ -3,6 +3,7 @@ package com.kreinto.chefico.room.viewmodels
 import android.app.Application
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.firebase.Timestamp
 import com.kreinto.chefico.managers.PoiNotificationManager
 import com.kreinto.chefico.room.entities.Notification
 import com.kreinto.chefico.room.entities.Poi
@@ -24,15 +25,18 @@ class LocalViewModel(application: Application) : CheFicoViewModel(application) {
   fun addPoi(poi: Poi) = launch {
     if (poi != Poi.NullPoi) {
       repository.updateAllNewPoiNotifications(repository.insertPoi(poi))
+      updateTime()
     }
   }
 
   fun addNotification(notification: Notification) = launch {
     repository.insertNotification(notification)
+    updateTime()
   }
 
   fun updatePoi(poi: Poi) = launch {
     repository.updatePoi(poi)
+    updateTime()
   }
 
   fun getPoi(id: Long): Flow<Poi> {
@@ -58,6 +62,7 @@ class LocalViewModel(application: Application) : CheFicoViewModel(application) {
   fun deletePoi(id: Long) = launch {
     repository.deletePoi(id)
     repository.deletePoiNotifications(id)
+    updateTime()
   }
 
   fun deleteNotification(id: Long) = launch {
@@ -66,14 +71,25 @@ class LocalViewModel(application: Application) : CheFicoViewModel(application) {
       repository.deleteNotification(id)
       return@first true
     }
+    updateTime()
   }
 
   fun deletePois() = launch {
     repository.deletePois()
+    updateTime()
   }
 
   fun deleteNotifications() = launch {
     repository.deleteNotifications()
+    updateTime()
+  }
+
+  fun deleteAllPoiNotifications(id: Long) = launch {
+    repository.selectPoiNotifications(id).first().forEach {
+      PoiNotificationManager.cancelNotification(getApplication<Application>().applicationContext, it)
+    }
+    repository.deletePoiNotifications(id)
+    updateTime()
   }
 
   fun getCreatingPoi(): Poi {
@@ -97,10 +113,7 @@ class LocalViewModel(application: Application) : CheFicoViewModel(application) {
     return getPois().mapLatest { it.filter { poi -> latLngBounds.contains(LatLng(poi.latitude, poi.longitude)) } }
   }
 
-  fun deleteAllPoiNotifications(id: Long) = launch {
-    repository.selectPoiNotifications(id).first().forEach {
-      PoiNotificationManager.cancelNotification(getApplication<Application>().applicationContext, it)
-    }
-    repository.deletePoiNotifications(id)
+  private fun updateTime() {
+    settings.lastUpdate = Timestamp.now().seconds
   }
 }

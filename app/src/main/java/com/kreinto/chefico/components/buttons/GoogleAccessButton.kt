@@ -1,6 +1,7 @@
-package com.kreinto.chefico.views.account.signin.components
+package com.kreinto.chefico.components.buttons
 
 import android.app.Activity
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -27,8 +29,13 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kreinto.chefico.R
 
+/**
+ * Button to access a Che Fico! account via Google.
+ *
+ * @param onSuccess Function called when the authentication succeeds, with whether the account is new or existing.
+ */
 @Composable
-fun GoogleSignInButton(onSuccess: () -> Unit, onFailure: () -> Unit) {
+fun GoogleAccessButton(onSuccess: (Boolean) -> Unit) {
   val context = LocalContext.current
   val oneTapClient = Identity.getSignInClient(context)
   val signInRequest =
@@ -39,43 +46,35 @@ fun GoogleSignInButton(onSuccess: () -> Unit, onFailure: () -> Unit) {
           .GoogleIdTokenRequestOptions
           .builder()
           .setSupported(true)
-          .setServerClientId(context.getString(R.string.default_web_client_id))
+          .setServerClientId(stringResource(R.string.default_web_client_id))
           .setFilterByAuthorizedAccounts(false)
           .build()
       )
       .setAutoSelectEnabled(false)
       .build()
 
-
   val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
     val googleCredential = oneTapClient.getSignInCredentialFromIntent(result.data)
     val idToken = googleCredential.googleIdToken
-
     if (result.resultCode == Activity.RESULT_OK) {
-      val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
-      Firebase.auth.signInWithCredential(firebaseCredential).addOnSuccessListener {
-        onSuccess()
+      Firebase.auth.signInWithCredential(GoogleAuthProvider.getCredential(idToken, null)).addOnSuccessListener {
+        onSuccess(it.additionalUserInfo?.isNewUser ?: true)
       }
     } else {
-      onFailure()
+      Toast.makeText(context, "Impossibile effettuare l'accesso, riprova più tardi", Toast.LENGTH_SHORT).show()
     }
   }
   Button(
     onClick = {
       oneTapClient.beginSignIn(signInRequest).addOnCompleteListener {
-        launcher.launch(
-          IntentSenderRequest.Builder(it.result.pendingIntent).build()
-        )
+        launcher.launch(IntentSenderRequest.Builder(it.result.pendingIntent).build())
       }
     },
     modifier = Modifier
       .height(40.dp)
       .width(208.dp),
     shape = RoundedCornerShape(12.dp),
-    colors = ButtonDefaults.buttonColors(
-      containerColor = Color(0xffffffff),
-      contentColor = Color(0xff000000)
-    ),
+    colors = ButtonDefaults.buttonColors(Color.White, Color.Black),
     contentPadding = PaddingValues(
       start = 0.dp,
       top = 0.dp,
@@ -83,8 +82,16 @@ fun GoogleSignInButton(onSuccess: () -> Unit, onFailure: () -> Unit) {
       end = 8.dp
     )
   ) {
-    // used icon already has padding - AlbeInfo
-    Image(painterResource(R.drawable.ic_google_logo), stringResource(R.string.google_signin))
-    Text(stringResource(R.string.google_signin), fontSize = 14.sp)
+    Image(painterResource(R.drawable.ic_google_logo), stringResource(R.string.google_login))
+    Text(stringResource(R.string.google_login), fontSize = 14.sp)
   }
+}
+
+/**
+ * [Preview] for [GoogleAccessButton].
+ */
+@Composable
+@Preview
+private fun GoogleAccessButtonPreview() {
+  GoogleAccessButton {}
 }

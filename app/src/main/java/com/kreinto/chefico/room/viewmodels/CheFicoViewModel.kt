@@ -3,6 +3,7 @@ package com.kreinto.chefico.room.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.kreinto.chefico.managers.SettingsManager
 import com.kreinto.chefico.room.CheFicoDatabase
 import com.kreinto.chefico.room.CheFicoRepository
 import kotlinx.coroutines.Dispatchers
@@ -19,9 +20,15 @@ abstract class CheFicoViewModel(application: Application) : AndroidViewModel(app
    */
   protected val repository: CheFicoRepository
 
+  /**
+   * [SettingsManager].
+   */
+  protected val settings: SettingsManager
+
   init {
     val database = CheFicoDatabase.getInstance(application)
     repository = CheFicoRepository(database.poiDao(), database.notificationDao())
+    settings = SettingsManager(this.getApplication())
   }
 
   /**

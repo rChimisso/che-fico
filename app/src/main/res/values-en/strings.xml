@@ -11,11 +11,8 @@
   //SearchInput.kt strings Finish
   //AccountEditView.kt strings Start
   <string name = "user_name_area_edit_label">User Name</string>
-  <string name = "old_pwd_area_edit_label">Old Password</string>
-  <string name = "old_pwd_placeholder_area_edit_label">Old Password</string>
   <string name = "new_pwd_area_edit_label">New Password</string>
   <string name = "new_pwd_placeholder_area_edit_label">New Password</string>
-  <string name = "edit_info">Edit Data</string>
   //AccountEditView.kt strings Finish
   //AccountLoginContent.kt strings Start
   <string name = "login_methods_divider_label">or</string>

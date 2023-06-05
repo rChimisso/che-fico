@@ -3,12 +3,12 @@ package com.kreinto.chefico.room.viewmodels
 import android.app.Application
 import android.net.Uri
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.kreinto.chefico.managers.SettingsManager
 import com.kreinto.chefico.room.entities.Poi
 import kotlinx.coroutines.flow.first
 import java.util.*
@@ -58,7 +58,10 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
   private object SharedPois : DatabaseDocument("shared_pois")
 
   private var blockedUsers: MutableMap<String, String> = mutableMapOf()
-  private var currentUser: UserInfo? = null
+  val currentUser: FirebaseUser?
+    get() {
+      return auth.currentUser
+    }
 
   private fun initAccount(user: FirebaseUser) {
     val collection = db.collection(user.uid)
@@ -67,20 +70,17 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
     collection.document(Settings.path).set(mapOf("backupOnline" to false, "lastUpdate" to Timestamp.now()))
     collection.document(Pois.path).set(mapOf("data" to emptyList<Poi>()))
     collection.document(SharedPois.path).set(mapOf("data" to emptyList<Poi>()))
-    currentUser = UserInfo(user.uid, user.displayName!!, user.email!!, user.photoUrl ?: Uri.EMPTY)
   }
 
   fun getLastUpdate(onResult: (Timestamp) -> Unit) {
     if (isUserSignedIn()) {
-      val request = db.collection(auth.currentUser!!.uid).document(Settings.path).get()
+      val request = db.collection(currentUser!!.uid).document(Settings.path).get()
       request.addOnSuccessListener { document ->
         if (document.data != null && document.data!!["lastUpdate"] != null) {
           onResult(document.data!!["lastUpdate"] as Timestamp)
         }
       }
-      request.addOnFailureListener {
-        onResult(Timestamp(Date(0)))
-      }
+      request.addOnFailureListener { onResult(Timestamp(Date(0))) }
     }
   }
 
@@ -106,35 +106,37 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
           onResult(false)
         }
       }
-      creationRequest.addOnFailureListener {
-        onResult(false)
-      }
+      creationRequest.addOnFailureListener { onResult(false) }
     } else {
       onResult(false)
     }
   }
 
-  fun initGoogleAccount() {
-    if (auth.currentUser != null) {
-      initAccount(auth.currentUser!!)
+  fun updateUserInfo(currPassword: String, email: String, password: String, username: String) {
+    if (currentUser != null) {
+      if (email.isNotBlank() && password.isNotBlank() && username.isNotBlank()) {
+        currentUser!!.reauthenticate(EmailAuthProvider.getCredential(email, password))
+        currentUser!!.updateEmail(email)
+        currentUser!!.updatePassword(password)
+        currentUser!!.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(username).build())
+      }
+    }
+  }
+
+  fun initGoogleAccount(isNewUser: Boolean) {
+    if (currentUser != null) {
+      initAccount(currentUser!!)
     }
   }
 
   fun isUserSignedIn(): Boolean {
-    return auth.currentUser != null
+    return currentUser != null
   }
 
   fun signIn(email: String, password: String, onSuccess: (UserInfo) -> Unit, onFailure: () -> Unit) {
     val request = auth.signInWithEmailAndPassword(email, password)
     request.addOnSuccessListener {
-      onSuccess(
-        UserInfo(
-          uid = it.user!!.uid,
-          username = it.user!!.displayName!!,
-          email = it.user!!.email!!,
-          photoUrl = it.user!!.photoUrl ?: Uri.EMPTY
-        )
-      )
+      onSuccess(UserInfo(it.user!!.uid, it.user!!.displayName!!, it.user!!.email!!, it.user!!.photoUrl ?: Uri.EMPTY))
     }
     request.addOnFailureListener {
       onFailure()
@@ -146,8 +148,8 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
   }
 
   fun getPois(onSuccess: (List<Poi>) -> Unit) {
-    if (auth.currentUser != null) {
-      db.collection(auth.currentUser!!.uid).document(Pois.path).get().addOnSuccessListener { document ->
+    if (currentUser != null) {
+      db.collection(currentUser!!.uid).document(Pois.path).get().addOnSuccessListener { document ->
         if (document.data != null && document.data!!["data"] != null) {
           onSuccess((document.data!!["data"] as List<Map<String, Any>>).map {
             Poi(
@@ -165,8 +167,8 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
   }
 
   fun getSharedPois(onSuccess: (List<Poi>) -> Unit) {
-    if (auth.currentUser != null) {
-      db.collection(auth.currentUser!!.uid).document(SharedPois.path).get().addOnSuccessListener { document ->
+    if (currentUser != null) {
+      db.collection(currentUser!!.uid).document(SharedPois.path).get().addOnSuccessListener { document ->
         if (document.data != null && document.data!!["data"] != null) {
           onSuccess((document.data!!["data"] as List<Map<String, Any>>).map {
             Poi(
@@ -185,8 +187,8 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
 
   fun getUserProviderIds(): List<String> {
     val providersId = mutableListOf<String>()
-    if (auth.currentUser != null) {
-      auth.currentUser!!.providerData.forEach { data ->
+    if (currentUser != null) {
+      currentUser!!.providerData.forEach { data ->
         providersId.add(data.providerId)
       }
     }
@@ -194,33 +196,26 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
   }
 
   fun getBlockedUsers(onSuccess: (Map<String, String>) -> Unit, onFailure: () -> Unit = {}) {
-    if (auth.currentUser != null) {
-      val result = db.collection(auth.currentUser!!.uid).document(BlockedUsers.path).get()
+    if (currentUser != null) {
+      val result = db.collection(currentUser!!.uid).document(BlockedUsers.path).get()
       result.addOnSuccessListener {
         blockedUsers = it.data as MutableMap<String, String>
         onSuccess(blockedUsers)
       }
-      result.addOnFailureListener {
-        onFailure()
-      }
+      result.addOnFailureListener { onFailure() }
     }
   }
 
   fun getUserInfo(uid: String, onResult: (UserInfo) -> Unit) {
     db.collection(uid).document(Info.path).get().addOnCompleteListener {
       onResult(
-        UserInfo(
-          uid = it.result["uid"] as String,
-          username = it.result["username"] as String,
-          email = it.result["email"] as String,
-          photoUrl = it.result["photoUrl"] as Uri
-        )
+        UserInfo(it.result["uid"] as String, it.result["username"] as String, it.result["email"] as String, it.result["photoUrl"] as Uri)
       )
     }
   }
 
   fun blockUser(uid: String) {
-    if (uid.isNotBlank() && auth.currentUser != null) {
+    if (uid.isNotBlank() && currentUser != null) {
       getUserInfo(uid) {
         blockedUsers.putIfAbsent(uid, it.username)
       }
@@ -228,33 +223,28 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
   }
 
   fun unblockUser(uid: String) {
-    if (uid.isNotBlank() && auth.currentUser != null) {
+    if (uid.isNotBlank() && currentUser != null) {
       blockedUsers.remove(uid)
     }
   }
 
   fun isOnlineBackupActive(onResult: (Boolean) -> Unit) {
-    if (auth.currentUser != null) {
-      val result = db.collection(auth.currentUser!!.uid).document(Settings.path).get()
-      result.addOnSuccessListener {
+    if (currentUser != null) {
+      db.collection(currentUser!!.uid).document(Settings.path).get().addOnSuccessListener {
         onResult(it.data?.get("backupOnline") as Boolean)
       }
     }
   }
 
   fun setOnlineBackup(value: Boolean) {
-    if (auth.currentUser != null) {
-      db.collection(auth.currentUser!!.uid).document(Settings.path).set(
-        mapOf(
-          "backupOnline" to value
-        )
-      )
+    if (currentUser != null) {
+      db.collection(currentUser!!.uid).document(Settings.path).update("backupOnline", value)
     }
   }
 
   fun sync() = launch {
-    if (auth.currentUser != null) {
-      val settings = SettingsManager(getApplication())
+    if (currentUser != null) {
+      println(currentUser!!.uid)
       val localPois = repository.selectPois().first().sortedBy { it.id }
       val notifications = repository.selectNotifications().first()
       getLastUpdate { lastUpdate ->
@@ -267,33 +257,35 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
               val index = pois.indexOfFirst { it.id == poi.id }
               if (index >= 0) {
                 pois[index] = poi
-                repository.updatePoi(poi)
+                launch { repository.updatePoi(poi) }
               } else {
                 pois.add(poi)
-                repository.insertPoi(poi)
+                launch { repository.insertPoi(poi) }
               }
             }
           }
           settings.lastUpdate = timestamp.seconds
           getSharedPois { sharedPois ->
-            for (poi in sharedPois) {
-              pois.add(Poi(repository.insertPoi(poi), poi.name, poi.description, poi.image, poi.latitude, poi.longitude))
-            }
-            db.collection(auth.currentUser!!.uid).document(SharedPois.path).set(mapOf("data" to listOf<Poi>())).addOnSuccessListener {
-              db.collection(auth.currentUser!!.uid).document(Settings.path).update("lastUpdate", timestamp)
-            }
-            db.collection(auth.currentUser!!.uid).document(Pois.path).set(mapOf("data" to pois.map { poi ->
-              mapOf(
-                "id" to poi.id,
-                "image" to poi.image,
-                "longitude" to poi.longitude,
-                "latitude" to poi.latitude,
-                "description" to poi.description,
-                "name" to poi.name,
-                "notifications" to notifications.filter { it.poiId == poi.id }
-              )
-            })).addOnSuccessListener {
-              db.collection(auth.currentUser!!.uid).document(Settings.path).update("lastUpdate", timestamp)
+            launch {
+              for (poi in sharedPois) {
+                pois.add(Poi(repository.insertPoi(poi), poi.name, poi.description, poi.image, poi.latitude, poi.longitude))
+              }
+              db.collection(currentUser!!.uid).document(SharedPois.path).set(mapOf("data" to listOf<Poi>())).addOnSuccessListener {
+                db.collection(currentUser!!.uid).document(Settings.path).update("lastUpdate", timestamp)
+              }
+              db.collection(currentUser!!.uid).document(Pois.path).set(mapOf("data" to pois.map { poi ->
+                mapOf(
+                  "id" to poi.id,
+                  "image" to poi.image,
+                  "longitude" to poi.longitude,
+                  "latitude" to poi.latitude,
+                  "description" to poi.description,
+                  "name" to poi.name,
+                  "notifications" to notifications.filter { it.poiId == poi.id }
+                )
+              })).addOnSuccessListener {
+                db.collection(currentUser!!.uid).document(Settings.path).update("lastUpdate", timestamp)
+              }
             }
           }
         }
@@ -302,7 +294,7 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
   }
 
   fun share(user: String, vararg ids: Long, onResult: (Boolean) -> Unit) = launch {
-    if (auth.currentUser != null) {
+    if (currentUser != null) {
       val result = db.collection(user).document(SharedPois.path).get()
       val toShare = repository.selectPois(ids.toList()).first()
       result.addOnSuccessListener { document ->

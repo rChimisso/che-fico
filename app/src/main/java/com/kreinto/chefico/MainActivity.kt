@@ -161,13 +161,6 @@ class MainActivity : AppCompatActivity() {
       CheFicoTheme {
         navController = rememberNavController()
         val onNavigate: (String) -> Unit = {
-          if (authViewModel.isUserSignedIn()) {
-            authViewModel.isOnlineBackupActive { onlineBackup ->
-              if (onlineBackup) {
-                authViewModel.sync()
-              }
-            }
-          }
           when (it) {
             CheFicoRoute.Back.path -> {
               navController.popBackStack()
@@ -177,6 +170,15 @@ class MainActivity : AppCompatActivity() {
                 CheFicoRoute.Signin.path -> {
                   navController.popBackStack()
                   navController.popBackStack()
+                }
+                CheFicoRoute.Dashboard.path -> {
+                  if (authViewModel.isUserSignedIn()) {
+                    authViewModel.isOnlineBackupActive { onlineBackup ->
+                      if (onlineBackup) {
+                        authViewModel.sync()
+                      }
+                    }
+                  }
                 }
               }
             }

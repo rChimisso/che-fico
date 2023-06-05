@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
+import com.kreinto.chefico.components.buttons.GoogleAccessButton
 import com.kreinto.chefico.room.viewmodels.AuthViewModel
 
 fun String.isValidEmail(): Boolean {
@@ -60,15 +61,12 @@ internal fun AccountSignInContent(authViewModel: AuthViewModel, paddingValues: P
       .padding(paddingValues)
   ) {
     Image(painterResource(R.drawable.che_fico_icon), null, Modifier.size(128.dp))
-    Spacer(modifier = Modifier.height(64.dp))
-    GoogleSignInButton(
-      onSuccess = {
-        authViewModel.initGoogleAccount()
-        onNavigate(CheFicoRoute.Account.path)
-      },
-      onFailure = {}
-    )
-    Spacer(modifier = Modifier.height(40.dp))
+    Spacer(Modifier.height(64.dp))
+    GoogleAccessButton {
+      authViewModel.initGoogleAccount(it)
+      onNavigate(CheFicoRoute.Account.path)
+    }
+    Spacer(Modifier.height(40.dp))
     Row(
       horizontalArrangement = Arrangement.Center,
       verticalAlignment = Alignment.CenterVertically

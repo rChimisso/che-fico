@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
+import com.kreinto.chefico.components.buttons.GoogleAccessButton
 import com.kreinto.chefico.components.misc.Loader
 import com.kreinto.chefico.room.viewmodels.AuthViewModel
 
@@ -43,10 +44,10 @@ internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: Pa
   ) {
     Image(painterResource(R.drawable.che_fico_icon), null, Modifier.size(128.dp))
     Spacer(Modifier.height(64.dp))
-    GoogleLogInButton({
-      authViewModel.initGoogleAccount()
+    GoogleAccessButton {
+      authViewModel.initGoogleAccount(it)
       onNavigate(CheFicoRoute.Account.path)
-    })
+    }
     Spacer(Modifier.height(40.dp))
     Row(
       horizontalArrangement = Arrangement.Center,
