@@ -14,11 +14,27 @@
       },
       "oauth_client": [
         {
+          "client_id": "427989966367-6oo7ajntc5sg62tdsr7plhd9siivhrqc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kreinto.chefico",
+            "certificate_hash": "2bfdfbb5f086daec2f7f7609e2bf1cbe9ca7ff71"
+          }
+        },
+        {
           "client_id": "427989966367-bikpm5s359i8us4d9ea06bostua66tjv.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.kreinto.chefico",
             "certificate_hash": "3bb430dcfe21ea6b82287ee223dc10d873e0f277"
+          }
+        },
+        {
+          "client_id": "427989966367-vhth6q7asuqa98fhgic0irpef827rbd5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kreinto.chefico",
+            "certificate_hash": "e7012d0f36bc8e3bf78ad7467badbbea017585c0"
           }
         },
         {
