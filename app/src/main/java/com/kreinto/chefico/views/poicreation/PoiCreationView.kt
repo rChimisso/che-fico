@@ -20,8 +20,8 @@ import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 import com.kreinto.chefico.components.misc.PoiDetailContent
-import com.kreinto.chefico.room.AuthViewModel
-import com.kreinto.chefico.room.CheFicoViewModel
+import com.kreinto.chefico.room.viewmodels.AuthViewModel
+import com.kreinto.chefico.room.viewmodels.LocalViewModel
 import java.io.OutputStream
 import java.net.URLDecoder
 import java.util.*
@@ -54,7 +54,7 @@ fun saveImage(path: String, contentResolver: ContentResolver, onUriCreated: (Uri
 @Composable
 fun PoiCreationView(
   onNavigate: (String) -> Unit,
-  viewModel: CheFicoViewModel,
+  viewModel: LocalViewModel,
   authViewModel: AuthViewModel,
   locationClient: FusedLocationProviderClient
 ) {

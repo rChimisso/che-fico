@@ -37,10 +37,10 @@ import com.kreinto.chefico.components.buttons.TransparentButton
 import com.kreinto.chefico.components.inputs.TextInput
 import com.kreinto.chefico.components.items.SwipeableItem
 import com.kreinto.chefico.managers.PoiNotificationManager
-import com.kreinto.chefico.room.AuthViewModel
-import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.room.entities.Notification
 import com.kreinto.chefico.room.entities.Poi
+import com.kreinto.chefico.room.viewmodels.AuthViewModel
+import com.kreinto.chefico.room.viewmodels.LocalViewModel
 import java.io.InputStream
 import java.net.URLDecoder
 
@@ -57,7 +57,7 @@ private fun fixOrientaton(source: Bitmap): ImageBitmap {
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @Composable
-fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, viewModel: CheFicoViewModel, authViewModel: AuthViewModel) {
+fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, viewModel: LocalViewModel, authViewModel: AuthViewModel) {
   val context = LocalContext.current
   var user by remember { mutableStateOf("") }
   var openBottomSheet by remember { mutableStateOf(false) }

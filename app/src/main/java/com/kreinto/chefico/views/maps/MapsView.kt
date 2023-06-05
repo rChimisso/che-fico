@@ -29,8 +29,8 @@ import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 import com.kreinto.chefico.components.misc.Loader
-import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.room.entities.Poi
+import com.kreinto.chefico.room.viewmodels.LocalViewModel
 import com.kreinto.chefico.ui.theme.colorToHue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -41,7 +41,7 @@ import kotlinx.coroutines.flow.*
 @Composable
 fun MapsView(
   onNavigate: (String) -> Unit,
-  viewModel: CheFicoViewModel,
+  viewModel: LocalViewModel,
   locationClient: FusedLocationProviderClient,
   locationSettingsClient: SettingsClient
 ) {

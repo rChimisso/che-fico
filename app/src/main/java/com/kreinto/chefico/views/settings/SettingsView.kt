@@ -21,12 +21,12 @@ import com.kreinto.chefico.components.frames.StandardFrame
 import com.kreinto.chefico.managers.Language
 import com.kreinto.chefico.managers.SettingsManager
 import com.kreinto.chefico.managers.Theme
-import com.kreinto.chefico.room.AuthViewModel
-import com.kreinto.chefico.room.CheFicoViewModel
+import com.kreinto.chefico.room.viewmodels.AuthViewModel
+import com.kreinto.chefico.room.viewmodels.LocalViewModel
 
 @ExperimentalMaterial3Api
 @Composable
-fun SettinsView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel, authViewModel: AuthViewModel) {
+fun SettinsView(onNavigate: (String) -> Unit, viewModel: LocalViewModel, authViewModel: AuthViewModel) {
   val context = LocalContext.current
   val settingsManager = SettingsManager(context)
   val language by remember { mutableStateOf(Language.NAME[settingsManager.language]!!) }

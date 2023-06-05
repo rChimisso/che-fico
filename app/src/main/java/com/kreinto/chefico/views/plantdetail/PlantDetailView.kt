@@ -22,8 +22,8 @@ import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.FilledButton
 import com.kreinto.chefico.components.frames.topbars.SimpleTopBar
 import com.kreinto.chefico.components.misc.Loader
-import com.kreinto.chefico.room.CheFicoViewModel
 import com.kreinto.chefico.room.entities.Poi
+import com.kreinto.chefico.room.viewmodels.LocalViewModel
 import com.kreinto.chefico.views.camera.PlantRecognition
 import com.kreinto.chefico.views.plantdetail.components.PlantDetailBottomSheetContent
 import com.kreinto.chefico.views.plantdetail.components.PlantDetailContent
@@ -32,7 +32,7 @@ import java.net.URLDecoder
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
 @Composable
-fun PlantDetailView(onNavigate: (String) -> Unit, imageURI: String?, organ: String?, viewModel: CheFicoViewModel) {
+fun PlantDetailView(onNavigate: (String) -> Unit, imageURI: String?, organ: String?, viewModel: LocalViewModel) {
   val inputStream = LocalContext.current.contentResolver.openInputStream(Uri.parse(URLDecoder.decode(imageURI, "utf-8")))
   val image = BitmapFactory.decodeStream(inputStream)
   val result = remember { mutableStateOf(PlantRecognition.InvalidData) }

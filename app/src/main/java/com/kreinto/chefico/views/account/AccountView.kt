@@ -19,7 +19,7 @@ import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.misc.Loader
-import com.kreinto.chefico.room.AuthViewModel
+import com.kreinto.chefico.room.viewmodels.AuthViewModel
 
 @ExperimentalMaterial3Api
 @Composable

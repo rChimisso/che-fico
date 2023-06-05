@@ -16,12 +16,12 @@ import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.TransparentButton
 import com.kreinto.chefico.components.items.SwipeableItem
-import com.kreinto.chefico.room.CheFicoViewModel
+import com.kreinto.chefico.room.viewmodels.LocalViewModel
 
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
-fun DashboardContent(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel) {
+fun DashboardContent(onNavigate: (String) -> Unit, viewModel: LocalViewModel) {
   val notifications = viewModel.getNotifications().collectAsStateWithLifecycle(emptyList())
   LazyColumn(
     verticalArrangement = Arrangement.spacedBy(8.dp),

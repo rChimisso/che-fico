@@ -24,7 +24,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.frames.SimpleFrame
-import com.kreinto.chefico.room.AuthViewModel
+import com.kreinto.chefico.room.viewmodels.AuthViewModel
 
 @ExperimentalMaterial3Api
 @Composable

@@ -28,8 +28,8 @@ import androidx.navigation.navArgument
 import com.google.android.gms.location.LocationServices
 import com.kreinto.chefico.managers.PoiNotificationManager
 import com.kreinto.chefico.managers.SettingsManager
-import com.kreinto.chefico.room.AuthViewModel
-import com.kreinto.chefico.room.CheFicoViewModel
+import com.kreinto.chefico.room.viewmodels.AuthViewModel
+import com.kreinto.chefico.room.viewmodels.LocalViewModel
 import com.kreinto.chefico.ui.theme.CheFicoTheme
 import com.kreinto.chefico.views.account.AccountView
 import com.kreinto.chefico.views.account.blacklist.BlackListView
@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val viewModel by viewModels<CheFicoViewModel>()
+    val viewModel by viewModels<LocalViewModel>()
     val authViewModel by viewModels<AuthViewModel>()
 
     SettingsManager(this).refreshTheme()

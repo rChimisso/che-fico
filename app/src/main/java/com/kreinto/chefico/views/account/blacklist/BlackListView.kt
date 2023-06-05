@@ -15,7 +15,7 @@ import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.TransparentButton
 import com.kreinto.chefico.components.frames.StandardFrame
 import com.kreinto.chefico.components.items.SwipeableItem
-import com.kreinto.chefico.room.AuthViewModel
+import com.kreinto.chefico.room.viewmodels.AuthViewModel
 
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi

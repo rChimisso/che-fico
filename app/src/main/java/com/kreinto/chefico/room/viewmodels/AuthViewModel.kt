@@ -1,9 +1,7 @@
-package com.kreinto.chefico.room
+package com.kreinto.chefico.room.viewmodels
 
 import android.app.Application
 import android.net.Uri
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -12,9 +10,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.kreinto.chefico.managers.SettingsManager
 import com.kreinto.chefico.room.entities.Poi
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import java.util.*
 
 /**
@@ -43,9 +39,7 @@ For the sign-in scenario, it is strongly recommended to set GoogleIdTokenRequest
  */
 
 @Suppress("UNCHECKED_CAST")
-class AuthViewModel(application: Application) : AndroidViewModel(application) {
-  private val repository: CheFicoRepository
-
+class AuthViewModel(application: Application) : CheFicoViewModel(application) {
   abstract class DatabaseDocument(val path: String)
   data class UserInfo(
     val uid: String,
@@ -53,14 +47,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     val email: String,
     val photoUrl: Uri
   )
-
-  init {
-    val database = CheFicoDatabase.getInstance(application)
-    repository = CheFicoRepository(
-      database.poiDao(),
-      database.notificationDao()
-    )
-  }
 
   private val auth = Firebase.auth
   private val db = Firebase.firestore
@@ -81,12 +67,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     collection.document(Settings.path).set(mapOf("backupOnline" to false, "lastUpdate" to Timestamp.now()))
     collection.document(Pois.path).set(mapOf("data" to emptyList<Poi>()))
     collection.document(SharedPois.path).set(mapOf("data" to emptyList<Poi>()))
-    currentUser = UserInfo(
-      uid = user.uid,
-      username = user.displayName!!,
-      email = user.email!!,
-      photoUrl = user.photoUrl ?: Uri.EMPTY
-    )
+    currentUser = UserInfo(user.uid, user.displayName!!, user.email!!, user.photoUrl ?: Uri.EMPTY)
   }
 
   fun getLastUpdate(onResult: (Timestamp) -> Unit) {
@@ -351,9 +332,5 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         onResult(false)
       }
     }
-  }
-
-  private fun launch(block: suspend () -> Unit) {
-    viewModelScope.launch(Dispatchers.IO) { block() }
   }
 }

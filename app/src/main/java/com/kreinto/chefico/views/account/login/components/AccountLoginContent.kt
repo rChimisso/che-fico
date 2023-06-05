@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.misc.Loader
-import com.kreinto.chefico.room.AuthViewModel
+import com.kreinto.chefico.room.viewmodels.AuthViewModel
 
 @Composable
 internal fun AccountLoginContent(authViewModel: AuthViewModel, paddingValues: PaddingValues, onNavigate: (String) -> Unit) {

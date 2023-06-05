@@ -1,20 +1,15 @@
-package com.kreinto.chefico.room
+package com.kreinto.chefico.room.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.kreinto.chefico.managers.PoiNotificationManager
 import com.kreinto.chefico.room.entities.Notification
 import com.kreinto.chefico.room.entities.Poi
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
-class CheFicoViewModel(application: Application) : AndroidViewModel(application) {
-  private val repository: CheFicoRepository
+class LocalViewModel(application: Application) : CheFicoViewModel(application) {
   private val mapBoundariesFlow = MutableStateFlow(
     LatLngBounds(
       LatLng(0.0, 0.0),
@@ -25,14 +20,6 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
 
   @ExperimentalCoroutinesApi
   val poisWithin = mapBoundariesFlow.flatMapLatest { selectPoisWithin(it) }
-
-  init {
-    val database = CheFicoDatabase.getInstance(application)
-    repository = CheFicoRepository(
-      database.poiDao(),
-      database.notificationDao()
-    )
-  }
 
   fun addPoi(poi: Poi) = launch {
     if (poi != Poi.NullPoi) {
@@ -115,9 +102,5 @@ class CheFicoViewModel(application: Application) : AndroidViewModel(application)
       PoiNotificationManager.cancelNotification(getApplication<Application>().applicationContext, it)
     }
     repository.deletePoiNotifications(id)
-  }
-
-  private fun launch(block: suspend () -> Unit) {
-    viewModelScope.launch(Dispatchers.IO) { block() }
   }
 }

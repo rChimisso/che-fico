@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
-import com.kreinto.chefico.room.AuthViewModel
+import com.kreinto.chefico.room.viewmodels.AuthViewModel
 
 fun String.isValidEmail(): Boolean {
   return isNotEmpty() && matches(Patterns.EMAIL_ADDRESS.toRegex())

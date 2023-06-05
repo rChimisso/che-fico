@@ -11,7 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.R
-import com.kreinto.chefico.room.CheFicoViewModel
+import com.kreinto.chefico.room.viewmodels.LocalViewModel
 import com.kreinto.chefico.views.dashboard.components.DashboardContent
 import com.kreinto.chefico.views.dashboard.components.DashboardNavigationContent
 
@@ -19,7 +19,7 @@ import com.kreinto.chefico.views.dashboard.components.DashboardNavigationContent
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
 @Composable
-fun DashboardView(onNavigate: (String) -> Unit, viewModel: CheFicoViewModel) {
+fun DashboardView(onNavigate: (String) -> Unit, viewModel: LocalViewModel) {
   Scaffold(
     topBar = {
       CenterAlignedTopAppBar(
