@@ -281,7 +281,9 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
           getSharedPois { sharedPois ->
             launch {
               for (poi in sharedPois) {
-                pois.add(Poi(repository.insertPoi(poi), poi.name, poi.description, poi.image, poi.latitude, poi.longitude))
+                val sharedPoi = Poi(0, poi.name, poi.description, poi.image, poi.latitude, poi.longitude)
+                repository.insertPoi(sharedPoi)
+                pois.add(sharedPoi)
               }
               db.collection(currentUser!!.uid).document(SharedPois.path).set(mapOf("data" to listOf<Poi>())).addOnSuccessListener {
                 db.collection(currentUser!!.uid).document(Settings.path).update("lastUpdate", timestamp)
