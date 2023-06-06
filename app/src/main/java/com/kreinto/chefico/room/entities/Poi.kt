@@ -15,13 +15,13 @@ import androidx.room.PrimaryKey
  */
 @Entity(tableName = "pois")
 class Poi(
-  @PrimaryKey(true)
-  var id: Long = 0,
   var name: String,
   var description: String = "",
   var image: String = "",
   var latitude: Double = 0.0,
   var longitude: Double = 0.0,
+  @PrimaryKey(true)
+  var id: Long = 0
 ) {
   companion object {
     /**

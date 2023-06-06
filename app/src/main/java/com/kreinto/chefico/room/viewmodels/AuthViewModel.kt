@@ -176,12 +176,12 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
         if (document.data != null && document.data!!["data"] != null) {
           onSuccess((document.data!!["data"] as List<Map<String, Any>>).map {
             Poi(
-              it["id"]!! as Long,
               it["name"]!! as String,
               it["description"]!! as String,
               it["image"]!! as String,
               it["latitude"]!! as Double,
-              it["longitude"]!! as Double
+              it["longitude"]!! as Double,
+              it["id"]!! as Long,
             )
           })
         }
@@ -195,12 +195,12 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
         if (document.data != null && document.data!!["data"] != null) {
           onSuccess((document.data!!["data"] as List<Map<String, Any>>).map {
             Poi(
-              it["id"]!! as Long,
               it["name"]!! as String,
               it["description"]!! as String,
               it["image"]!! as String,
               it["latitude"]!! as Double,
-              it["longitude"]!! as Double
+              it["longitude"]!! as Double,
+              it["id"]!! as Long
             )
           })
         }
@@ -281,7 +281,7 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
           getSharedPois { sharedPois ->
             launch {
               for (poi in sharedPois) {
-                val sharedPoi = Poi(0, poi.name, poi.description, poi.image, poi.latitude, poi.longitude)
+                val sharedPoi = Poi(poi.name, poi.description, poi.image, poi.latitude, poi.longitude)
                 repository.insertPoi(sharedPoi)
                 pois.add(sharedPoi)
               }

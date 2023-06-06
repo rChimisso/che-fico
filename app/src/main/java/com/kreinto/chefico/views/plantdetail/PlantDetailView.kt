@@ -66,7 +66,7 @@ fun PlantDetailView(onNavigate: (String) -> Unit, imageURI: String?, organ: Stri
         val name = result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(0) ?: "Unrecognized plant"
         Text(name, fontSize = 24.sp)
         TransparentButton(R.drawable.ic_arrow_next, "Save plant as POI", iconColor = MaterialTheme.colorScheme.primary) {
-          viewModel.setCreatingPoi(Poi(name = name, description = description.value, image = imageURI!!))
+          viewModel.setCreatingPoi(Poi(name, description.value, imageURI!!))
           onNavigate(CheFicoRoute.PoiCreation.path)
         }
       }
