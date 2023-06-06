@@ -36,7 +36,7 @@ fun BasicItem(
   text: String,
   modifier: Modifier = Modifier,
   onLongClick: (() -> Unit)? = null,
-  onClick: () -> Unit
+  onClick: (() -> Unit)? = null
 ) {
   BasicItem(
     icon = { Icon(painterResource(icon), null, it) },
@@ -65,12 +65,14 @@ internal fun BasicItem(
   modifier: Modifier = Modifier,
   border: BorderStroke? = null,
   onLongClick: (() -> Unit)? = null,
-  onClick: () -> Unit
+  onClick: (() -> Unit)? = null
 ) {
+  var internalModifier = modifier.fillMaxWidth()
+  if (onClick != null || onLongClick != null) {
+    internalModifier = internalModifier.combinedClickable(onClick = onClick ?: {}, onLongClick = onLongClick)
+  }
   Surface(
-    modifier = modifier
-      .fillMaxWidth()
-      .combinedClickable(onClick = onClick, onLongClick = onLongClick),
+    modifier = internalModifier,
     shape = RoundedCornerShape(12.dp),
     border = border
   ) {

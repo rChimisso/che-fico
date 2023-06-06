@@ -1,12 +1,12 @@
 package com.kreinto.chefico.room.viewmodels
 
 import android.app.Application
-import android.net.Uri
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.kreinto.chefico.room.entities.Poi
@@ -45,7 +45,6 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
     val uid: String,
     val username: String,
     val email: String,
-    val photoUrl: Uri
   )
 
   private val auth = Firebase.auth
@@ -57,7 +56,6 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
   private object Settings : DatabaseDocument("backup_online")
   private object SharedPois : DatabaseDocument("shared_pois")
 
-  private var blockedUsers: MutableMap<String, String> = mutableMapOf()
   val currentUser: FirebaseUser?
     get() {
       return auth.currentUser
@@ -159,7 +157,7 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
   fun signIn(email: String, password: String, onSuccess: (UserInfo) -> Unit, onFailure: () -> Unit) {
     val request = auth.signInWithEmailAndPassword(email, password)
     request.addOnSuccessListener {
-      onSuccess(UserInfo(it.user!!.uid, it.user!!.displayName!!, it.user!!.email!!, it.user!!.photoUrl ?: Uri.EMPTY))
+      onSuccess(UserInfo(it.user!!.uid, it.user!!.displayName!!, it.user!!.email!!))
     }
     request.addOnFailureListener {
       onFailure()
@@ -212,32 +210,43 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
     if (currentUser != null) {
       val result = db.collection(currentUser!!.uid).document(BlockedUsers.path).get()
       result.addOnSuccessListener {
-        blockedUsers = it.data as MutableMap<String, String>
-        onSuccess(blockedUsers)
+        onSuccess(it.data!!["data"] as Map<String, String>)
       }
       result.addOnFailureListener { onFailure() }
     }
   }
 
-  fun getUserInfo(uid: String, onResult: (UserInfo) -> Unit) {
+  private fun getUserInfo(uid: String, onResult: (UserInfo) -> Unit) {
     db.collection(uid).document(Info.path).get().addOnCompleteListener {
       onResult(
-        UserInfo(it.result["uid"] as String, it.result["username"] as String, it.result["email"] as String, it.result["photoUrl"] as Uri)
+        UserInfo(
+          (it.result["uid"] ?: "") as String,
+          (it.result["username"] ?: "") as String,
+          (it.result["email"] ?: "") as String,
+        )
       )
     }
   }
 
-  fun blockUser(uid: String) {
+  fun blockUser(uid: String, onResult: (Boolean) -> Unit) {
     if (uid.isNotBlank() && currentUser != null) {
       getUserInfo(uid) {
-        blockedUsers.putIfAbsent(uid, it.username)
+        if (it.uid.isNotBlank()) {
+          val request = db.collection(currentUser!!.uid).document(BlockedUsers.path).update("data", mapOf(it.uid to it.username))
+          request.addOnSuccessListener { onResult(true) }
+          request.addOnFailureListener { onResult(false) }
+        } else {
+          onResult(false)
+        }
       }
     }
   }
 
-  fun unblockUser(uid: String) {
+  fun unblockUser(uid: String, onResult: (Boolean) -> Unit) {
     if (uid.isNotBlank() && currentUser != null) {
-      blockedUsers.remove(uid)
+      val request = db.collection(currentUser!!.uid).document(BlockedUsers.path).update("data.$uid", FieldValue.delete())
+      request.addOnSuccessListener { onResult(true) }
+      request.addOnFailureListener { onResult(false) }
     }
   }
 

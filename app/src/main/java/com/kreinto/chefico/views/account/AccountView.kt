@@ -1,22 +1,25 @@
 package com.kreinto.chefico.views.account
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
+import com.kreinto.chefico.components.buttons.SubmitButton
 import com.kreinto.chefico.components.frames.SimpleFrame
+import com.kreinto.chefico.components.items.MenuItem
 import com.kreinto.chefico.components.misc.Loader
 import com.kreinto.chefico.room.viewmodels.AuthViewModel
 
@@ -58,45 +61,29 @@ fun AccountView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
             .weight(1f)
         ) {
           if (!authViewModel.isGoogleUserProvider()) {
-            Row(
-              modifier = Modifier
-                .fillMaxWidth()
-                .clickable { onNavigate(CheFicoRoute.AccountEdit.path) }
-                .padding(16.dp),
-              horizontalArrangement = Arrangement.SpaceBetween,
-              verticalAlignment = Alignment.CenterVertically
-            ) { Text(stringResource(R.string.edit_profile_label), Modifier.fillMaxWidth()) }
+            MenuItem(
+              label = stringResource(R.string.edit_profile_label),
+              onClick = { onNavigate(CheFicoRoute.AccountEdit.path) }
+            )
           }
-          Row(
-            modifier = Modifier
-              .fillMaxWidth()
-              .clickable { backupOnline = !backupOnline }
-              .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-          ) {
-            Text(stringResource(R.string.backup_label))
-            Switch(checked = backupOnline, onCheckedChange = { checked ->
-              backupOnline = checked
-              authViewModel.setOnlineBackup(checked)
-            })
+          MenuItem(stringResource(R.string.backup_label)) {
+            Switch(
+              checked = backupOnline,
+              onCheckedChange = { checked ->
+                backupOnline = checked
+                authViewModel.setOnlineBackup(checked)
+              }
+            )
           }
-          Row(
-            modifier = Modifier
-              .fillMaxWidth()
-              .clickable { onNavigate(CheFicoRoute.Blacklist.path) }
-              .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-          ) { Text(stringResource(R.string.see_blacklist_label), Modifier.fillMaxWidth()) }
+          MenuItem(
+            label = stringResource(R.string.see_blacklist_label),
+            onClick = { onNavigate(CheFicoRoute.Blacklist.path) }
+          )
         }
-        Button(
-          onClick = {
-            authViewModel.signOut()
-            onNavigate(CheFicoRoute.Back.path)
-          },
-          contentPadding = ButtonDefaults.TextButtonContentPadding
-        ) { Text(stringResource(R.string.logout_label), color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center) }
+        SubmitButton(text = stringResource(R.string.logout_label), textOnly = true, isDanger = true) {
+          authViewModel.signOut()
+          onNavigate(CheFicoRoute.Back.path)
+        }
       }
     }
   }

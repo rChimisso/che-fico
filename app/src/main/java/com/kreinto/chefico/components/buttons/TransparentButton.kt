@@ -46,7 +46,7 @@ fun TransparentButton(
     enabled,
     colors = if (iconColor != null) IconButtonDefaults.filledIconButtonColors(Color.Transparent, iconColor)
     else IconButtonDefaults.filledIconButtonColors(Color.Transparent)
-  ) { Icon(painterResource(icon), contentDescription, Modifier.size(48.dp)) }
+  ) { Icon(painterResource(icon), contentDescription, Modifier.size(24.dp)) }
 }
 
 /**

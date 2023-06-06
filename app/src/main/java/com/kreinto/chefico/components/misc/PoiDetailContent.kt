@@ -239,7 +239,7 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
       ) {
         items(notifications.value.size) { index ->
           SwipeableItem(
-            icon = R.drawable.ic_poi,
+            icon = R.drawable.ic_alert,
             text = notifications.value[index].text,
             actions = arrayOf({
               TransparentButton(R.drawable.ic_close, "Elimina", MaterialTheme.colorScheme.error) {

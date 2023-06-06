@@ -32,7 +32,7 @@ import kotlin.math.roundToInt
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
-fun SwipeableItem(@DrawableRes icon: Int, text: String, actions: Array<@Composable () -> Unit> = arrayOf(), onClick: () -> Unit) {
+fun SwipeableItem(@DrawableRes icon: Int, text: String, actions: Array<@Composable () -> Unit> = arrayOf(), onClick: (() -> Unit)? = null) {
   val state = rememberSwipeableState(0)
   val offsetPx = with(LocalDensity.current) { (actions.size * 40).dp.toPx() }
   val anchors = mapOf(0f to 0, -offsetPx to 1)
