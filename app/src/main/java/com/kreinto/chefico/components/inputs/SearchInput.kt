@@ -26,6 +26,7 @@ import com.kreinto.chefico.components.buttons.TransparentButton
 fun SearchInput(onValueChange: (String) -> Unit) {
   TextInput(
     singleLine = true,
+    underline = false,
     placeholder = {
       Text(
         stringResource(R.string.search_placeholder),

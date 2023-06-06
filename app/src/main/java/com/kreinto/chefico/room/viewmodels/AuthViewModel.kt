@@ -112,19 +112,42 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
     }
   }
 
-  fun updateUserInfo(currPassword: String, email: String, password: String, username: String) {
+  fun isGoogleUserProvider(): Boolean {
     if (currentUser != null) {
-      if (email.isNotBlank() && password.isNotBlank() && username.isNotBlank()) {
-        currentUser!!.reauthenticate(EmailAuthProvider.getCredential(email, password))
-        currentUser!!.updateEmail(email)
-        currentUser!!.updatePassword(password)
-        currentUser!!.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(username).build())
+      for (provider in currentUser!!.providerData) {
+        if (provider.providerId == "google.com") {
+          return true
+        }
       }
+    }
+    return false
+  }
+
+  fun updateUserInfo(currPassword: String, email: String, newPassword: String, username: String, onResult: (Boolean) -> Unit) {
+    if (currentUser != null && (email.isNotBlank() || newPassword.isNotBlank() || username.isNotBlank())) {
+      val reauthenticate = currentUser!!.reauthenticate(EmailAuthProvider.getCredential(currentUser!!.email!!, currPassword))
+      reauthenticate.addOnSuccessListener {
+        if (email.isNotBlank()) {
+          currentUser!!.updateEmail(email)
+        }
+        if (newPassword.isNotBlank()) {
+          currentUser!!.updatePassword(newPassword)
+        }
+        if (username.isNotBlank()) {
+          currentUser!!.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(username).build())
+        }
+        onResult(true)
+      }
+      reauthenticate.addOnFailureListener {
+        onResult(false)
+      }
+    } else {
+      onResult(false)
     }
   }
 
   fun initGoogleAccount(isNewUser: Boolean) {
-    if (currentUser != null) {
+    if (currentUser != null && isNewUser) {
       initAccount(currentUser!!)
     }
   }
@@ -183,16 +206,6 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
         }
       }
     }
-  }
-
-  fun getUserProviderIds(): List<String> {
-    val providersId = mutableListOf<String>()
-    if (currentUser != null) {
-      currentUser!!.providerData.forEach { data ->
-        providersId.add(data.providerId)
-      }
-    }
-    return providersId
   }
 
   fun getBlockedUsers(onSuccess: (Map<String, String>) -> Unit, onFailure: () -> Unit = {}) {

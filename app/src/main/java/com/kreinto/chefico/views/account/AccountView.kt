@@ -1,18 +1,17 @@
 package com.kreinto.chefico.views.account
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kreinto.chefico.CheFicoRoute
@@ -42,18 +41,7 @@ fun AccountView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
           .fillMaxSize()
       ) {
         Spacer(Modifier.height(16.dp))
-        Surface(
-          tonalElevation = 12.dp,
-          shape = CircleShape
-        ) {
-          AsyncImage(
-            model = Firebase.auth.currentUser?.photoUrl ?: "",
-            contentDescription = "",
-            modifier = Modifier
-              .size(128.dp)
-              .clip(CircleShape)
-          )
-        }
+        Image(painterResource(R.drawable.che_fico_icon), null, Modifier.size(128.dp))
         Spacer(Modifier.height(16.dp))
         Row(
           modifier = Modifier.fillMaxWidth(),
@@ -69,14 +57,16 @@ fun AccountView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
             .fillMaxWidth()
             .weight(1f)
         ) {
-          Row(
-            modifier = Modifier
-              .fillMaxWidth()
-              .clickable { onNavigate(CheFicoRoute.AccountEdit.path) }
-              .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-          ) { Text(stringResource(R.string.edit_profile_label), Modifier.fillMaxWidth()) }
+          if (!authViewModel.isGoogleUserProvider()) {
+            Row(
+              modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onNavigate(CheFicoRoute.AccountEdit.path) }
+                .padding(16.dp),
+              horizontalArrangement = Arrangement.SpaceBetween,
+              verticalAlignment = Alignment.CenterVertically
+            ) { Text(stringResource(R.string.edit_profile_label), Modifier.fillMaxWidth()) }
+          }
           Row(
             modifier = Modifier
               .fillMaxWidth()

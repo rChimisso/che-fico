@@ -1,10 +1,8 @@
 package com.kreinto.chefico.components.inputs
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,8 +13,14 @@ import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
+import com.kreinto.chefico.R
+import com.kreinto.chefico.components.buttons.TransparentButton
 import com.kreinto.chefico.ui.theme.bodyStyle
 
 /**
@@ -34,11 +38,17 @@ import com.kreinto.chefico.ui.theme.bodyStyle
 @Composable
 fun TextInput(
   modifier: Modifier = Modifier,
+  isPassword: Boolean = false,
   init: String = "",
   placeholder: @Composable (() -> Unit)? = null,
   fontSize: TextUnit = bodyStyle.fontSize,
   singleLine: Boolean = true,
+  readOnly: Boolean = false,
+  label: String = "",
+  isError: Boolean = false,
+  underline: Boolean = true,
   trailingIcon: @Composable ((String, (String) -> Unit) -> Unit)? = null,
+  leadingIcon: @Composable (() -> Unit)? = null,
   onFocusChanged: ((FocusState) -> Unit)? = null,
   onValueChange: (String) -> Unit
 ) {
@@ -47,10 +57,16 @@ fun TextInput(
     value = it
     onValueChange(value)
   }
+  var isClicked by rememberSaveable { mutableStateOf(false) }
+  var passwordVisibility by rememberSaveable { mutableStateOf(false) }
+
   TextField(
     modifier = modifier
       .fillMaxWidth()
       .onFocusChanged {
+        if (it.hasFocus) {
+          isClicked = true
+        }
         if (onFocusChanged != null) {
           onFocusChanged(it)
         }
@@ -60,23 +76,37 @@ fun TextInput(
     singleLine = singleLine,
     placeholder = placeholder,
     textStyle = bodyStyle.merge(TextStyle(fontSize = fontSize)),
+    readOnly = readOnly,
     colors = TextFieldDefaults.colors(
       focusedContainerColor = Color.Transparent,
       unfocusedContainerColor = Color.Transparent,
       disabledContainerColor = Color.Transparent,
       errorContainerColor = Color.Transparent,
-      focusedIndicatorColor = Color.Transparent,
-      unfocusedIndicatorColor = Color.Transparent,
-      errorIndicatorColor = Color.Transparent,
+      focusedIndicatorColor = if (underline) MaterialTheme.colorScheme.primary else Color.Transparent,
+      unfocusedIndicatorColor = if (underline) MaterialTheme.colorScheme.primary else Color.Transparent,
+      errorIndicatorColor = if (underline) MaterialTheme.colorScheme.error else Color.Transparent,
       focusedTrailingIconColor = MaterialTheme.colorScheme.primary,
       unfocusedTrailingIconColor = MaterialTheme.colorScheme.primary,
       errorTrailingIconColor = MaterialTheme.colorScheme.error,
+      cursorColor = MaterialTheme.colorScheme.primary
     ),
+    label = { Text(label) },
+    leadingIcon = leadingIcon,
     trailingIcon = {
-      if (trailingIcon != null) {
+      if (isPassword) {
+        TransparentButton(
+          icon = if (passwordVisibility) R.drawable.ic_visible else R.drawable.ic_hidden,
+          contentDescription = "Password visibility",
+          width = 24.dp,
+          height = 24.dp
+        ) { passwordVisibility = !passwordVisibility }
+      } else if (trailingIcon != null) {
         trailingIcon(value, changeValue)
       }
-    }
+    },
+    isError = isClicked && isError,
+    visualTransformation = if (!isPassword || passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+    keyboardOptions = KeyboardOptions(keyboardType = if (isPassword) KeyboardType.Password else KeyboardType.Text),
   )
 }
 

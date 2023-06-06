@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
-import com.kreinto.chefico.components.buttons.FilledButton
+import com.kreinto.chefico.components.buttons.TransparentButton
 import com.kreinto.chefico.components.frames.topbars.SimpleTopBar
 import com.kreinto.chefico.components.misc.Loader
 import com.kreinto.chefico.room.entities.Poi
@@ -43,7 +44,7 @@ fun PlantDetailView(onNavigate: (String) -> Unit, imageURI: String?, organ: Stri
       result.value = it
       PlantRecognition.fetchPlantDescription(
         result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(0) ?: ""
-      ) { data -> description.value = data.getOrNull(0)?.extract.toString() }
+      ) { data -> description.value = data.getOrNull(0)?.extract ?: "" }
     }
   }
 
@@ -64,7 +65,7 @@ fun PlantDetailView(onNavigate: (String) -> Unit, imageURI: String?, organ: Stri
       ) {
         val name = result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(0) ?: "Unrecognized plant"
         Text(name, fontSize = 24.sp)
-        FilledButton(R.drawable.ic_close, "Save plant as POI") {
+        TransparentButton(R.drawable.ic_arrow_next, "Save plant as POI", iconColor = MaterialTheme.colorScheme.primary) {
           viewModel.setCreatingPoi(Poi(name = name, description = description.value, image = imageURI!!))
           onNavigate(CheFicoRoute.PoiCreation.path)
         }

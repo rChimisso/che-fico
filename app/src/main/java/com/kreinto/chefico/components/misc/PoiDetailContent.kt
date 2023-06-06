@@ -20,19 +20,18 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.FilledButton
+import com.kreinto.chefico.components.buttons.SubmitButton
 import com.kreinto.chefico.components.buttons.TransparentButton
 import com.kreinto.chefico.components.inputs.TextInput
 import com.kreinto.chefico.components.items.SwipeableItem
@@ -70,45 +69,35 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
       updatePoi(poi)
     }
   }
+
   if (openBottomSheet) {
     Dialog({ openBottomSheet = false }) {
       Column(
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp)),
+        modifier = Modifier
+          .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp))
+          .padding(16.dp),
       ) {
-        Text("Condividi", color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(top = 16.dp))
-        TextField(
-          modifier = Modifier.padding(16.dp),
-          value = user, onValueChange = { user = it },
+        Text("Condividi", color = MaterialTheme.colorScheme.primary)
+        TextInput(
+          onValueChange = { user = it },
           singleLine = true,
-          placeholder = { Text("ID utente") },
-          enabled = true,
-          readOnly = false,
+          label = "ID utente",
           leadingIcon = { Icon(painterResource(id = R.drawable.ic_account), "account", Modifier.size(24.dp)) }
         )
-        TextButton(
+        SubmitButton(
           enabled = user.isNotBlank(),
-//          colors = ButtonDefaults.buttonColors(
-//            containerColor = MaterialTheme.colorScheme.primary,
-//            contentColor = MaterialTheme.colorScheme.onPrimary
-//          ),
-          contentPadding = PaddingValues(0.dp),
-          shape = RoundedCornerShape(12.dp),
-          modifier = Modifier
-            .padding(bottom = 16.dp)
-            .width(208.dp)
-            .height(40.dp),
-          onClick = {
-            authViewModel.share(user, poi.id) {
-              if (it) {
-                Toast.makeText(context, "Condivisione riuscita", Toast.LENGTH_SHORT).show()
-              } else {
-                Toast.makeText(context, "Condivisione non riuscita", Toast.LENGTH_SHORT).show()
-              }
+          text = "Condividi"
+        ) {
+          authViewModel.share(user, poi.id) {
+            if (it) {
+              Toast.makeText(context, "Condivisione riuscita", Toast.LENGTH_SHORT).show()
+            } else {
+              Toast.makeText(context, "Condivisione non riuscita", Toast.LENGTH_SHORT).show()
             }
           }
-        ) { Text("Condividi", fontSize = 16.sp) }
+        }
       }
     }
   }
@@ -172,14 +161,14 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
           }
           TextInput(
             modifier = Modifier.fillMaxWidth(2f / 3f),
+            underline = false,
             init = name,
             fontSize = 24.sp,
             onFocusChanged = {
               poi.name = name
               updatePoi(poi)
-            },
-            onValueChange = { name = it }
-          )
+            }
+          ) { name = it }
         }
       }
       Surface(
@@ -189,16 +178,15 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
           .fillMaxWidth(),
         shape = RoundedCornerShape(10.dp)
       ) {
-        TextField(
-          value = description,
-          textStyle = TextStyle(fontSize = 18.sp),
+        TextInput(
+          init = description,
+          singleLine = false,
+          underline = false,
           onValueChange = { description = it },
-          modifier = Modifier
-            .height(128.dp)
-            .onFocusChanged {
-              poi.description = description
-              updatePoi(poi)
-            }
+          onFocusChanged = {
+            poi.description = description
+            updatePoi(poi)
+          }
         )
       }
       if (openNotificationPopUp) {
@@ -206,49 +194,37 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
           var notificationName by remember { mutableStateOf("") }
           var notificationMessage by remember { mutableStateOf("") }
           val dateRangePickerState = rememberDatePickerState()
-          Surface(Modifier.fillMaxWidth()) {
-            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-              TextField(
-                value = notificationName,
-                placeholder = { Text("Titolo") },
-                onValueChange = { notificationName = it }
-              )
-              DatePicker(dateRangePickerState)
-              TextField(
-                value = notificationMessage,
-                placeholder = { Text("Descrizione") },
-                onValueChange = { notificationMessage = it }
-              )
-              TextButton(
-//                colors = ButtonDefaults.buttonColors(
-//                  containerColor = MaterialTheme.colorScheme.primary,
-//                  contentColor = MaterialTheme.colorScheme.onPrimary
-//                ),
-                contentPadding = ButtonDefaults.TextButtonContentPadding,
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                  .padding(16.dp)
-                  .width(208.dp)
-                  .height(40.dp),
+          Surface(shape = RoundedCornerShape(12.dp)) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
+              TextInput(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                label = "Titolo",
+              ) { notificationName = it }
+              DatePicker(dateRangePickerState, title = null, headline = null, showModeToggle = false)
+              TextInput(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                label = "Descrizione",
+              ) { notificationMessage = it }
+              SubmitButton(
+                text = "Aggiungi",
                 enabled = notificationName.isNotBlank() && notificationMessage.isNotBlank() && dateRangePickerState.selectedDateMillis != null,
-                onClick = {
-                  openNotificationPopUp = false
-                  viewModel.addNotification(
-                    Notification(
-                      icon = "",
-                      text = notificationName,
-                      message = notificationMessage,
-                      poiId = poi.id
-                    )
+              ) {
+                openNotificationPopUp = false
+                viewModel.addNotification(
+                  Notification(
+                    icon = "",
+                    text = notificationName,
+                    message = notificationMessage,
+                    poiId = poi.id
                   )
-                  PoiNotificationManager.scheduleNotification(
-                    context,
-                    dateRangePickerState.selectedDateMillis!!,
-                    notificationName,
-                    notificationMessage
-                  )
-                }
-              ) { Text("Aggiungi") }
+                )
+                PoiNotificationManager.scheduleNotification(
+                  context,
+                  dateRangePickerState.selectedDateMillis!!,
+                  notificationName,
+                  notificationMessage
+                )
+              }
             }
           }
         }
@@ -272,24 +248,11 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
           ) {}
         }
         item {
-          TextButton(
-            enabled = notifications.value.size < 5,
-//            colors = ButtonDefaults.buttonColors(
-//              containerColor = MaterialTheme.colorScheme.primary,
-//              contentColor = MaterialTheme.colorScheme.onPrimary
-//            ),
-            contentPadding = ButtonDefaults.TextButtonContentPadding,
-            shape = RoundedCornerShape(12.dp),
-            modifier = Modifier
-              .padding(bottom = 16.dp)
-              .width(208.dp)
-              .height(40.dp),
-            onClick = {
-              if (notifications.value.size < 5) {
-                openNotificationPopUp = true
-              }
+          SubmitButton(text = "Aggiungi notifica", enabled = notifications.value.size < 5) {
+            if (notifications.value.size < 5) {
+              openNotificationPopUp = true
             }
-          ) { Text("Aggiungi notifica", fontSize = 16.sp) }
+          }
         }
       }
     }
