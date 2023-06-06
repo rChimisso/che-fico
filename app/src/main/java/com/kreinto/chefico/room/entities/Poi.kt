@@ -27,6 +27,6 @@ class Poi(
     /**
      * Static reference to the empty POI.
      */
-    val NullPoi = Poi(name = "")
+    val NullPoi = Poi("")
   }
 }
