@@ -13,7 +13,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -25,8 +24,9 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kreinto.chefico.R
@@ -40,10 +40,17 @@ import com.kreinto.chefico.room.entities.Notification
 import com.kreinto.chefico.room.entities.Poi
 import com.kreinto.chefico.room.viewmodels.AuthViewModel
 import com.kreinto.chefico.room.viewmodels.LocalViewModel
+import com.kreinto.chefico.ui.theme.*
 import java.io.InputStream
 import java.net.URLDecoder
 
-private fun fixOrientaton(source: Bitmap): ImageBitmap {
+/**
+ * Fixes the orientation of the given [Bitmap] image.
+ *
+ * @param source
+ * @return
+ */
+private fun fixOrientation(source: Bitmap): ImageBitmap {
   val matrix = Matrix()
   matrix.postRotate(90f)
   return Bitmap.createBitmap(
@@ -52,6 +59,15 @@ private fun fixOrientaton(source: Bitmap): ImageBitmap {
   ).asImageBitmap()
 }
 
+/**
+ * POI detail.
+ *
+ * @param poi
+ * @param updatePoi
+ * @param showActions
+ * @param viewModel
+ * @param authViewModel
+ */
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
@@ -62,6 +78,8 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
   var openBottomSheet by remember { mutableStateOf(false) }
   val notifications = viewModel.getPoiNotifications(poi.id).collectAsStateWithLifecycle(emptyList())
   var openNotificationPopUp by remember { mutableStateOf(false) }
+  val shareSuccessMessage = stringResource(R.string.share_success)
+  val shareFailureMessage = stringResource(R.string.share_failure)
 
   val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
     if (uri != null) {
@@ -73,29 +91,25 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
   if (openBottomSheet) {
     Dialog({ openBottomSheet = false }) {
       Column(
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(PaddingLarge),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-          .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp))
-          .padding(16.dp),
+          .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.extraSmall)
+          .padding(PaddingLarge),
       ) {
-        Text("Condividi", color = MaterialTheme.colorScheme.primary)
+        Text(stringResource(R.string.share), color = MaterialTheme.colorScheme.primary)
         TextInput(
           onValueChange = { user = it },
           singleLine = true,
-          label = "ID utente",
-          leadingIcon = { Icon(painterResource(R.drawable.ic_account), "account", Modifier.size(24.dp)) }
+          label = R.string.user_id,
+          leadingIcon = { Icon(painterResource(R.drawable.ic_account), stringResource(R.string.user_id), Modifier.size(IconSizeMedium)) }
         )
         SubmitButton(
           enabled = user.isNotBlank(),
-          text = "Condividi"
+          text = R.string.share
         ) {
           authViewModel.share(user, poi.id) {
-            if (it) {
-              Toast.makeText(context, "Condivisione riuscita", Toast.LENGTH_SHORT).show()
-            } else {
-              Toast.makeText(context, "Condivisione non riuscita", Toast.LENGTH_SHORT).show()
-            }
+            Toast.makeText(context, if (it) shareSuccessMessage else shareFailureMessage, Toast.LENGTH_SHORT).show()
             openBottomSheet = false
           }
         }
@@ -114,7 +128,7 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
       var name by rememberSaveable { mutableStateOf(poi.name) }
       var description by rememberSaveable { mutableStateOf(poi.description) }
       Surface(
-        shadowElevation = 12.dp,
+        shadowElevation = 12.dp, // TODO: Check if it can be removed
         modifier = Modifier.fillMaxWidth()
       ) {
         Column {
@@ -127,7 +141,7 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
             ) {
               if (image != null) {
                 Image(
-                  fixOrientaton(image),
+                  fixOrientation(image),
                   null,
                   contentScale = ContentScale.Crop
                 )
@@ -144,27 +158,27 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
               modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .fillMaxWidth()
-                .offset(y = 20.dp)
+                .offset(y = InteractSizeMedium / 2)
             ) {
               if (showActions) {
-                FilledButton(R.drawable.ic_share, "Share") { openBottomSheet = true }
-                Spacer(Modifier.width(8.dp))
-                FilledButton(R.drawable.ic_map, "Open Google Maps") {
+                FilledButton(R.drawable.ic_share, R.string.share) { openBottomSheet = true }
+                Spacer(Modifier.width(PaddingMedium))
+                FilledButton(R.drawable.ic_map, R.string.open_maps) {
                   val intent = Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=${poi.latitude},${poi.longitude}"))
                   intent.setPackage("com.google.android.apps.maps")
                   context.startActivity(intent)
                 }
-                Spacer(Modifier.width(8.dp))
+                Spacer(Modifier.width(PaddingMedium))
               }
-              FilledButton(R.drawable.ic_photo_camera, "Change image") { galleryLauncher.launch("image/*") }
-              Spacer(Modifier.width(8.dp))
+              FilledButton(R.drawable.ic_photo_camera, R.string.change_pic) { galleryLauncher.launch("image/*") }
+              Spacer(Modifier.width(PaddingMedium))
             }
           }
           TextInput(
             modifier = Modifier.fillMaxWidth(2f / 3f),
             underline = false,
             init = name,
-            fontSize = 24.sp,
+            textStyle = bodyStyle.merge(TextStyle(fontSize = LabelExtraLarge)),
             onFocusChanged = {
               poi.name = name
               updatePoi(poi)
@@ -173,11 +187,11 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
         }
       }
       Surface(
-        shadowElevation = 12.dp,
+        shadowElevation = 12.dp, // TODO: Check if it can be removed
         modifier = Modifier
-          .padding(16.dp)
+          .padding(PaddingLarge)
           .fillMaxWidth(),
-        shape = RoundedCornerShape(10.dp)
+        shape = MaterialTheme.shapes.small
       ) {
         TextInput(
           init = description,
@@ -195,19 +209,19 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
           var notificationName by remember { mutableStateOf("") }
           var notificationMessage by remember { mutableStateOf("") }
           val dateRangePickerState = rememberDatePickerState()
-          Surface(shape = RoundedCornerShape(12.dp)) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
+          Surface(shape = MaterialTheme.shapes.small) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(PaddingLarge)) {
               TextInput(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-                label = "Titolo",
+                modifier = Modifier.padding(horizontal = PaddingLarge),
+                label = R.string.title,
               ) { notificationName = it }
               DatePicker(dateRangePickerState, title = null, headline = null, showModeToggle = false)
               TextInput(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-                label = "Descrizione",
+                modifier = Modifier.padding(horizontal = PaddingLarge),
+                label = R.string.desc,
               ) { notificationMessage = it }
               SubmitButton(
-                text = "Aggiungi",
+                text = R.string.add,
                 enabled = notificationName.isNotBlank() && notificationMessage.isNotBlank() && dateRangePickerState.selectedDateMillis != null,
               ) {
                 openNotificationPopUp = false
@@ -231,25 +245,25 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
         }
       }
       LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(PaddingMedium),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
           .fillMaxWidth()
-          .padding(16.dp)
+          .padding(PaddingLarge)
       ) {
         items(notifications.value.size) { index ->
           SwipeableItem(
             icon = R.drawable.ic_alert,
             text = notifications.value[index].text,
             actions = arrayOf({
-              TransparentButton(R.drawable.ic_close, "Elimina", MaterialTheme.colorScheme.error) {
+              TransparentButton(R.drawable.ic_close, R.string.del, MaterialTheme.colorScheme.error) {
                 viewModel.deleteNotification(notifications.value[index].id)
               }
             })
           ) {}
         }
         item {
-          SubmitButton(text = "Aggiungi notifica", enabled = notifications.value.size < 5) {
+          SubmitButton(R.string.add_alarm, enabled = notifications.value.size < 5) {
             if (notifications.value.size < 5) {
               openNotificationPopUp = true
             }

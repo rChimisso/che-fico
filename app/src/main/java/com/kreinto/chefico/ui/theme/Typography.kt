@@ -8,24 +8,32 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.kreinto.chefico.R
 
-val LuckiestGuyFont = FontFamily(Font(R.font.luckiest_guy))
-val ChewyFont = FontFamily(Font(R.font.chewy))
+internal val LuckiestGuyFont = FontFamily(Font(R.font.luckiest_guy))
+internal val ChewyFont = FontFamily(Font(R.font.chewy))
 
-val headlineStyle = TextStyle.Default.copy(
+internal val displayStyle = TextStyle.Default.copy(
+  fontFamily = ChewyFont,
+  fontWeight = FontWeight.Normal,
+  fontSize = 32.sp,
+  lineHeight = 32.sp,
+  letterSpacing = 2.sp,
+)
+
+internal val headlineStyle = TextStyle.Default.copy(
   fontFamily = LuckiestGuyFont,
   fontSize = 32.sp,
   lineHeight = 32.sp,
   letterSpacing = 2.sp
 )
 
-val titleStyle = TextStyle.Default.copy(
+internal val titleStyle = TextStyle.Default.copy(
   fontFamily = LuckiestGuyFont,
   fontSize = 32.sp,
   lineHeight = 32.sp,
   letterSpacing = 2.sp,
 )
 
-val bodyStyle = TextStyle.Default.copy(
+internal val bodyStyle = TextStyle.Default.copy(
   fontFamily = ChewyFont,
   fontWeight = FontWeight.Normal,
   fontSize = 12.sp,
@@ -33,7 +41,7 @@ val bodyStyle = TextStyle.Default.copy(
   letterSpacing = 1.sp,
 )
 
-val labelStyle = TextStyle.Default.copy(
+internal val labelStyle = TextStyle.Default.copy(
   fontFamily = ChewyFont,
   fontWeight = FontWeight.Normal,
   fontSize = 12.sp,
@@ -41,28 +49,10 @@ val labelStyle = TextStyle.Default.copy(
   letterSpacing = 1.sp,
 )
 
-val Typography = Typography(
-  displayLarge = TextStyle.Default.copy(
-    fontFamily = ChewyFont,
-    fontWeight = FontWeight.Normal,
-    fontSize = 32.sp,
-    lineHeight = 32.sp,
-    letterSpacing = 2.sp,
-  ),
-  displayMedium = TextStyle.Default.copy(
-    fontFamily = ChewyFont,
-    fontWeight = FontWeight.Normal,
-    fontSize = 32.sp,
-    lineHeight = 32.sp,
-    letterSpacing = 2.sp,
-  ),
-  displaySmall = TextStyle.Default.copy(
-    fontFamily = ChewyFont,
-    fontWeight = FontWeight.Normal,
-    fontSize = 32.sp,
-    lineHeight = 32.sp,
-    letterSpacing = 2.sp,
-  ),
+internal val Typography = Typography(
+  displayLarge = displayStyle,
+  displayMedium = displayStyle,
+  displaySmall = displayStyle,
   headlineLarge = headlineStyle,
   headlineMedium = headlineStyle,
   headlineSmall = headlineStyle,

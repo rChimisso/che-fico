@@ -1,6 +1,7 @@
 package com.kreinto.chefico.components.buttons
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -11,11 +12,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.data.ButtonData
+import com.kreinto.chefico.ui.theme.IconSizeMedium
+import com.kreinto.chefico.ui.theme.InteractSizeMedium
 
 /**
  * Filled icon button.
@@ -31,9 +34,9 @@ import com.kreinto.chefico.components.buttons.data.ButtonData
 @Composable
 fun FilledButton(
   @DrawableRes icon: Int,
-  contentDescription: String? = null,
+  @StringRes contentDescription: Int? = null,
   iconColor: Color? = null,
-  width: Dp = 40.dp,
+  width: Dp = InteractSizeMedium,
   height: Dp = width,
   enabled: Boolean = true,
   onClick: () -> Unit
@@ -45,7 +48,13 @@ fun FilledButton(
       .width(width),
     enabled,
     colors = if (iconColor != null) IconButtonDefaults.filledIconButtonColors(contentColor = iconColor) else IconButtonDefaults.filledIconButtonColors()
-  ) { Icon(painterResource(icon), contentDescription, Modifier.size(24.dp)) }
+  ) {
+    Icon(
+      painterResource(icon),
+      if (contentDescription == null) null else stringResource(contentDescription),
+      Modifier.size(IconSizeMedium)
+    )
+  }
 }
 
 /**
@@ -72,5 +81,5 @@ fun FilledButton(buttonData: ButtonData) {
 @Composable
 @Preview
 private fun FilledButtonPreview() {
-  FilledButton(R.drawable.ic_close, "Filled Button Preview") {}
+  FilledButton(R.drawable.ic_close, R.string.preview) {}
 }

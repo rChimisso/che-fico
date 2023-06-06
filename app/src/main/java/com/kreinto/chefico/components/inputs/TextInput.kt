@@ -1,5 +1,6 @@
 package com.kreinto.chefico.components.inputs
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
@@ -12,12 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.TransparentButton
@@ -26,11 +27,18 @@ import com.kreinto.chefico.ui.theme.bodyStyle
 /**
  * Standardized [TextField].
  *
- * @param modifier An ordered, immutable collection of modifier elements that decorate or add behavior to this element.
- * @param init Initial value to display, defaults to `""`
- * @param placeholder Optional placeholder to display.
- * @param fontSize Font size.
+ * @param modifier
+ * @param isPassword Whether the text input contains a password.
+ * @param init Initial value.
+ * @param placeholder Placeholder to diplay when the text input has no value.
+ * @param textStyle Text style.
+ * @param singleLine Whether the text input can have only 1 line.
+ * @param readOnly Whether the text input vallue cannot be modified.
+ * @param label Text input label.
+ * @param isError Whether the text input has errors.
+ * @param underline Whether to show the text input underline.
  * @param trailingIcon Optional [Composable] traling icon to display. Receives the current input value and a setter to change it.
+ * @param leadingIcon Optional [Composable] leading icon to display.
  * @param onFocusChanged Optional function called when the input loses focus.
  * @param onValueChange Function called when the input value changes.
  */
@@ -40,11 +48,11 @@ fun TextInput(
   modifier: Modifier = Modifier,
   isPassword: Boolean = false,
   init: String = "",
-  placeholder: @Composable (() -> Unit)? = null,
-  fontSize: TextUnit = bodyStyle.fontSize,
+  @StringRes placeholder: Int? = null,
+  textStyle: TextStyle = bodyStyle,
   singleLine: Boolean = true,
   readOnly: Boolean = false,
-  label: String = "",
+  @StringRes label: Int? = null,
   isError: Boolean = false,
   underline: Boolean = true,
   trailingIcon: @Composable ((String, (String) -> Unit) -> Unit)? = null,
@@ -58,7 +66,7 @@ fun TextInput(
     onValueChange(value)
   }
   var isClicked by rememberSaveable { mutableStateOf(false) }
-  var passwordVisibility by rememberSaveable { mutableStateOf(false) }
+  var showPassword by rememberSaveable { mutableStateOf(false) }
 
   TextField(
     modifier = modifier
@@ -74,8 +82,12 @@ fun TextInput(
     onValueChange = changeValue,
     value = value,
     singleLine = singleLine,
-    placeholder = placeholder,
-    textStyle = bodyStyle.merge(TextStyle(fontSize = fontSize)),
+    placeholder = {
+      if (placeholder != null) {
+        Text(stringResource(placeholder), style = MaterialTheme.typography.headlineMedium)
+      }
+    },
+    textStyle = textStyle,
     readOnly = readOnly,
     colors = TextFieldDefaults.colors(
       focusedContainerColor = Color.Transparent,
@@ -90,22 +102,26 @@ fun TextInput(
       errorTrailingIconColor = MaterialTheme.colorScheme.error,
       cursorColor = MaterialTheme.colorScheme.primary
     ),
-    label = { Text(label) },
+    label = {
+      if (label != null) {
+        Text(stringResource(label))
+      }
+    },
     leadingIcon = leadingIcon,
     trailingIcon = {
       if (isPassword) {
         TransparentButton(
-          icon = if (passwordVisibility) R.drawable.ic_visible else R.drawable.ic_hidden,
-          contentDescription = "Password visibility",
+          icon = if (showPassword) R.drawable.ic_visible else R.drawable.ic_hidden,
+          contentDescription = if (showPassword) R.string.hide_psw else R.string.show_psw,
           width = 24.dp,
           height = 24.dp
-        ) { passwordVisibility = !passwordVisibility }
+        ) { showPassword = !showPassword }
       } else if (trailingIcon != null) {
         trailingIcon(value, changeValue)
       }
     },
     isError = isClicked && isError,
-    visualTransformation = if (!isPassword || passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+    visualTransformation = if (!isPassword || showPassword) VisualTransformation.None else PasswordVisualTransformation(),
     keyboardOptions = KeyboardOptions(keyboardType = if (isPassword) KeyboardType.Password else KeyboardType.Text),
   )
 }

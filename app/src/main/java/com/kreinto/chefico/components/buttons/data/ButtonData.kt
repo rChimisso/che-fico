@@ -1,8 +1,9 @@
 package com.kreinto.chefico.components.buttons.data
 
+import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import com.kreinto.chefico.ui.theme.InteractSizeMedium
 
 /**
  * Data class for buttons configuration.
@@ -17,10 +18,10 @@ import androidx.compose.ui.unit.dp
  */
 data class ButtonData(
   val icon: Int,
-  val contentDescription: String? = null,
+  @StringRes val contentDescription: Int? = null,
   val iconColor: Color? = null,
-  val width: Dp = 40.dp,
-  val height: Dp = 40.dp,
+  val width: Dp = InteractSizeMedium,
+  val height: Dp = InteractSizeMedium,
   val enabled: Boolean = true,
   val onClick: () -> Unit
 )

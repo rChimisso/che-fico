@@ -23,7 +23,7 @@ import com.kreinto.chefico.components.buttons.TransparentButton
 fun SimpleTopBar(onNavigate: (String) -> Unit) {
   CenterAlignedTopAppBar(
     scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
-    navigationIcon = { TransparentButton(R.drawable.ic_arrow_back, "Go back") { onNavigate(CheFicoRoute.Back.path) } },
+    navigationIcon = { TransparentButton(R.drawable.ic_arrow_back, R.string.go_back) { onNavigate(CheFicoRoute.Back.path) } },
     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Color.Transparent),
     title = {}
   )

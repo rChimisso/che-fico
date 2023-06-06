@@ -5,20 +5,15 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.kreinto.chefico.R
+import com.kreinto.chefico.ui.theme.*
 
 /**
  * Basic item with an icon and text.
@@ -73,25 +68,25 @@ internal fun BasicItem(
   }
   Surface(
     modifier = internalModifier,
-    shape = RoundedCornerShape(12.dp),
+    shape = MaterialTheme.shapes.small,
     border = border
   ) {
     Row(
       modifier = Modifier
-        .padding(4.dp)
-        .height(40.dp),
+        .padding(PaddingSmall)
+        .height(InteractSizeMedium),
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.Start
     ) {
       icon(
         Modifier
-          .padding(horizontal = 8.dp)
-          .size(24.dp)
+          .padding(horizontal = PaddingMedium)
+          .size(IconSizeMedium)
       )
       Text(
         text = text,
-        modifier = Modifier.padding(horizontal = 4.dp),
-        fontSize = 24.sp,
+        modifier = Modifier.padding(horizontal = PaddingSmall),
+        fontSize = LabelExtraLarge,
         overflow = TextOverflow.Ellipsis,
         maxLines = 1
       )

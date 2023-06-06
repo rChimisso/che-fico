@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name = "app_name">Che Fico!</string>
+  <string name = "google_access">Access with Google</string>
+  <string name = "google_access_error">Access failed, retry later</string>
+  <string name = "go_back">Go back</string>
+  <string name = "empty_query">Empty query</string>
+  <string name = "search_placeholder">Search…</string>
+  <string name = "show_psw">Mostra password</string>
+  <string name = "hide_psw">Nascondi password</string>
+  <string name = "share">Share</string>
+  <string name = "user_id">User ID</string>
+  <string name = "share_success">Shared successfully</string>
+  <string name = "share_failure">Couldn\'t share</string>
+  <string name = "open_maps">Open Google Maps</string>
+  <string name = "change_pic">Change picture</string>
+  <string name = "title">Title</string>
+  <string name = "desc">Description</string>
+  <string name = "add">Add</string>
+  <string name = "del">Delete</string>
+  <string name = "add_alarm">Add alarm</string>
+  // TODO
   <string name = "email_label">Email</string>
   <string name = "confirm_changes">Confirm Changes</string>
   <string name = "signup_label">Sign Up</string>
   <string name = "settings_label">Settings</string>
   //SearchInput.kt strings Start
-  <string name = "search_placeholder">Search…</string>
-  <string name = "empty_query">Empty query</string>
   //SearchInput.kt strings Finish
   //AccountEditView.kt strings Start
   <string name = "user_name_area_edit_label">User Name</string>

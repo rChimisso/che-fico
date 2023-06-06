@@ -4,7 +4,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-val LightColors = lightColorScheme(
+internal val LightColors = lightColorScheme(
 //  onBackground = Color(0xFF006C4E),
 //  surfaceVariant = Color.White,
 //  onSurfaceVariant = Color(0xFF006C4E),
@@ -44,7 +44,7 @@ val LightColors = lightColorScheme(
 //  scrim = Color(0xFF84F8CC)
 )
 
-val DarkColors = darkColorScheme(
+internal val DarkColors = darkColorScheme(
   primary = Color(0xFF84F8CC),
   onPrimary = Color(0xFF002116),
 //  primaryContainer = Color(0xFF84F8CC),
@@ -80,14 +80,18 @@ val DarkColors = darkColorScheme(
 //  scrim = Color(0xFF84F8CC)
 )
 
+/**
+ * Converts and RGB color into its corresponding Hue.
+ *
+ * @param color RGB [Color].
+ * @return Hue valure.
+ */
 fun colorToHue(color: Color): Float {
   val red = color.red / 255
   val green = color.green / 255
   val blue = color.blue / 255
-
   val max = maxOf(red, green, blue)
   val min = minOf(red, green, blue)
-
   if (red == max) {
     return ((green - blue) / (max - min)) * 60
   }

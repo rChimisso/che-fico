@@ -10,7 +10,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.TransparentButton
-import com.kreinto.chefico.ui.theme.level0
 
 /**
  * Standard Top Bar following Material3 guidelines.
@@ -22,10 +21,10 @@ import com.kreinto.chefico.ui.theme.level0
 @ExperimentalMaterial3Api
 @Composable
 fun StandardTopBar(onNavigate: (String) -> Unit, title: @Composable () -> Unit, actions: @Composable (RowScope.() -> Unit) = {}) {
-  Surface(tonalElevation = level0) {
+  Surface {
     CenterAlignedTopAppBar(
       scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
-      navigationIcon = { TransparentButton(R.drawable.ic_arrow_back, "Go back") { onNavigate(CheFicoRoute.Back.path) } },
+      navigationIcon = { TransparentButton(R.drawable.ic_arrow_back, R.string.go_back) { onNavigate(CheFicoRoute.Back.path) } },
       title = title,
       actions = actions
     )

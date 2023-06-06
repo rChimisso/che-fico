@@ -9,9 +9,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,14 +20,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kreinto.chefico.R
+import com.kreinto.chefico.ui.theme.*
 
 /**
  * Button to access a Che Fico! account via Google.
@@ -52,6 +51,7 @@ fun GoogleAccessButton(onSuccess: (Boolean) -> Unit) {
       )
       .setAutoSelectEnabled(false)
       .build()
+  val googleAccessErrorMessage = stringResource(R.string.google_access_error)
 
   val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
     val googleCredential = oneTapClient.getSignInCredentialFromIntent(result.data)
@@ -61,7 +61,7 @@ fun GoogleAccessButton(onSuccess: (Boolean) -> Unit) {
         onSuccess(it.additionalUserInfo?.isNewUser ?: true)
       }
     } else {
-      Toast.makeText(context, "Impossibile effettuare l'accesso, riprova più tardi", Toast.LENGTH_SHORT).show()
+      Toast.makeText(context, googleAccessErrorMessage, Toast.LENGTH_SHORT).show()
     }
   }
   Button(
@@ -71,19 +71,14 @@ fun GoogleAccessButton(onSuccess: (Boolean) -> Unit) {
       }
     },
     modifier = Modifier
-      .height(40.dp)
-      .width(208.dp),
-    shape = RoundedCornerShape(12.dp),
+      .width(WideButtonWidth)
+      .height(InteractSizeMedium),
+    shape = MaterialTheme.shapes.small,
     colors = ButtonDefaults.buttonColors(Color.White, Color.Black),
-    contentPadding = PaddingValues(
-      start = 0.dp,
-      top = 0.dp,
-      bottom = 0.dp,
-      end = 8.dp
-    )
+    contentPadding = PaddingValues(PaddingNone, PaddingNone, PaddingMedium, PaddingNone)
   ) {
-    Image(painterResource(R.drawable.ic_google_logo), stringResource(R.string.google_login))
-    Text(stringResource(R.string.google_login), fontSize = 14.sp)
+    Image(painterResource(R.drawable.ic_google_logo), stringResource(R.string.google_access))
+    Text(stringResource(R.string.google_access), fontSize = LabelMedium)
   }
 }
 

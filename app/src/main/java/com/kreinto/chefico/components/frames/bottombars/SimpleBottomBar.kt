@@ -6,10 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.FilledButton
 import com.kreinto.chefico.components.buttons.data.ButtonData
+import com.kreinto.chefico.ui.theme.InteractSizeLarge
+import com.kreinto.chefico.ui.theme.InteractSizeSmall
 
 /**
  * Simple Bottom Bar following Material3 guidelines.
@@ -26,8 +27,8 @@ fun SimpleBottomBar(
 ) {
   Row(
     modifier = Modifier
-      .height(80.dp)
       .fillMaxWidth()
+      .height(InteractSizeLarge)
       .padding(BottomAppBarDefaults.ContentPadding),
     horizontalArrangement = Arrangement.SpaceBetween,
     verticalAlignment = Alignment.CenterVertically
@@ -39,8 +40,8 @@ fun SimpleBottomBar(
           icon = centerButtonData.icon,
           contentDescription = centerButtonData.contentDescription,
           iconColor = centerButtonData.iconColor,
-          width = 32.dp,
-          height = 80.dp,
+          width = InteractSizeSmall,
+          height = InteractSizeLarge,
           enabled = centerButtonData.enabled,
           onClick = centerButtonData.onClick
         )
@@ -57,8 +58,8 @@ fun SimpleBottomBar(
 @Preview
 private fun SimpleBottomBarPreview() {
   SimpleBottomBar(
-    leftButtonData = ButtonData(R.drawable.ic_list, "") {},
-    centerButtonData = ButtonData(R.drawable.ic_photo_camera, "") {},
-    rightButtonData = ButtonData(R.drawable.ic_share, "") {}
+    leftButtonData = ButtonData(R.drawable.ic_list, R.string.preview) {},
+    centerButtonData = ButtonData(R.drawable.ic_photo_camera, R.string.preview) {},
+    rightButtonData = ButtonData(R.drawable.ic_share, R.string.preview) {}
   )
 }
