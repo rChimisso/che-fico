@@ -84,7 +84,7 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
           onValueChange = { user = it },
           singleLine = true,
           label = "ID utente",
-          leadingIcon = { Icon(painterResource(id = R.drawable.ic_account), "account", Modifier.size(24.dp)) }
+          leadingIcon = { Icon(painterResource(R.drawable.ic_account), "account", Modifier.size(24.dp)) }
         )
         SubmitButton(
           enabled = user.isNotBlank(),
@@ -96,6 +96,7 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
             } else {
               Toast.makeText(context, "Condivisione non riuscita", Toast.LENGTH_SHORT).show()
             }
+            openBottomSheet = false
           }
         }
       }
