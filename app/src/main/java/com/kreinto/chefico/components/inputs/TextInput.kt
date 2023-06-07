@@ -2,6 +2,7 @@ package com.kreinto.chefico.components.inputs
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -19,9 +20,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.TransparentButton
+import com.kreinto.chefico.ui.theme.IconSizeMedium
+import com.kreinto.chefico.ui.theme.PaddingMedium
 import com.kreinto.chefico.ui.theme.bodyStyle
 
 /**
@@ -53,6 +55,7 @@ fun TextInput(
   singleLine: Boolean = true,
   readOnly: Boolean = false,
   @StringRes label: Int? = null,
+  @StringRes supportingText: Int? = null,
   isError: Boolean = false,
   underline: Boolean = true,
   trailingIcon: @Composable ((String, (String) -> Unit) -> Unit)? = null,
@@ -67,9 +70,9 @@ fun TextInput(
   }
   var isClicked by rememberSaveable { mutableStateOf(false) }
   var showPassword by rememberSaveable { mutableStateOf(false) }
-
   TextField(
     modifier = modifier
+      .padding(PaddingMedium)
       .fillMaxWidth()
       .onFocusChanged {
         if (it.hasFocus) {
@@ -79,6 +82,7 @@ fun TextInput(
           onFocusChanged(it)
         }
       },
+    supportingText = { Text(if (supportingText != null) stringResource(supportingText) else "") },
     onValueChange = changeValue,
     value = value,
     singleLine = singleLine,
@@ -113,8 +117,7 @@ fun TextInput(
         TransparentButton(
           icon = if (showPassword) R.drawable.ic_visible else R.drawable.ic_hidden,
           contentDescription = if (showPassword) R.string.hide_psw else R.string.show_psw,
-          width = 24.dp,
-          height = 24.dp
+          width = IconSizeMedium
         ) { showPassword = !showPassword }
       } else if (trailingIcon != null) {
         trailingIcon(value, changeValue)

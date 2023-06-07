@@ -9,12 +9,10 @@ import androidx.camera.core.*
 import androidx.camera.core.ImageCapture.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,15 +24,16 @@ import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.TransparentButton
 import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.frames.SimpleFrame
+import com.kreinto.chefico.ui.theme.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -52,10 +51,11 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
   val cameraProvider = ProcessCameraProvider.getInstance(context).get()
   val preview: Preview = Preview.Builder().build()
   val previewView = remember { PreviewView(context) }
+  val jpegQuality = 100
   val imageCapture = remember {
     Builder()
       .setCaptureMode(CAPTURE_MODE_ZERO_SHUTTER_LAG)
-      .setJpegQuality(100).build()
+      .setJpegQuality(jpegQuality).build()
   }
   cameraProvider.unbindAll()
 
@@ -114,7 +114,7 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
       Column(
         modifier = Modifier
           .align(Alignment.BottomCenter)
-          .padding(16.dp),
+          .padding(PaddingLarge),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
       ) {
@@ -123,14 +123,14 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
           TransparentButton(
             R.drawable.gallery,
-            width = 64.dp,
+            width = IconSizeExtraLarge,
             iconColor = MaterialTheme.colorScheme.outline
           ) { galleryLauncher.launch("image/*") }
           Button(
             colors = ButtonDefaults.buttonColors(Color.Transparent),
-            border = BorderStroke(4.dp, MaterialTheme.colorScheme.outline),
+            border = BorderStroke(PaddingSmall, MaterialTheme.colorScheme.outline),
             shape = CircleShape,
-            contentPadding = PaddingValues(0.dp),
+            contentPadding = PaddingValues(PaddingNone),
             modifier = Modifier
               .scale(scale)
               .size(64.dp)
@@ -166,34 +166,21 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
             onClick = {},
             content = {}
           )
-          IconButton({
+          TransparentButton(
+            icon = if (cameraFlashEnabled) R.drawable.ic_torch_on else R.drawable.ic_torch_off,
+            contentDescription = R.string.flash,
+            iconColor = MaterialTheme.colorScheme.outline,
+            width = IconSizeLarge
+          ) {
             cameraFlashEnabled = !cameraFlashEnabled
             camera.cameraControl.enableTorch(cameraFlashEnabled)
-          }) {
-            Crossfade(targetState = cameraFlashEnabled) {
-              if (it) {
-                Icon(
-                  painter = painterResource(id = R.drawable.ic_torch_on),
-                  contentDescription = "Flash on",
-                  modifier = Modifier.size(32.dp),
-                  tint = MaterialTheme.colorScheme.outline
-                )
-              } else {
-                Icon(
-                  painter = painterResource(id = R.drawable.ic_torch_off),
-                  contentDescription = "Flash off",
-                  modifier = Modifier.size(32.dp),
-                  tint = MaterialTheme.colorScheme.outline
-                )
-              }
-            }
           }
         }
         Spacer(Modifier.height(32.dp))
         SegmentedButton(
-          ButtonData(R.drawable.ic_leaf, "Foglia") { plantOrgan = PlantRecognition.PlantOrgan.leaf },
-          ButtonData(R.drawable.ic_flower, "Fiore") { plantOrgan = PlantRecognition.PlantOrgan.flower },
-          ButtonData(R.drawable.ic_fruit, "Frutto") { plantOrgan = PlantRecognition.PlantOrgan.fruit }
+          ButtonData(R.drawable.ic_leaf, R.string.leaf) { plantOrgan = PlantRecognition.PlantOrgan.leaf },
+          ButtonData(R.drawable.ic_flower, R.string.flower) { plantOrgan = PlantRecognition.PlantOrgan.flower },
+          ButtonData(R.drawable.ic_fruit, R.string.fruit) { plantOrgan = PlantRecognition.PlantOrgan.fruit }
         )
       }
     }
@@ -211,8 +198,8 @@ fun SegmentedButton(vararg content: ButtonData) {
       Surface(
         modifier = Modifier
           .weight(1f)
-          .height(40.dp),
-        shape = RoundedCornerShape(12.dp),
+          .height(InteractSizeMedium),
+        shape = MaterialTheme.shapes.small,
         tonalElevation = 12.dp,
         color = if (index == selected) MaterialTheme.colorScheme.primary else Color.Transparent,
         contentColor = if (index == selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.outline,
@@ -224,13 +211,12 @@ fun SegmentedButton(vararg content: ButtonData) {
         Row(
           modifier = Modifier.fillMaxSize(),
           verticalAlignment = Alignment.CenterVertically,
-          horizontalArrangement = Arrangement.Center
+          horizontalArrangement = Arrangement.spacedBy(PaddingSmall)
         ) {
           Icon(painterResource(item.icon), null, Modifier.size(24.dp))
-          Spacer(Modifier.width(8.dp))
           Text(
-            item.contentDescription ?: "",
-            fontSize = 16.sp,
+            if (item.contentDescription != null) stringResource(id = item.contentDescription) else "",
+            fontSize = LabelLarge,
             fontWeight = FontWeight.SemiBold
           )
         }

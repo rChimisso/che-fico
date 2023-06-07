@@ -31,7 +31,7 @@ import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 import com.kreinto.chefico.components.misc.Loader
 import com.kreinto.chefico.room.entities.Poi
 import com.kreinto.chefico.room.viewmodels.LocalViewModel
-import com.kreinto.chefico.ui.theme.colorToHue
+import com.kreinto.chefico.toHue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
@@ -96,11 +96,14 @@ fun MapsView(
     onNavigate,
     bottomBar = {
       SimpleBottomBar(
-        leftButtonData = ButtonData(R.drawable.ic_list, "Go to POI list") { onNavigate(CheFicoRoute.PoiList.path) },
-        centerButtonData = ButtonData(R.drawable.ic_photo_camera, "Open Plant Recognition") {
+        leftButtonData = ButtonData(R.drawable.ic_list, R.string.open_green_spots) { onNavigate(CheFicoRoute.PoiList.path) },
+        centerButtonData = ButtonData(R.drawable.ic_photo_camera, R.string.open_camera) {
           onNavigate(CheFicoRoute.Camera.path)
         },
-        rightButtonData = ButtonData(if (shouldFollow) R.drawable.my_location else R.drawable.location_searching, "Center camera") {
+        rightButtonData = ButtonData(
+          if (shouldFollow) R.drawable.my_location else R.drawable.location_searching,
+          R.string.center_map_view
+        ) {
           shouldFollow = true
           locationClient.getCurrentLocation(
             Priority.PRIORITY_BALANCED_POWER_ACCURACY,
@@ -135,8 +138,6 @@ fun MapsView(
           locationListener,
           Looper.getMainLooper()
         )
-      } else {
-        println(R.string.message_label)
       }
     }
     val refreshMarkers = {
@@ -215,7 +216,7 @@ fun MapsView(
           MarkerState(LatLng(poi.latitude, poi.longitude)),
           title = poi.name,
           // Color conversion from RGB to Hue: https://stackoverflow.com/questions/23090019/fastest-formula-to-get-hue-from-rgb
-          icon = BitmapDescriptorFactory.defaultMarker(colorToHue(MaterialTheme.colorScheme.primary)),
+          icon = BitmapDescriptorFactory.defaultMarker(MaterialTheme.colorScheme.primary.toHue()),
           onClick = {
             onNavigate(CheFicoRoute.PoiDetail.path(poi.id.toString()))
             return@Marker true

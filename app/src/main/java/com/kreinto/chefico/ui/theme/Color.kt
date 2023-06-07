@@ -80,23 +80,4 @@ internal val DarkColors = darkColorScheme(
 //  scrim = Color(0xFF84F8CC)
 )
 
-/**
- * Converts and RGB color into its corresponding Hue.
- *
- * @param color RGB [Color].
- * @return Hue valure.
- */
-fun colorToHue(color: Color): Float {
-  val red = color.red / 255
-  val green = color.green / 255
-  val blue = color.blue / 255
-  val max = maxOf(red, green, blue)
-  val min = minOf(red, green, blue)
-  if (red == max) {
-    return ((green - blue) / (max - min)) * 60
-  }
-  if (green == max) {
-    return (2f + (blue - red) / (max - min)) * 60
-  }
-  return (4f + (red - green) / (max - min)) * 60
-}
+

@@ -73,8 +73,8 @@ fun PoiCreationView(
     onNavigate = ::action,
     bottomBar = {
       SimpleBottomBar(
-        leftButtonData = ButtonData(R.drawable.ic_close, "Cancel", MaterialTheme.colorScheme.error, onClick = ::action),
-        rightButtonData = ButtonData(R.drawable.ic_check, "Confirm") {
+        leftButtonData = ButtonData(R.drawable.ic_close, R.string.cancel, MaterialTheme.colorScheme.error, onClick = ::action),
+        rightButtonData = ButtonData(R.drawable.ic_check, R.string.confirm) {
           saveImage(creatingPoi.image, contentResolver) {
             if (it != null) {
               creatingPoi.image = it.toString()

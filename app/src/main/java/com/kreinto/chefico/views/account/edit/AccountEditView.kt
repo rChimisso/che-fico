@@ -12,14 +12,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.inputs.TextInput
+import com.kreinto.chefico.isValidEmail
+import com.kreinto.chefico.isValidPassword
 import com.kreinto.chefico.room.viewmodels.AuthViewModel
-import com.kreinto.chefico.views.account.signin.components.isValidEmail
+import com.kreinto.chefico.ui.theme.PaddingExtraLarge
+import com.kreinto.chefico.ui.theme.PaddingLarge
 
 @ExperimentalMaterial3Api
 @Composable
@@ -33,11 +35,13 @@ fun AccountEditView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) 
     var openConfirmDialog by rememberSaveable { mutableStateOf(false) }
     var currPassword by rememberSaveable { mutableStateOf("") }
 
+    val changesFailureMessage = stringResource(R.string.changes_failure)
+
     if (openConfirmDialog) {
       Dialog({ openConfirmDialog = false }) {
         Column {
           TextInput(
-            placeholder = { Text("Conferma inserendo la password corrente") }
+            placeholder = R.string.confirm_with_password
           ) {
             currPassword = it
           }
@@ -48,64 +52,63 @@ fun AccountEditView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) 
                 if (it) {
                   onNavigate(CheFicoRoute.Back.path)
                 } else {
-                  Toast.makeText(context, "Modifiche non riuscite", Toast.LENGTH_SHORT).show()
-
+                  Toast.makeText(context, changesFailureMessage, Toast.LENGTH_SHORT).show()
                 }
               }
             },
             contentPadding = ButtonDefaults.TextButtonContentPadding
-          ) { Text(stringResource(R.string.confirm_changes), color = MaterialTheme.colorScheme.error) }
+          ) { Text(stringResource(R.string.edit_confirm), color = MaterialTheme.colorScheme.error) }
         }
       }
     }
     Column(
       modifier = Modifier
         .fillMaxSize()
-        .padding(top = padding.calculateTopPadding(), start = 24.dp, end = 24.dp),
+        .padding(top = padding.calculateTopPadding(), start = PaddingExtraLarge, end = PaddingExtraLarge),
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.Center,
     ) {
       TextInput(
         init = username,
-        label = stringResource(R.string.user_name_area_edit_label),
+        label = R.string.username,
         isError = username.isBlank()
       ) {
         username = it
       }
-      Spacer(modifier = Modifier.height(16.dp))
+      Spacer(modifier = Modifier.height(PaddingLarge))
       TextInput(
         init = email,
-        label = stringResource(R.string.email_label),
+        label = R.string.email,
         isError = !email.isValidEmail()
       ) {
         email = it
       }
-      Spacer(modifier = Modifier.height(16.dp))
+      Spacer(modifier = Modifier.height(PaddingLarge))
       TextInput(
-        label = stringResource(R.string.new_pwd_area_edit_label),
+        label = R.string.new_password,
         isPassword = true,
-        isError = newPassword.length < 6
+        isError = !newPassword.isValidPassword()
       ) {
         newPassword = it
       }
-      Spacer(modifier = Modifier.height(16.dp))
+      Spacer(modifier = Modifier.height(PaddingLarge))
       TextInput(
-        label = stringResource(R.string.new_pwd_area_edit_label),
+        label = R.string.new_password,
         isPassword = true,
-        isError = newPassword != repeatedNewPassword
+        isError = !repeatedNewPassword.isValidPassword() && newPassword != repeatedNewPassword
       ) {
         repeatedNewPassword = it
       }
-      Spacer(modifier = Modifier.height(16.dp))
+      Spacer(modifier = Modifier.height(PaddingLarge))
       if (
         email.isValidEmail() && email != authViewModel.currentUser?.email ||
         username.isNotBlank() && username != authViewModel.currentUser?.displayName ||
-        newPassword.isNotBlank() && newPassword.length >= 6 && newPassword == repeatedNewPassword
+        newPassword.isValidPassword() && newPassword == repeatedNewPassword
       ) {
         Button(
           onClick = { openConfirmDialog = true },
           contentPadding = ButtonDefaults.TextButtonContentPadding
-        ) { Text(stringResource(R.string.confirm_changes), color = MaterialTheme.colorScheme.error) }
+        ) { Text(stringResource(R.string.edit_confirm), color = MaterialTheme.colorScheme.error) }
       }
     }
   }

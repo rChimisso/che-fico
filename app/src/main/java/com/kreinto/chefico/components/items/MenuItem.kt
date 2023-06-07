@@ -3,6 +3,7 @@ package com.kreinto.chefico.components.items
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,7 +21,12 @@ import com.kreinto.chefico.R
  * @param content
  */
 @Composable
-fun MenuItem(@StringRes text: Int, onClick: (() -> Unit)? = null, content: (@Composable () -> Unit)? = null) {
+fun MenuItem(
+  @StringRes text: Int? = null,
+  onClick: (() -> Unit)? = null,
+  isDanger: Boolean = false,
+  content: (@Composable () -> Unit)? = null
+) {
   Row(
     modifier = Modifier
       .fillMaxWidth()
@@ -30,7 +36,13 @@ fun MenuItem(@StringRes text: Int, onClick: (() -> Unit)? = null, content: (@Com
     horizontalArrangement = Arrangement.SpaceBetween,
     verticalAlignment = Alignment.CenterVertically
   ) {
-    Text(stringResource(text))
+    if (text != null) {
+      if (isDanger) {
+        Text(stringResource(text), color = MaterialTheme.colorScheme.error)
+      } else {
+        Text(stringResource(text))
+      }
+    }
     if (content != null) {
       content()
     }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name = "google_access">Access with Google</string>
-  <string name = "google_access_error">Access failed, retry later</string>
+  <string name = "access_error">Access failed, retry later</string>
   <string name = "go_back">Go back</string>
   <string name = "empty_query">Empty query</string>
   <string name = "search_placeholder">Search…</string>
@@ -18,84 +18,60 @@
   <string name = "add">Add</string>
   <string name = "del">Delete</string>
   <string name = "add_alarm">Add alarm</string>
-  // TODO
-  <string name = "email_label">Email</string>
-  <string name = "confirm_changes">Confirm Changes</string>
-  <string name = "signup_label">Sign Up</string>
-  <string name = "settings_label">Settings</string>
-  //SearchInput.kt strings Start
-  //SearchInput.kt strings Finish
-  //AccountEditView.kt strings Start
-  <string name = "user_name_area_edit_label">User Name</string>
-  <string name = "new_pwd_area_edit_label">New Password</string>
-  <string name = "new_pwd_placeholder_area_edit_label">New Password</string>
-  //AccountEditView.kt strings Finish
-  //AccountLoginContent.kt strings Start
-  <string name = "login_methods_divider_label">or</string>
-  <string name = "pwd_forgot_label">Forgot password?</string>
-  <string name = "pwd_recover_label">Recover password</string>
-  <string name = "login_label">LogIn</string>
-  //AccountLoginContent.kt strings Finish
-  //AccountDetailView.kt strings Start (delete?)
-  <string name = "reference_label">References</string>
-  <string name = "change_pwd_label">Change password</string>
-  //AccountDetailView.kt strings Finish
-  //AccountSigninContent.kt strings Start
-  <string name = "signup_methods_divider_label">or</string>
-  <string name = "name_label">Name</string>
-  <string name = "pwd_label">Password</string>
-  <string name = "pwd_repeat_label">Repeat Password</string>
-  //AccountSigninContent.kt strings Finish
-  //GoogleSignIn.kt and GoogleSignInButton.kt strings Start
-  <string name = "google_login">Login with Google</string>
-  <string name = "google_signin">Sign in with Google</string>
-  //GoogleSignIn.kt and GoogleSignInButton.kt strings Finish
-  //KreintoSignIn.kt strings Start
-  <string name = "kreinto_login_label">SignIn with Kreinto</string>
-  //KreintoSignIn.kt strings Finish
-  //AccountView.kt strings Start
-  <string name = "edit_profile_label">Edit Informations</string>
-  <string name = "backup_label">BackUp Online</string>
-  <string name = "see_sharings_label">View Sharings</string>
-  <string name = "see_blacklist_label">View BlackList</string>
-  <string name = "logout_label">LogOut</string>
-  //AccountView.kt strings Finish
-  //DashboardBottomSheetContent.kt strings Start
-  <string name = "spots_label">Green Spots</string>
-  <string name = "map_label">Map</string>
-  <string name = "camera_label">Camera</string>
-  //DashboardBottomSheetContent.kt strings Finish
-  //DashboardContent.kt strings Start
-  <string name = "notification_label">Notification Name</string>
-  //DashboardContent.kt strings Finish
-  //MapsView.kt strings Start
-  <string name = "message_label">Settings denied</string>
-  //MapsView.kt strings Finish
-  //PlantDetailBottomSheetContent.kt strings Start
-  <string name = "known_as_label">Known as:</string>
-  //PlantDetailBottomSheetContent.kt strings Finish
-  //PoiDetailEvent.kt strings Start
-  <string name = "event_1_label">Event 1</string>
-  //PoiDetailEvent.kt strings Finish
-  //SettingsView.kt strings Start
+  <string name = "block_user">Block user</string>
+  <string name = "block">Block</string>
+  <string name = "block_user_success">User blocked successfully</string>
+  <string name = "block_user_failure">Unable to block user</string>
+  <string name = "blocked_users">Blocked users</string>
+  <string name = "unlock_user">Unlock user</string>
+  <string name = "unlock_user_success">User unlocked successfully</string>
+  <string name = "unlock_user_failure">Unable to unlock user</string>
+  <string name = "confirm_with_password">Confirm with current password</string>
+  <string name = "changes_failure">Unable to perform changes</string>
+  <string name = "edit_confirm">Confirm changes</string>
+  <string name = "username">Username</string>
+  <string name = "password">Password</string>
+  <string name = "new_password">New password</string>
+  <string name = "email">Email</string>
+  <string name = "backup">BackUp Online</string>
+  <string name = "green_spots">Green Spots</string>
+  <string name = "map">Map</string>
+  <string name = "camera">Camera</string>
   <string name = "privacy">Privacy</string>
   <string name = "copyright">Copyright</string>
   <string name = "version">Version</string>
   <string name = "dot_spacer">·</string>
-  <string name = "auto_delete">Autoelimination notifations (30d)</string>
-  <string name = "delete_notifications_title">Delete Notifications</string>
-  <string name = "delete_notifications_message">Do you want to eliminate all the notifications?</string>
   <string name = "yes">Yes</string>
   <string name = "no">No</string>
-  <string name = "delete_notifications">Delete all Notifications</string>
-  <string name = "lenguage">Language</string>
+  <string name = "language">Language</string>
   <string name = "italian">Italiano</string>
   <string name = "english">English</string>
   <string name = "theme">Theme:</string>
-  <string name = "light_theme">Light</string>
-  <string name = "dark_theme">Dark</string>
-  <string name = "system_theme">System</string>
-  <string name = "account_settings">Account Settings</string>
-  <string name = "login">Login</string>
-  //SettingsView.kt strings Finish
+  <string name = "light">Light</string>
+  <string name = "dark">Dark</string>
+  <string name = "system">System</string>
+  <string name = "login">Log in</string>
+  <string name = "logout">Log out</string>
+  <string name = "or">Or</string>
+  <string name = "edit_account">Edit account</string>
+  <string name = "black_list">View blocked users</string>
+  <string name = "signup">Sign up</string>
+  <string name = "min_password_len">Passoword must be at least 6 character long</string>
+  <string name = "passwords_equal">Passwords must be equal</string>
+  <string name = "flower">Flower</string>
+  <string name = "leaf">Leaf</string>
+  <string name = "fruit">Fruit</string>
+  <string name = "settings">Settings</string>
+  <string name = "open_green_spots">Open Green Spots</string>
+  <string name = "open_camera">Open Camera</string>
+  <string name = "center_map_view">Center map view</string>
+  <string name = "plant_aka">Also known as:</string>
+  <string name = "plant_unknown">Unreconized plant</string>
+  <string name = "save">Save</string>
+  <string name = "cancel">Cancel</string>
+  <string name = "confirm">Confirm</string>
+  <string name = "account_settings">Account settings</string>
+  <string name = "delete_notifications">Delete all notifications</string>
+  <string name = "required_permission">Permission required</string>
+  <string name = "flash">Flash</string>
 </resources>

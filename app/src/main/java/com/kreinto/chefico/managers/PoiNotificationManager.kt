@@ -1,6 +1,5 @@
 package com.kreinto.chefico.managers
 
-import android.annotation.SuppressLint
 import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -10,6 +9,9 @@ import androidx.core.content.getSystemService
 import com.kreinto.chefico.R
 import java.util.*
 
+/**
+ * Manage creation and deletion of notifications.
+ */
 class PoiNotificationManager : BroadcastReceiver() {
   companion object {
     private const val channelId: String = "CheFicoChannel"
@@ -20,7 +22,7 @@ class PoiNotificationManager : BroadcastReceiver() {
     private var notificationId = 0
 
     /**
-     * Crea il notification channel per l'applicazione.
+     * Create [NotificationChannel] for the application.
      *
      * @param context
      */
@@ -37,7 +39,7 @@ class PoiNotificationManager : BroadcastReceiver() {
     }
 
     /**
-     * Programma una notifica.
+     * Create a scheduled notification.
      *
      * @param context
      * @param time
@@ -62,44 +64,31 @@ class PoiNotificationManager : BroadcastReceiver() {
     }
 
     /**
-     * Invia una notifica immediata.
+     * Cancel a scheduled notification.
      *
      * @param context
-     * @param title
-     * @param message
+     * @param notification
      */
-    fun showNotification(context: Context, title: String, message: String) {
-      val notification = NotificationCompat.Builder(context, channelId)
-        .setSmallIcon(R.drawable.ic_notification)
-        .setContentTitle(title)
-        .setContentText(message)
-        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-        .setBadgeIconType(NotificationCompat.BADGE_ICON_LARGE)
-        .setColor(0xFF4CAF50.toInt()) // TODO
-        .build()
-
-      with(context.getSystemService<NotificationManager>()) {
-        this?.notify(notificationId++, notification)
-      }
-    }
-
     fun cancelNotification(context: Context, notification: com.kreinto.chefico.room.entities.Notification) {
-      with(context.getSystemService<AlarmManager>()) {
-        Intent(context.applicationContext, PoiNotificationManager::class.java).let { intent ->
-          intent.putExtra(titleExtra, notification.text)
-          intent.putExtra(messageExtra, notification.message)
-          PendingIntent.getBroadcast(
-            context.applicationContext,
-            0,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-          )
-        }.cancel()
-      }
+      Intent(context.applicationContext, PoiNotificationManager::class.java).let { intent ->
+        intent.putExtra(titleExtra, notification.text)
+        intent.putExtra(messageExtra, notification.message)
+        PendingIntent.getBroadcast(
+          context.applicationContext,
+          0,
+          intent,
+          PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+      }.cancel()
     }
   }
 
-  @SuppressLint("MissingPermission")
+  /**
+   * Override of [BroadcastReceiver.onReceive].
+   *
+   * @param context
+   * @param intent
+   */
   override fun onReceive(context: Context, intent: Intent) {
     val notification: Notification = NotificationCompat.Builder(context, channelId)
       .setSmallIcon(R.drawable.ic_notification)

@@ -14,65 +14,58 @@ import kotlinx.coroutines.flow.first
 import java.util.*
 
 /**
-A client for the sign-in API.
-The Sign-In APIs can be used for both sign-in and sign-up scenarios. The two scenarios share the same flow in the code, but different BeginSignInRequest should be provided in different scenarios.
-The Sign-In APIs guide the user through credential selection before returning an instance of SignInCredential containing the data for sign-in or sign-up.
-The recommended process for retrieving credentials using this API is as follows:
-Get a new API client instance by calling Identity.getSignInClient.
-Call SignInClient.beginSignIn, supplying the constructed BeginSignInRequest as an input.
-If the request is successful,
-at least one matching credential is available.
-Launch the PendingIntent from the result of the operation to display
-the UI that guides the user through sign-in.
-The result of sign-in will be returned in Activity.onActivityResult;
-calling SignInClient.getSignInCredentialFromIntent will either return the SignInCredential if the operation was successful,
-or throw an ApiException that indicates the reason for failure.
-If the request is unsuccessful, no matching credential was found on the device that can be used to sign the user in. No further action needs to be taken.
-When the user signs out of your application, please make sure to call SignInClient.signOut.
-The usage of BeginSignInRequest
-Different BeginSignInRequest should be used for sign-in and sign-up.
-Sign an existing user in
-Two types of credentials are supported in SignInCredential: Google ID token and password. To give users more options to choose from when selecting a credential to sign in with, and by extension, increase your app's sign-in rate, it is strongly recommended that applications support both Google ID token and password credentials:
-If your application supports username/password login, configure an instance of PasswordRequestOptions in the request.
-If your application supports federated sign-in using Google ID tokens, configure an instance of GoogleIdTokenRequestOptions accordingly - be sure to supply your server client ID (you can find this in your Google API console project).
-For the sign-in scenario, it is strongly recommended to set GoogleIdTokenRequestOptions.Builder.setFilterByAuthorizedAccounts to true so only the Google accounts that the user has authorized before will show up in the credential list. This can help prevent a new account being created when the user has an existing account registered with the application.
+ * Extends [CheFicoViewModel], handles auth operations.
+ *
+ * @param application
  */
-
 @Suppress("UNCHECKED_CAST")
 class AuthViewModel(application: Application) : CheFicoViewModel(application) {
-  abstract class DatabaseDocument(val path: String)
-  data class UserInfo(
-    val uid: String,
-    val username: String,
-    val email: String,
-  )
+  /**
+   * Utility for application defined database document.
+   *
+   * @property path
+   */
+  sealed class Document(val path: String) {
+    object BlockedUsers : Document("blocked_users")
+    object Pois : Document("pois")
+    object Info : Document("info")
+    object Settings : Document("backup_online")
+    object SharedPois : Document("shared_pois")
+  }
 
   private val auth = Firebase.auth
   private val db = Firebase.firestore
 
-  private object BlockedUsers : DatabaseDocument("blocked_users")
-  private object Pois : DatabaseDocument("pois")
-  private object Info : DatabaseDocument("info")
-  private object Settings : DatabaseDocument("backup_online")
-  private object SharedPois : DatabaseDocument("shared_pois")
-
+  /**
+   * Current user logged in.
+   */
   val currentUser: FirebaseUser?
     get() {
       return auth.currentUser
     }
 
+  /**
+   * Initializes newly created account.
+   *
+   * @param user
+   */
   private fun initAccount(user: FirebaseUser) {
     val collection = db.collection(user.uid)
-    collection.document(Info.path).set(mapOf("username" to user.displayName, "email" to user.email, "photoUrl" to user.photoUrl))
-    collection.document(BlockedUsers.path).set(mapOf("data" to emptyList<String>()))
-    collection.document(Settings.path).set(mapOf("backupOnline" to false, "lastUpdate" to Timestamp.now()))
-    collection.document(Pois.path).set(mapOf("data" to emptyList<Poi>()))
-    collection.document(SharedPois.path).set(mapOf("data" to emptyList<Poi>()))
+    collection.document(Document.Info.path).set(mapOf("username" to user.displayName, "email" to user.email, "photoUrl" to user.photoUrl))
+    collection.document(Document.BlockedUsers.path).set(mapOf("data" to emptyList<String>()))
+    collection.document(Document.Settings.path).set(mapOf("backupOnline" to false, "lastUpdate" to Timestamp.now()))
+    collection.document(Document.Pois.path).set(mapOf("data" to emptyList<Poi>()))
+    collection.document(Document.SharedPois.path).set(mapOf("data" to emptyList<Poi>()))
   }
 
-  fun getLastUpdate(onResult: (Timestamp) -> Unit) {
+  /**
+   * Gets latest [Timestamp] from cloud.
+   *
+   * @param onResult
+   */
+  private fun getLastUpdate(onResult: (Timestamp) -> Unit) {
     if (isUserSignedIn()) {
-      val request = db.collection(currentUser!!.uid).document(Settings.path).get()
+      val request = db.collection(currentUser!!.uid).document(Document.Settings.path).get()
       request.addOnSuccessListener { document ->
         if (document.data != null && document.data!!["lastUpdate"] != null) {
           onResult(document.data!!["lastUpdate"] as Timestamp)
@@ -82,6 +75,14 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
     }
   }
 
+  /**
+   * Creates a new user.
+   *
+   * @param email
+   * @param password
+   * @param username
+   * @param onResult
+   */
   fun createUser(email: String, password: String, username: String, onResult: (Boolean) -> Unit) {
     if (email.isNotBlank() && password.isNotBlank() && username.isNotBlank()) {
       val creationRequest = auth.createUserWithEmailAndPassword(email, password)
@@ -110,6 +111,11 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
     }
   }
 
+  /**
+   * Checks if current user is signed in with Google.
+   *
+   * @return [Boolean]
+   */
   fun isGoogleUserProvider(): Boolean {
     if (currentUser != null) {
       for (provider in currentUser!!.providerData) {
@@ -121,6 +127,15 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
     return false
   }
 
+  /**
+   * Updates user's info.
+   *
+   * @param currPassword
+   * @param email
+   * @param newPassword
+   * @param username
+   * @param onResult
+   */
   fun updateUserInfo(currPassword: String, email: String, newPassword: String, username: String, onResult: (Boolean) -> Unit) {
     if (currentUser != null && (email.isNotBlank() || newPassword.isNotBlank() || username.isNotBlank())) {
       val reauthenticate = currentUser!!.reauthenticate(EmailAuthProvider.getCredential(currentUser!!.email!!, currPassword))
@@ -144,33 +159,58 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
     }
   }
 
+  /**
+   * Initializes account creted via Google.
+   *
+   * @param isNewUser
+   */
   fun initGoogleAccount(isNewUser: Boolean) {
     if (currentUser != null && isNewUser) {
       initAccount(currentUser!!)
     }
   }
 
+  /**
+   * Checks if current user exists.
+   *
+   * @return [Boolean]
+   */
   fun isUserSignedIn(): Boolean {
     return currentUser != null
   }
 
-  fun signIn(email: String, password: String, onSuccess: (UserInfo) -> Unit, onFailure: () -> Unit) {
+  /**
+   * Tries account login.
+   *
+   * @param email
+   * @param password
+   * @param onResult
+   */
+  fun signIn(email: String, password: String, onResult: (Boolean) -> Unit) {
     val request = auth.signInWithEmailAndPassword(email, password)
     request.addOnSuccessListener {
-      onSuccess(UserInfo(it.user!!.uid, it.user!!.displayName!!, it.user!!.email!!))
+      onResult(true)
     }
     request.addOnFailureListener {
-      onFailure()
+      onResult(false)
     }
   }
 
+  /**
+   * Logs out current user.
+   */
   fun signOut() {
     auth.signOut()
   }
 
-  fun getPois(onSuccess: (List<Poi>) -> Unit) {
+  /**
+   * Retrieves List<[Poi]> from cloud.
+   *
+   * @param onSuccess
+   */
+  private fun getPois(onSuccess: (List<Poi>) -> Unit) {
     if (currentUser != null) {
-      db.collection(currentUser!!.uid).document(Pois.path).get().addOnSuccessListener { document ->
+      db.collection(currentUser!!.uid).document(Document.Pois.path).get().addOnSuccessListener { document ->
         if (document.data != null && document.data!!["data"] != null) {
           onSuccess((document.data!!["data"] as List<Map<String, Any>>).map {
             Poi(
@@ -187,9 +227,14 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
     }
   }
 
-  fun getSharedPois(onSuccess: (List<Poi>) -> Unit) {
+  /**
+   * Retrieves shared List<[Poi]> from cloud.
+   *
+   * @param onSuccess
+   */
+  private fun getSharedPois(onSuccess: (List<Poi>) -> Unit) {
     if (currentUser != null) {
-      db.collection(currentUser!!.uid).document(SharedPois.path).get().addOnSuccessListener { document ->
+      db.collection(currentUser!!.uid).document(Document.SharedPois.path).get().addOnSuccessListener { document ->
         if (document.data != null && document.data!!["data"] != null) {
           onSuccess((document.data!!["data"] as List<Map<String, Any>>).map {
             Poi(
@@ -206,9 +251,15 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
     }
   }
 
+  /**
+   * Retrieves blocked users from cloud.
+   *
+   * @param onSuccess
+   * @param onFailure
+   */
   fun getBlockedUsers(onSuccess: (Map<String, String>) -> Unit, onFailure: () -> Unit = {}) {
     if (currentUser != null) {
-      val result = db.collection(currentUser!!.uid).document(BlockedUsers.path).get()
+      val result = db.collection(currentUser!!.uid).document(Document.BlockedUsers.path).get()
       result.addOnSuccessListener {
         onSuccess(it.data!!["data"] as Map<String, String>)
       }
@@ -216,54 +267,72 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
     }
   }
 
-  private fun getUserInfo(uid: String, onResult: (UserInfo) -> Unit) {
-    db.collection(uid).document(Info.path).get().addOnCompleteListener {
-      onResult(
-        UserInfo(
-          (it.result["uid"] ?: "") as String,
-          (it.result["username"] ?: "") as String,
-          (it.result["email"] ?: "") as String,
-        )
-      )
-    }
-  }
-
+  /**
+   * Blocks user.
+   *
+   * @param uid
+   * @param onResult
+   */
   fun blockUser(uid: String, onResult: (Boolean) -> Unit) {
     if (uid.isNotBlank() && currentUser != null) {
-      getUserInfo(uid) {
-        if (it.uid.isNotBlank()) {
-          val request = db.collection(currentUser!!.uid).document(BlockedUsers.path).update("data", mapOf(it.uid to it.username))
+      val userInfo = db.collection(uid).document(Document.Info.path).get()
+      userInfo.addOnSuccessListener {
+        if (it.data != null) {
+          val request =
+            db.collection(currentUser!!.uid).document(Document.BlockedUsers.path).update("data", mapOf(uid to it.data!!["username"]))
           request.addOnSuccessListener { onResult(true) }
           request.addOnFailureListener { onResult(false) }
         } else {
           onResult(false)
         }
       }
+      userInfo.addOnFailureListener { onResult(false) }
+    } else {
+      onResult(false)
     }
   }
 
+  /**
+   * Unblocks user.
+   *
+   * @param uid
+   * @param onResult
+   */
   fun unblockUser(uid: String, onResult: (Boolean) -> Unit) {
     if (uid.isNotBlank() && currentUser != null) {
-      val request = db.collection(currentUser!!.uid).document(BlockedUsers.path).update("data.$uid", FieldValue.delete())
+      val request = db.collection(currentUser!!.uid).document(Document.BlockedUsers.path).update("data.$uid", FieldValue.delete())
       request.addOnSuccessListener { onResult(true) }
       request.addOnFailureListener { onResult(false) }
     }
   }
 
+  /**
+   * Checks if user allowed oline backup.
+   *
+   * @param onResult
+   */
   fun isOnlineBackupActive(onResult: (Boolean) -> Unit) {
     if (currentUser != null) {
-      db.collection(currentUser!!.uid).document(Settings.path).get().addOnSuccessListener {
+      db.collection(currentUser!!.uid).document(Document.Settings.path).get().addOnSuccessListener {
         onResult(it.data?.get("backupOnline") as Boolean)
       }
     }
   }
 
+  /**
+   * Updates online backup flag.
+   *
+   * @param value
+   */
   fun setOnlineBackup(value: Boolean) {
     if (currentUser != null) {
-      db.collection(currentUser!!.uid).document(Settings.path).update("backupOnline", value)
+      db.collection(currentUser!!.uid).document(Document.Settings.path).update("backupOnline", value)
     }
   }
 
+  /**
+   * Syncs data with cloud.
+   */
   fun sync() = launch {
     if (currentUser != null) {
       println(currentUser!!.uid)
@@ -294,10 +363,10 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
                   repository.selectPoi(repository.insertPoi(Poi(poi.name, poi.description, poi.image, poi.latitude, poi.longitude))).first()
                 )
               }
-              db.collection(currentUser!!.uid).document(SharedPois.path).set(mapOf("data" to listOf<Poi>())).addOnSuccessListener {
-                db.collection(currentUser!!.uid).document(Settings.path).update("lastUpdate", timestamp)
+              db.collection(currentUser!!.uid).document(Document.SharedPois.path).set(mapOf("data" to listOf<Poi>())).addOnSuccessListener {
+                db.collection(currentUser!!.uid).document(Document.Settings.path).update("lastUpdate", timestamp)
               }
-              db.collection(currentUser!!.uid).document(Pois.path).set(mapOf("data" to pois.map { poi ->
+              db.collection(currentUser!!.uid).document(Document.Pois.path).set(mapOf("data" to pois.map { poi ->
                 mapOf(
                   "id" to poi.id,
                   "image" to poi.image,
@@ -308,7 +377,7 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
                   "notifications" to notifications.filter { it.poiId == poi.id }
                 )
               })).addOnSuccessListener {
-                db.collection(currentUser!!.uid).document(Settings.path).update("lastUpdate", timestamp)
+                db.collection(currentUser!!.uid).document(Document.Settings.path).update("lastUpdate", timestamp)
               }
             }
           }
@@ -317,9 +386,16 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
     }
   }
 
+  /**
+   * Shares [Poi] to given [user].
+   *
+   * @param user
+   * @param ids
+   * @param onResult
+   */
   fun share(user: String, vararg ids: Long, onResult: (Boolean) -> Unit) = launch {
     if (currentUser != null) {
-      val result = db.collection(user).document(SharedPois.path).get()
+      val result = db.collection(user).document(Document.SharedPois.path).get()
       val toShare = repository.selectPois(ids.toList()).first()
       result.addOnSuccessListener { document ->
         if (document.data != null) {
@@ -334,9 +410,9 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
               "id" to it.id
             )
           })
-          val setData = db.collection(user).document(SharedPois.path).set(mapOf("data" to toSave.toList()))
+          val setData = db.collection(user).document(Document.SharedPois.path).set(mapOf("data" to toSave.toList()))
           setData.addOnSuccessListener {
-            db.collection(user).document(Settings.path).update("lastUpdate", Timestamp.now())
+            db.collection(user).document(Document.Settings.path).update("lastUpdate", Timestamp.now())
             onResult(true)
           }
           setData.addOnFailureListener {

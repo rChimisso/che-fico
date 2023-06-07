@@ -2,32 +2,30 @@ package com.kreinto.chefico.views.plantdetail
 
 import android.graphics.BitmapFactory
 import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.TransparentButton
-import com.kreinto.chefico.components.frames.topbars.SimpleTopBar
+import com.kreinto.chefico.components.frames.SimpleFrame
 import com.kreinto.chefico.components.misc.Loader
+import com.kreinto.chefico.fixOrientation
 import com.kreinto.chefico.room.entities.Poi
 import com.kreinto.chefico.room.viewmodels.LocalViewModel
+import com.kreinto.chefico.ui.theme.*
 import com.kreinto.chefico.views.camera.PlantRecognition
-import com.kreinto.chefico.views.plantdetail.components.PlantDetailBottomSheetContent
-import com.kreinto.chefico.views.plantdetail.components.PlantDetailContent
 import java.net.URLDecoder
 
 @ExperimentalMaterial3Api
@@ -38,7 +36,7 @@ fun PlantDetailView(onNavigate: (String) -> Unit, imageURI: String?, organ: Stri
   val image = BitmapFactory.decodeStream(inputStream)
   val result = remember { mutableStateOf(PlantRecognition.InvalidData) }
   val description = remember { mutableStateOf("") }
-
+  val modalBottomSheetState = rememberModalBottomSheetState()
   LaunchedEffect(Unit) {
     PlantRecognition.recognize(image, organ ?: PlantRecognition.PlantOrgan.leaf) {
       result.value = it
@@ -48,33 +46,52 @@ fun PlantDetailView(onNavigate: (String) -> Unit, imageURI: String?, organ: Stri
     }
   }
 
-  BottomSheetScaffold(
-    sheetContent = { PlantDetailBottomSheetContent(result, description) },
-//    sheetContainerColor = Color(0xFF262724),
-//    sheetContentColor = Color(0xff32C896),
-    sheetShape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
-    sheetPeekHeight = 48.dp + 16.dp + 16.dp,
-    sheetDragHandle = {
+  SimpleFrame(onNavigate) {
+    Image(
+      bitmap = image.fixOrientation().asImageBitmap(),
+      contentDescription = null,
+      contentScale = ContentScale.Crop,
+      modifier = Modifier.fillMaxSize()
+    )
+  }
+
+  ModalBottomSheet(
+    onDismissRequest = {},
+    sheetState = modalBottomSheetState,
+    shape = MaterialTheme.shapes.small,
+    dragHandle = {
       Row(
         modifier = Modifier
-          .padding(16.dp)
+          .padding(PaddingLarge)
           .fillMaxWidth()
-          .height(48.dp),
+          .height(InteractSizeMedium),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
       ) {
-        val name = result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(0) ?: "Unrecognized plant"
-        Text(name, fontSize = 24.sp)
-        TransparentButton(R.drawable.ic_arrow_next, "Save plant as POI", iconColor = MaterialTheme.colorScheme.primary) {
+        val name = result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(0) ?: stringResource(id = R.string.plant_unknown)
+        Text(name, fontSize = LabelExtraLarge)
+        TransparentButton(R.drawable.ic_arrow_next, R.string.save, iconColor = MaterialTheme.colorScheme.primary) {
           viewModel.setCreatingPoi(Poi(name, description.value, imageURI!!))
           onNavigate(CheFicoRoute.PoiCreation.path)
         }
       }
     }
   ) {
-    PlantDetailContent(image)
-    // Simple Top Bar drawn here above content because setting BottomSheetScaffold topBar parameter results in unwanted content padding.
-    SimpleTopBar(onNavigate)
+    val commonNames = result.value.results?.getOrNull(0)?.species?.commonNames
+    if (commonNames != null && commonNames.isNotEmpty()) {
+      Row(Modifier.padding(PaddingLarge), horizontalArrangement = Arrangement.spacedBy(PaddingMedium)) {
+        Text(stringResource(R.string.plant_aka), fontSize = LabelLarge)
+        Column(verticalArrangement = Arrangement.spacedBy(PaddingMedium)) {
+          commonNames.forEach { name ->
+            Text(name, fontSize = LabelLarge)
+          }
+        }
+      }
+    }
+    if (description.value.isNotBlank()) {
+      Spacer(Modifier.height(PaddingLarge))
+      Text(description.value, Modifier.padding(PaddingLarge))
+    }
   }
   Loader(!result.value.isValid())
 }

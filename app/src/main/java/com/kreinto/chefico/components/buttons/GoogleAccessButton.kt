@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -51,7 +52,7 @@ fun GoogleAccessButton(onSuccess: (Boolean) -> Unit) {
       )
       .setAutoSelectEnabled(false)
       .build()
-  val googleAccessErrorMessage = stringResource(R.string.google_access_error)
+  val googleAccessErrorMessage = stringResource(R.string.access_error)
 
   val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
     val googleCredential = oneTapClient.getSignInCredentialFromIntent(result.data)
@@ -71,6 +72,7 @@ fun GoogleAccessButton(onSuccess: (Boolean) -> Unit) {
       }
     },
     modifier = Modifier
+      .padding(GoogleButtonPadding)
       .width(WideButtonWidth)
       .height(InteractSizeMedium),
     shape = MaterialTheme.shapes.small,

@@ -5,7 +5,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -14,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.SubmitButton
@@ -23,6 +22,9 @@ import com.kreinto.chefico.components.frames.StandardFrame
 import com.kreinto.chefico.components.inputs.TextInput
 import com.kreinto.chefico.components.items.SwipeableItem
 import com.kreinto.chefico.room.viewmodels.AuthViewModel
+import com.kreinto.chefico.ui.theme.IconSizeMedium
+import com.kreinto.chefico.ui.theme.InteractSizeLarge
+import com.kreinto.chefico.ui.theme.PaddingLarge
 
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
@@ -40,33 +42,38 @@ fun BlackListView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
     })
   }
 
+  val blockUserSuccessMessage = stringResource(R.string.block_user_success)
+  val blockUserFailureMessage = stringResource(R.string.block_user_failure)
+  val unlockUserSuccessMessage = stringResource(R.string.unlock_user_success)
+  val unlockUserFailureMessage = stringResource(R.string.unlock_user_failure)
+
   if (openDialog) {
     Dialog({ openDialog = false }) {
       var user by rememberSaveable { mutableStateOf("") }
       Column(
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(PaddingLarge),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-          .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp))
-          .padding(16.dp),
+          .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.extraSmall)
+          .padding(PaddingLarge),
       ) {
-        Text("Blocca utente", color = MaterialTheme.colorScheme.primary)
+        Text(stringResource(R.string.block_user), color = MaterialTheme.colorScheme.primary)
         TextInput(
           onValueChange = { user = it },
           singleLine = true,
-          label = "ID utente",
-          leadingIcon = { Icon(painterResource(R.drawable.ic_account), "account", Modifier.size(24.dp)) }
+          label = R.string.user_id,
+          leadingIcon = { Icon(painterResource(R.drawable.ic_account), null, Modifier.size(IconSizeMedium)) }
         )
         SubmitButton(
           enabled = user.isNotBlank(),
-          text = "Blocca"
+          text = R.string.block
         ) {
           authViewModel.blockUser(user) {
-            if (it) {
-              Toast.makeText(context, "Utente bloccato", Toast.LENGTH_SHORT).show()
-            } else {
-              Toast.makeText(context, "Impossibile bloccare utente", Toast.LENGTH_SHORT).show()
-            }
+            Toast.makeText(
+              context,
+              if (it) blockUserSuccessMessage else blockUserFailureMessage,
+              Toast.LENGTH_SHORT
+            ).show()
             openDialog = false
           }
         }
@@ -76,17 +83,17 @@ fun BlackListView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
 
   StandardFrame(
     onNavigate,
-    { Text("Utenti bloccati") },
+    { Text(stringResource(R.string.blocked_users)) },
     bottomBar = {
       Row(
         modifier = Modifier
-          .height(80.dp)
+          .height(InteractSizeLarge)
           .fillMaxWidth()
           .padding(BottomAppBarDefaults.ContentPadding),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        SubmitButton("Blocca utente") {
+        SubmitButton(R.string.block_user) {
           openDialog = true
         }
       }
@@ -94,9 +101,9 @@ fun BlackListView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
   ) { paddingValues ->
     LazyColumn(
       modifier = Modifier
-        .padding(top = paddingValues.calculateTopPadding() + 16.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
+        .padding(top = paddingValues.calculateTopPadding() + PaddingLarge, start = PaddingLarge, end = PaddingLarge, bottom = PaddingLarge)
         .fillMaxSize(),
-      verticalArrangement = Arrangement.spacedBy(16.dp),
+      verticalArrangement = Arrangement.spacedBy(PaddingLarge),
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
       items(blackList.size) { index ->
@@ -104,13 +111,13 @@ fun BlackListView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
           icon = R.drawable.ic_account,
           text = blackList[index].value,
           actions = arrayOf({
-            TransparentButton(R.drawable.ic_unlock, "Sblocca", MaterialTheme.colorScheme.primary) {
+            TransparentButton(R.drawable.ic_unlock, R.string.unlock_user, MaterialTheme.colorScheme.primary) {
               authViewModel.unblockUser(blackList[index].key) {
                 authViewModel.getBlockedUsers({ users ->
                   blackList = users.entries.toList()
                   loading = false
                 })
-                Toast.makeText(context, if (it) "Utente sbloccato" else "Impossibile sbloccare utente", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, if (it) unlockUserSuccessMessage else unlockUserFailureMessage, Toast.LENGTH_SHORT).show()
               }
             }
           })

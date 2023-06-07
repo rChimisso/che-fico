@@ -10,7 +10,10 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.*
 
-
+/**
+ * Handle plant recognition.
+ *
+ */
 class PlantRecognition {
   object PlantOrgan {
     const val leaf: String = "leaf"

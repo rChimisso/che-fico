@@ -12,16 +12,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.SubmitButton
-import com.kreinto.chefico.components.frames.SimpleFrame
+import com.kreinto.chefico.components.frames.StandardFrame
 import com.kreinto.chefico.components.items.MenuItem
 import com.kreinto.chefico.components.misc.Loader
 import com.kreinto.chefico.room.viewmodels.AuthViewModel
+import com.kreinto.chefico.ui.theme.CheFicoIconPadding
+import com.kreinto.chefico.ui.theme.CheFicoIconSize
 
 @ExperimentalMaterial3Api
 @Composable
@@ -35,38 +36,40 @@ fun AccountView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
     }
   }
   if (!loading) {
-    SimpleFrame(onNavigate) {
+    StandardFrame(
+      onNavigate,
+      title = { Text(authViewModel.currentUser?.displayName ?: stringResource(id = R.string.settings)) },
+      bottomBar = {
+        SubmitButton(R.string.logout, textOnly = true, isDanger = true) {
+          authViewModel.signOut()
+          onNavigate(CheFicoRoute.Back.path)
+        }
+      }
+    ) { paddingValues ->
       Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-          .padding(top = it.calculateTopPadding(), start = 16.dp, end = 16.dp, bottom = 16.dp)
+          .padding(paddingValues)
           .fillMaxSize()
       ) {
-        Spacer(Modifier.height(16.dp))
-        Image(painterResource(R.drawable.che_fico_icon), null, Modifier.size(128.dp))
-        Spacer(Modifier.height(16.dp))
-        Row(
-          modifier = Modifier.fillMaxWidth(),
-          horizontalArrangement = Arrangement.Center,
-          verticalAlignment = Alignment.CenterVertically
-        ) { Text(Firebase.auth.currentUser?.displayName ?: "") }
+        Image(
+          painterResource(R.drawable.che_fico_icon),
+          null,
+          Modifier
+            .padding(CheFicoIconPadding)
+            .size(CheFicoIconSize)
+        )
         Text(Firebase.auth.currentUser?.email ?: "")
-        Spacer(Modifier.height(16.dp))
         Divider()
-        Spacer(Modifier.height(16.dp))
-        Column(
-          modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f)
-        ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
           if (!authViewModel.isGoogleUserProvider()) {
             MenuItem(
-              label = stringResource(R.string.edit_profile_label),
+              R.string.edit_account,
               onClick = { onNavigate(CheFicoRoute.AccountEdit.path) }
             )
           }
-          MenuItem(stringResource(R.string.backup_label)) {
+          MenuItem(R.string.backup) {
             Switch(
               checked = backupOnline,
               onCheckedChange = { checked ->
@@ -76,13 +79,9 @@ fun AccountView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
             )
           }
           MenuItem(
-            label = stringResource(R.string.see_blacklist_label),
+            R.string.blocked_users,
             onClick = { onNavigate(CheFicoRoute.Blacklist.path) }
           )
-        }
-        SubmitButton(text = stringResource(R.string.logout_label), textOnly = true, isDanger = true) {
-          authViewModel.signOut()
-          onNavigate(CheFicoRoute.Back.path)
         }
       }
     }

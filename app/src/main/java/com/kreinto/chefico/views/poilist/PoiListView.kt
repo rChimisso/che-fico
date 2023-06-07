@@ -5,27 +5,33 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
+import com.kreinto.chefico.components.buttons.SubmitButton
 import com.kreinto.chefico.components.buttons.data.ButtonData
 import com.kreinto.chefico.components.frames.StandardFrame
 import com.kreinto.chefico.components.frames.bottombars.SimpleBottomBar
 import com.kreinto.chefico.components.inputs.SearchInput
+import com.kreinto.chefico.components.inputs.TextInput
 import com.kreinto.chefico.components.items.SelectableItem
 import com.kreinto.chefico.room.viewmodels.AuthViewModel
 import com.kreinto.chefico.room.viewmodels.LocalViewModel
+import com.kreinto.chefico.ui.theme.IconSizeMedium
+import com.kreinto.chefico.ui.theme.PaddingLarge
+import com.kreinto.chefico.ui.theme.PaddingMedium
 
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
@@ -37,42 +43,32 @@ fun PoiListView(onNavigate: (String) -> Unit, viewModel: LocalViewModel, authVie
   var filter: String by rememberSaveable { mutableStateOf("") }
   var openShareDialog by remember { mutableStateOf(false) }
   var user by remember { mutableStateOf("") }
+
+  val shareSuccess = stringResource(R.string.share_success)
+  val shareFailure = stringResource(R.string.share_failure)
+
+
   if (openShareDialog) {
     Dialog({ openShareDialog = false }) {
       Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp)),
+        modifier = Modifier
+          .padding(PaddingLarge)
+          .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.small),
       ) {
-        Text("Condividi", color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(top = 16.dp))
-        TextField(
-          modifier = Modifier.padding(16.dp),
-          value = user, onValueChange = { user = it },
-          singleLine = true,
-          placeholder = { Text("ID utente") },
-          enabled = true,
-          readOnly = false,
-          leadingIcon = { Icon(painterResource(R.drawable.ic_account), "account", Modifier.size(24.dp)) }
+        Text(stringResource(id = R.string.share), color = MaterialTheme.colorScheme.primary)
+        TextInput(
+          onValueChange = { user = it },
+          label = R.string.user_id,
+          leadingIcon = { Icon(painterResource(R.drawable.ic_account), null, Modifier.size(IconSizeMedium)) }
         )
-        TextButton(
-          enabled = user.isNotBlank(),
-//          colors = ButtonDefaults.buttonColors(
-//            containerColor = MaterialTheme.colorScheme.primary,
-//            contentColor = MaterialTheme.colorScheme.onPrimary
-//          ),
-          contentPadding = PaddingValues(0.dp),
-          shape = RoundedCornerShape(12.dp),
-          modifier = Modifier
-            .padding(bottom = 16.dp)
-            .width(208.dp)
-            .height(40.dp),
-          onClick = {
-            authViewModel.share(user, *selectedPois.toLongArray()) {
-              Toast.makeText(context, if (it) "Condivisione riuscita" else "Condivisione non riuscita", Toast.LENGTH_SHORT).show()
-              openShareDialog = false
-            }
+        SubmitButton(text = R.string.share) {
+          authViewModel.share(user, *selectedPois.toLongArray()) {
+            Toast.makeText(context, if (it) shareSuccess else shareFailure, Toast.LENGTH_SHORT).show()
+            openShareDialog = false
           }
-        ) { Text("Condividi", fontSize = 16.sp) }
+        }
       }
     }
   }
@@ -83,11 +79,11 @@ fun PoiListView(onNavigate: (String) -> Unit, viewModel: LocalViewModel, authVie
     bottomBar = {
       if (selectedPois.size > 0) {
         SimpleBottomBar(
-          leftButtonData = ButtonData(R.drawable.ic_trash, "Delete selected", MaterialTheme.colorScheme.error) {
+          leftButtonData = ButtonData(R.drawable.ic_trash, R.string.del, MaterialTheme.colorScheme.error) {
             selectedPois.forEach { id -> viewModel.deletePoi(id) }
             selectedPois.clear()
           },
-          rightButtonData = ButtonData(R.drawable.ic_share, "Share selected") {
+          rightButtonData = ButtonData(R.drawable.ic_share, R.string.share) {
             openShareDialog = true
           }
         )
@@ -95,11 +91,11 @@ fun PoiListView(onNavigate: (String) -> Unit, viewModel: LocalViewModel, authVie
     }
   ) {
     LazyColumn(
-      verticalArrangement = Arrangement.spacedBy(8.dp),
+      verticalArrangement = Arrangement.spacedBy(PaddingMedium),
       modifier = Modifier
-        .padding(top = it.calculateTopPadding())
+        .padding(it)
         .fillMaxHeight()
-        .padding(16.dp),
+        .padding(PaddingLarge),
     ) {
       if (filter.isEmpty()) {
         items(pois.value.size) { index ->
