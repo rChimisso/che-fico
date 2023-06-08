@@ -26,10 +26,7 @@ import com.kreinto.chefico.components.inputs.TextInput
 import com.kreinto.chefico.isValidEmail
 import com.kreinto.chefico.isValidPassword
 import com.kreinto.chefico.room.viewmodels.AuthViewModel
-import com.kreinto.chefico.ui.theme.CheFicoIconPadding
-import com.kreinto.chefico.ui.theme.CheFicoIconSize
-import com.kreinto.chefico.ui.theme.IconSizeMedium
-import com.kreinto.chefico.ui.theme.LabelLarge
+import com.kreinto.chefico.ui.theme.*
 
 @ExperimentalMaterial3Api
 @Composable
@@ -49,11 +46,11 @@ fun AccountSigninView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel
 
   SimpleFrame(onNavigate) { paddingValues ->
     Column(
-      verticalArrangement = Arrangement.Center,
+      verticalArrangement = Arrangement.SpaceBetween,
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier
+        .padding(top = paddingValues.calculateTopPadding(), bottom = PaddingExtraLarge)
         .fillMaxSize()
-        .padding(paddingValues)
     ) {
       Image(
         painterResource(R.drawable.che_fico_icon),
@@ -62,95 +59,99 @@ fun AccountSigninView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel
           .padding(CheFicoIconPadding)
           .size(CheFicoIconSize)
       )
-      GoogleAccessButton {
-        authViewModel.initGoogleAccount(it)
-        onNavigate(CheFicoRoute.Account.path)
-      }
-      Row(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
+      Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
       ) {
+        GoogleAccessButton {
+          authViewModel.initGoogleAccount(it)
+          onNavigate(CheFicoRoute.Account.path)
+        }
         Text(stringResource(R.string.or), fontSize = LabelLarge, color = MaterialTheme.colorScheme.primary)
-      }
-      TextInput(
-        label = R.string.username,
-        onFocusChanged = {
-          if (it.hasFocus) {
-            isDisplaNameFieldClicked = true
-          }
-        },
-        onValueChange = { displayName = it },
-        isError = isDisplaNameFieldClicked && displayName.isBlank(),
-        leadingIcon = {
-          Icon(
-            painter = painterResource(id = R.drawable.ic_account),
-            null,
-            modifier = Modifier.size(IconSizeMedium)
+        Column(
+          modifier = Modifier.padding(PaddingExtraLarge)
+        ) {
+          TextInput(
+            label = R.string.username,
+            onFocusChanged = {
+              if (it.hasFocus) {
+                isDisplaNameFieldClicked = true
+              }
+            },
+            onValueChange = { displayName = it },
+            isError = isDisplaNameFieldClicked && displayName.isBlank(),
+            leadingIcon = {
+              Icon(
+                painter = painterResource(id = R.drawable.ic_account),
+                null,
+                modifier = Modifier.size(IconSizeMedium)
+              )
+            }
+          )
+          TextInput(
+            label = R.string.email,
+            onFocusChanged = {
+              if (it.hasFocus) {
+                isEmailFieldClicked = true
+              }
+            },
+            onValueChange = { email = it },
+            isError = isEmailFieldClicked && !email.isValidEmail(),
+            leadingIcon = {
+              Icon(
+                painter = painterResource(id = R.drawable.ic_email),
+                null,
+                modifier = Modifier.size(IconSizeMedium)
+              )
+            }
+          )
+          TextInput(
+            label = R.string.password,
+            onFocusChanged = {
+              if (it.hasFocus) {
+                isPasswordFieldClicked = true
+              }
+            },
+            onValueChange = { password = it },
+            isError = isPasswordFieldClicked && !password.isValidPassword(),
+            supportingText = R.string.min_password_len,
+            leadingIcon = {
+              Icon(
+                painter = painterResource(id = R.drawable.ic_lock),
+                null,
+                modifier = Modifier.size(IconSizeMedium)
+              )
+            }
+          )
+          TextInput(
+            label = R.string.password,
+            onFocusChanged = {
+              if (it.hasFocus) {
+                isRepeatedPasswordFieldClicked = true
+              }
+            },
+            onValueChange = { repeatedPassword = it },
+            isError = isRepeatedPasswordFieldClicked && !repeatedPassword.isValidPassword() && repeatedPassword != password,
+            supportingText = R.string.passwords_equal,
+            leadingIcon = {
+              Icon(
+                painter = painterResource(id = R.drawable.ic_lock),
+                null,
+                modifier = Modifier.size(IconSizeMedium)
+              )
+            }
           )
         }
-      )
-      TextInput(
-        label = R.string.email,
-        onFocusChanged = {
-          if (it.hasFocus) {
-            isEmailFieldClicked = true
-          }
-        },
-        onValueChange = { email = it },
-        isError = isEmailFieldClicked && !email.isValidEmail(),
-        leadingIcon = {
-          Icon(
-            painter = painterResource(id = R.drawable.ic_email),
-            null,
-            modifier = Modifier.size(IconSizeMedium)
-          )
-        }
-      )
-      TextInput(
-        label = R.string.password,
-        onFocusChanged = {
-          if (it.hasFocus) {
-            isPasswordFieldClicked = true
-          }
-        },
-        onValueChange = { password = it },
-        isError = isPasswordFieldClicked && !password.isValidPassword(),
-        supportingText = R.string.min_password_len,
-        leadingIcon = {
-          Icon(
-            painter = painterResource(id = R.drawable.ic_lock),
-            null,
-            modifier = Modifier.size(IconSizeMedium)
-          )
-        }
-      )
-      TextInput(
-        label = R.string.password,
-        onFocusChanged = {
-          if (it.hasFocus) {
-            isRepeatedPasswordFieldClicked = true
-          }
-        },
-        onValueChange = { repeatedPassword = it },
-        isError = isRepeatedPasswordFieldClicked && !repeatedPassword.isValidPassword() && repeatedPassword != password,
-        supportingText = R.string.passwords_equal,
-        leadingIcon = {
-          Icon(
-            painter = painterResource(id = R.drawable.ic_lock),
-            null,
-            modifier = Modifier.size(IconSizeMedium)
-          )
-        }
-      )
-      SubmitButton(
-        text = R.string.signup,
-        enabled = displayName.isNotBlank() && password == repeatedPassword && password.isValidPassword()
-      ) {
-        authViewModel.createUser(email, password, displayName) {
-          if (it) {
-            onNavigate(CheFicoRoute.Account.path)
-          } else {
-            Toast.makeText(context, accessError, Toast.LENGTH_SHORT).show()
+        SubmitButton(
+          text = R.string.signup,
+          enabled = displayName.isNotBlank() && password == repeatedPassword && password.isValidPassword()
+        ) {
+          authViewModel.createUser(email, password, displayName) {
+            if (it) {
+              onNavigate(CheFicoRoute.Account.path)
+            } else {
+              Toast.makeText(context, accessError, Toast.LENGTH_SHORT).show()
+            }
           }
         }
       }

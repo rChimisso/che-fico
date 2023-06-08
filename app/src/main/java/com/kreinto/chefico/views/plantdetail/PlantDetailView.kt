@@ -3,9 +3,12 @@ package com.kreinto.chefico.views.plantdetail
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +39,6 @@ fun PlantDetailView(onNavigate: (String) -> Unit, imageURI: String?, organ: Stri
   val image = BitmapFactory.decodeStream(inputStream)
   val result = remember { mutableStateOf(PlantRecognition.InvalidData) }
   val description = remember { mutableStateOf("") }
-  val modalBottomSheetState = rememberModalBottomSheetState()
   LaunchedEffect(Unit) {
     PlantRecognition.recognize(image, organ ?: PlantRecognition.PlantOrgan.leaf) {
       result.value = it
@@ -46,52 +48,57 @@ fun PlantDetailView(onNavigate: (String) -> Unit, imageURI: String?, organ: Stri
     }
   }
 
-  SimpleFrame(onNavigate) {
+  SimpleFrame(
+    onNavigate,
+    bottomBar = {
+      Column(
+        modifier = Modifier
+          .background(
+            MaterialTheme.colorScheme.background,
+            MaterialTheme.shapes.medium
+          )
+      ) {
+        Row(
+          modifier = Modifier
+            .padding(PaddingLarge)
+            .fillMaxWidth()
+            .height(InteractSizeMedium),
+          verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+          val name = result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(0) ?: stringResource(id = R.string.plant_unknown)
+          Text(name, fontSize = LabelExtraLarge)
+          TransparentButton(R.drawable.ic_arrow_next, R.string.save, iconColor = MaterialTheme.colorScheme.primary) {
+            viewModel.setCreatingPoi(Poi(name, description.value, imageURI!!))
+            onNavigate(CheFicoRoute.PoiCreation.path)
+          }
+        }
+        Column {
+          val commonNames = result.value.results?.getOrNull(0)?.species?.commonNames
+          if (commonNames != null && commonNames.isNotEmpty()) {
+            Row(Modifier.padding(PaddingLarge), horizontalArrangement = Arrangement.spacedBy(PaddingMedium)) {
+              Text(stringResource(R.string.plant_aka), fontSize = LabelLarge)
+              Column(verticalArrangement = Arrangement.spacedBy(PaddingMedium)) {
+                commonNames.forEach { name ->
+                  Text(name, fontSize = LabelLarge)
+                }
+              }
+            }
+          }
+          if (description.value.isNotBlank()) {
+            Spacer(Modifier.height(PaddingLarge))
+            Text(description.value, Modifier.padding(PaddingLarge))
+          }
+        }
+      }
+    }
+  ) {
     Image(
       bitmap = image.fixOrientation().asImageBitmap(),
       contentDescription = null,
       contentScale = ContentScale.Crop,
       modifier = Modifier.fillMaxSize()
     )
-  }
-
-  ModalBottomSheet(
-    onDismissRequest = {},
-    sheetState = modalBottomSheetState,
-    shape = MaterialTheme.shapes.small,
-    dragHandle = {
-      Row(
-        modifier = Modifier
-          .padding(PaddingLarge)
-          .fillMaxWidth()
-          .height(InteractSizeMedium),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-      ) {
-        val name = result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(0) ?: stringResource(id = R.string.plant_unknown)
-        Text(name, fontSize = LabelExtraLarge)
-        TransparentButton(R.drawable.ic_arrow_next, R.string.save, iconColor = MaterialTheme.colorScheme.primary) {
-          viewModel.setCreatingPoi(Poi(name, description.value, imageURI!!))
-          onNavigate(CheFicoRoute.PoiCreation.path)
-        }
-      }
-    }
-  ) {
-    val commonNames = result.value.results?.getOrNull(0)?.species?.commonNames
-    if (commonNames != null && commonNames.isNotEmpty()) {
-      Row(Modifier.padding(PaddingLarge), horizontalArrangement = Arrangement.spacedBy(PaddingMedium)) {
-        Text(stringResource(R.string.plant_aka), fontSize = LabelLarge)
-        Column(verticalArrangement = Arrangement.spacedBy(PaddingMedium)) {
-          commonNames.forEach { name ->
-            Text(name, fontSize = LabelLarge)
-          }
-        }
-      }
-    }
-    if (description.value.isNotBlank()) {
-      Spacer(Modifier.height(PaddingLarge))
-      Text(description.value, Modifier.padding(PaddingLarge))
-    }
   }
   Loader(!result.value.isValid())
 }

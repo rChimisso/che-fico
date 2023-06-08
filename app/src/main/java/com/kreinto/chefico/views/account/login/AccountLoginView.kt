@@ -24,10 +24,7 @@ import com.kreinto.chefico.components.misc.Loader
 import com.kreinto.chefico.isValidEmail
 import com.kreinto.chefico.isValidPassword
 import com.kreinto.chefico.room.viewmodels.AuthViewModel
-import com.kreinto.chefico.ui.theme.CheFicoIconPadding
-import com.kreinto.chefico.ui.theme.CheFicoIconSize
-import com.kreinto.chefico.ui.theme.IconSizeMedium
-import com.kreinto.chefico.ui.theme.LabelLarge
+import com.kreinto.chefico.ui.theme.*
 
 @ExperimentalMaterial3Api
 @Composable
@@ -41,11 +38,11 @@ fun AccountLoginView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel)
     val accessError = stringResource(R.string.access_error)
 
     Column(
-      verticalArrangement = Arrangement.Center,
+      verticalArrangement = Arrangement.SpaceBetween,
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier
+        .padding(top = paddingValues.calculateTopPadding(), bottom = PaddingExtraLarge)
         .fillMaxSize()
-        .padding(paddingValues)
     ) {
       Image(
         painterResource(R.drawable.che_fico_icon),
@@ -54,55 +51,70 @@ fun AccountLoginView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel)
           .padding(CheFicoIconPadding)
           .size(CheFicoIconSize)
       )
-      GoogleAccessButton {
-        authViewModel.initGoogleAccount(it)
-        onNavigate(CheFicoRoute.Account.path)
-      }
-      Row(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
+      Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
       ) {
+        GoogleAccessButton {
+          authViewModel.initGoogleAccount(it)
+          onNavigate(CheFicoRoute.Account.path)
+        }
         Text(stringResource(R.string.or), fontSize = LabelLarge, color = MaterialTheme.colorScheme.primary)
-      }
-      TextInput(
-        label = R.string.email,
-        leadingIcon = {
-          Icon(painterResource(R.drawable.ic_email), null, Modifier.size(IconSizeMedium))
-        }
-      ) {
-        email = it
-      }
-      TextInput(
-        isPassword = true,
-        label = R.string.password,
-        leadingIcon = {
-          Icon(painterResource(R.drawable.ic_lock), null, Modifier.size(IconSizeMedium))
-        }
-      ) {
-        password = it
-      }
-      SubmitButton(
-        text = R.string.login,
-        enabled = email.isValidEmail() && password.isValidPassword()
-      ) {
-        loading.value = true
-        authViewModel.signIn(
-          email,
-          password
+        Column(
+          horizontalAlignment = Alignment.CenterHorizontally,
+          verticalArrangement = Arrangement.spacedBy(PaddingExtraLarge),
+          modifier = Modifier
+            .fillMaxWidth()
         ) {
-          loading.value = false
-          if (it) {
-            onNavigate(CheFicoRoute.Back.path)
-          } else {
-            Toast.makeText(context, accessError, Toast.LENGTH_SHORT).show()
+          Column(
+            modifier = Modifier.padding(PaddingExtraLarge)
+          ) {
+            TextInput(
+              label = R.string.email,
+              leadingIcon = {
+                Icon(painterResource(R.drawable.ic_email), null, Modifier.size(IconSizeMedium))
+              }
+            ) {
+              email = it
+            }
+            TextInput(
+              isPassword = true,
+              label = R.string.password,
+              leadingIcon = {
+                Icon(painterResource(R.drawable.ic_lock), null, Modifier.size(IconSizeMedium))
+              }
+            ) {
+              password = it
+            }
+          }
+          Column(
+            verticalArrangement = Arrangement.spacedBy(PaddingExtraLarge)
+          ) {
+            SubmitButton(
+              text = R.string.login,
+              enabled = email.isValidEmail() && password.isValidPassword()
+            ) {
+              loading.value = true
+              authViewModel.signIn(
+                email,
+                password
+              ) {
+                loading.value = false
+                if (it) {
+                  onNavigate(CheFicoRoute.Back.path)
+                } else {
+                  Toast.makeText(context, accessError, Toast.LENGTH_SHORT).show()
+                }
+              }
+            }
+            SubmitButton(
+              text = R.string.signup,
+              textOnly = true
+            ) {
+              onNavigate(CheFicoRoute.Signin.path)
+            }
           }
         }
-      }
-      SubmitButton(
-        text = R.string.signup,
-        textOnly = true
-      ) {
-        onNavigate(CheFicoRoute.Signin.path)
       }
     }
     Loader(loading.value)

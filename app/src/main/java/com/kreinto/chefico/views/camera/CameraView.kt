@@ -116,7 +116,7 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
           .align(Alignment.BottomCenter)
           .padding(PaddingLarge),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.spacedBy(PaddingExtraLarge)
       ) {
         var show by remember { mutableStateOf(false) }
         val scale: Float by animateFloatAsState(if (show) 1.2f else 1f)
@@ -133,7 +133,7 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
             contentPadding = PaddingValues(PaddingNone),
             modifier = Modifier
               .scale(scale)
-              .size(64.dp)
+              .size(CameraTakePictureButtonSize)
               .pointerInteropFilter {
                 when (it.action) {
                   MotionEvent.ACTION_DOWN -> {
@@ -170,13 +170,12 @@ fun CameraView(onNavigate: (route: String) -> Unit) {
             icon = if (cameraFlashEnabled) R.drawable.ic_torch_on else R.drawable.ic_torch_off,
             contentDescription = R.string.flash,
             iconColor = MaterialTheme.colorScheme.outline,
-            width = IconSizeLarge
+            width = IconSizeExtraLarge
           ) {
             cameraFlashEnabled = !cameraFlashEnabled
             camera.cameraControl.enableTorch(cameraFlashEnabled)
           }
         }
-        Spacer(Modifier.height(32.dp))
         SegmentedButton(
           ButtonData(R.drawable.ic_leaf, R.string.leaf) { plantOrgan = PlantRecognition.PlantOrgan.leaf },
           ButtonData(R.drawable.ic_flower, R.string.flower) { plantOrgan = PlantRecognition.PlantOrgan.flower },
@@ -211,14 +210,19 @@ fun SegmentedButton(vararg content: ButtonData) {
         Row(
           modifier = Modifier.fillMaxSize(),
           verticalAlignment = Alignment.CenterVertically,
-          horizontalArrangement = Arrangement.spacedBy(PaddingSmall)
+          horizontalArrangement = Arrangement.Center
         ) {
-          Icon(painterResource(item.icon), null, Modifier.size(24.dp))
-          Text(
-            if (item.contentDescription != null) stringResource(id = item.contentDescription) else "",
-            fontSize = LabelLarge,
-            fontWeight = FontWeight.SemiBold
-          )
+          Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(PaddingSmall)
+          ) {
+            Icon(painterResource(item.icon), null, Modifier.size(24.dp))
+            Text(
+              if (item.contentDescription != null) stringResource(id = item.contentDescription) else "",
+              fontSize = LabelLarge,
+              fontWeight = FontWeight.SemiBold
+            )
+          }
         }
       }
     }

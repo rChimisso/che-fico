@@ -3,7 +3,6 @@ package com.kreinto.chefico.components.buttons
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -15,7 +14,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kreinto.chefico.R
-import com.kreinto.chefico.ui.theme.*
+import com.kreinto.chefico.ui.theme.InteractSizeMedium
+import com.kreinto.chefico.ui.theme.LabelLarge
+import com.kreinto.chefico.ui.theme.PaddingNone
+import com.kreinto.chefico.ui.theme.WideButtonWidth
 
 /**
  * Standard submit button.
@@ -38,12 +40,11 @@ fun SubmitButton(
     enabled = enabled,
     colors = ButtonDefaults.buttonColors(
       if (textOnly) Color.Transparent else MaterialTheme.colorScheme.primary,
-      if (isDanger) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onPrimary
+      if (isDanger) MaterialTheme.colorScheme.error else if (textOnly) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary
     ),
     contentPadding = PaddingValues(PaddingNone),
     shape = MaterialTheme.shapes.small,
     modifier = Modifier
-      .padding(PaddingLarge)
       .width(WideButtonWidth)
       .height(InteractSizeMedium),
     onClick = onClick

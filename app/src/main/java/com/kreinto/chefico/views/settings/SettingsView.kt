@@ -10,7 +10,6 @@ import androidx.compose.ui.res.stringResource
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.FilledButton
-import com.kreinto.chefico.components.buttons.SubmitButton
 import com.kreinto.chefico.components.frames.StandardFrame
 import com.kreinto.chefico.components.items.MenuItem
 import com.kreinto.chefico.managers.Language
@@ -44,13 +43,6 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: LocalViewModel, authVie
       if (isUserSignedIn) {
         FilledButton(R.drawable.che_fico_icon, R.string.settings) { onNavigate(CheFicoRoute.Account.path) }
       }
-    },
-    bottomBar = {
-      if (authViewModel.isUserSignedIn()) {
-        SubmitButton(R.string.account_settings) { onNavigate(CheFicoRoute.Account.path) }
-      } else {
-        SubmitButton(R.string.login) { onNavigate(CheFicoRoute.Login.path) }
-      }
     }
   ) {
     Column(
@@ -59,15 +51,13 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: LocalViewModel, authVie
         .fillMaxSize()
     ) {
       MenuItem(
-        text = R.string.delete_notifications,
-        isDanger = true,
+        text = if (authViewModel.isUserSignedIn()) R.string.account_settings else R.string.login,
         onClick = {
-          val alertBuilder = android.app.AlertDialog.Builder(context)
-          alertBuilder.setCancelable(true)
-          alertBuilder.setTitle(R.string.confirm)
-          alertBuilder.setPositiveButton(R.string.yes) { _, _ -> viewModel.deleteNotifications() }
-          alertBuilder.setNegativeButton(R.string.no) { _, _ -> }
-          alertBuilder.create().show()
+          if (authViewModel.isUserSignedIn()) {
+            onNavigate(CheFicoRoute.Account.path)
+          } else {
+            onNavigate(CheFicoRoute.Login.path)
+          }
         }
       )
       MenuItem(R.string.language, { showMenu = true }) {
@@ -102,6 +92,18 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: LocalViewModel, authVie
           }
         }
       }
+      MenuItem(
+        text = R.string.delete_notifications,
+        isDanger = true,
+        onClick = {
+          val alertBuilder = android.app.AlertDialog.Builder(context)
+          alertBuilder.setCancelable(true)
+          alertBuilder.setTitle(R.string.confirm)
+          alertBuilder.setPositiveButton(R.string.yes) { _, _ -> viewModel.deleteNotifications() }
+          alertBuilder.setNegativeButton(R.string.no) { _, _ -> }
+          alertBuilder.create().show()
+        }
+      )
     }
   }
 }
