@@ -21,8 +21,8 @@ import com.kreinto.chefico.components.frames.StandardFrame
 import com.kreinto.chefico.components.items.MenuItem
 import com.kreinto.chefico.components.misc.Loader
 import com.kreinto.chefico.room.viewmodels.AuthViewModel
-import com.kreinto.chefico.ui.theme.CheFicoIconPadding
 import com.kreinto.chefico.ui.theme.CheFicoIconSize
+import com.kreinto.chefico.ui.theme.PaddingLarge
 
 @ExperimentalMaterial3Api
 @Composable
@@ -40,15 +40,17 @@ fun AccountView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
       onNavigate,
       title = { Text(authViewModel.currentUser?.displayName ?: stringResource(id = R.string.settings)) },
       bottomBar = {
-        SubmitButton(R.string.logout, textOnly = true, isDanger = true) {
-          authViewModel.signOut()
-          onNavigate(CheFicoRoute.Back.path)
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+          SubmitButton(R.string.logout, textOnly = true, isDanger = true) {
+            authViewModel.signOut()
+            onNavigate(CheFicoRoute.Back.path)
+          }
         }
       }
     ) { paddingValues ->
       Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(PaddingLarge),
         modifier = Modifier
           .padding(paddingValues)
           .fillMaxSize()
@@ -57,7 +59,6 @@ fun AccountView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
           painterResource(R.drawable.che_fico_icon),
           null,
           Modifier
-            .padding(CheFicoIconPadding)
             .size(CheFicoIconSize)
         )
         Text(Firebase.auth.currentUser?.email ?: "")
