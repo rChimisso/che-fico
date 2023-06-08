@@ -2,7 +2,6 @@ package com.kreinto.chefico.components.inputs
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -23,7 +22,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.TransparentButton
 import com.kreinto.chefico.ui.theme.IconSizeMedium
-import com.kreinto.chefico.ui.theme.PaddingMedium
 import com.kreinto.chefico.ui.theme.bodyStyle
 
 /**
@@ -72,7 +70,6 @@ fun TextInput(
   var showPassword by rememberSaveable { mutableStateOf(false) }
   TextField(
     modifier = modifier
-      .padding(PaddingMedium)
       .fillMaxWidth()
       .onFocusChanged {
         if (it.hasFocus) {
@@ -82,13 +79,13 @@ fun TextInput(
           onFocusChanged(it)
         }
       },
-    supportingText = { Text(if (supportingText != null) stringResource(supportingText) else "") },
+    supportingText = if (supportingText != null) ({ Text(stringResource(supportingText)) }) else null,
     onValueChange = changeValue,
     value = value,
     singleLine = singleLine,
     placeholder = {
       if (placeholder != null) {
-        Text(stringResource(placeholder), style = MaterialTheme.typography.headlineMedium)
+        Text(stringResource(placeholder), style = textStyle)
       }
     },
     textStyle = textStyle,
@@ -106,11 +103,7 @@ fun TextInput(
       errorTrailingIconColor = MaterialTheme.colorScheme.error,
       cursorColor = MaterialTheme.colorScheme.primary
     ),
-    label = {
-      if (label != null) {
-        Text(stringResource(label))
-      }
-    },
+    label = if (label != null) ({ Text(stringResource(label)) }) else null,
     leadingIcon = leadingIcon,
     trailingIcon = {
       if (isPassword) {

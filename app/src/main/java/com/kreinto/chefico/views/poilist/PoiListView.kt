@@ -57,13 +57,13 @@ fun PoiListView(onNavigate: (String) -> Unit, viewModel: LocalViewModel, authVie
           .padding(PaddingLarge)
           .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.small),
       ) {
-        Text(stringResource(id = R.string.share), color = MaterialTheme.colorScheme.primary)
+        Text(stringResource(R.string.share), color = MaterialTheme.colorScheme.primary)
         TextInput(
           onValueChange = { user = it },
           label = R.string.user_id,
           leadingIcon = { Icon(painterResource(R.drawable.ic_account), null, Modifier.size(IconSizeMedium)) }
         )
-        SubmitButton(text = R.string.share) {
+        SubmitButton(R.string.share) {
           authViewModel.share(user, *selectedPois.toLongArray()) {
             Toast.makeText(context, if (it) shareSuccess else shareFailure, Toast.LENGTH_SHORT).show()
             openShareDialog = false
@@ -93,7 +93,7 @@ fun PoiListView(onNavigate: (String) -> Unit, viewModel: LocalViewModel, authVie
     LazyColumn(
       verticalArrangement = Arrangement.spacedBy(PaddingMedium),
       modifier = Modifier
-        .padding(it)
+        .padding(top = it.calculateTopPadding())
         .fillMaxHeight()
         .padding(PaddingLarge),
     ) {

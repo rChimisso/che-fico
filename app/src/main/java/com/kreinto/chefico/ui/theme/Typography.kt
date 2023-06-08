@@ -21,15 +21,15 @@ internal val displayStyle = TextStyle.Default.copy(
 
 internal val headlineStyle = TextStyle.Default.copy(
   fontFamily = LuckiestGuyFont,
-  fontSize = 32.sp,
-  lineHeight = 32.sp,
+  fontSize = 24.sp,
+  lineHeight = 24.sp,
   letterSpacing = 2.sp
 )
 
 internal val titleStyle = TextStyle.Default.copy(
   fontFamily = LuckiestGuyFont,
-  fontSize = 32.sp,
-  lineHeight = 32.sp,
+  fontSize = 24.sp,
+  lineHeight = 24.sp,
   letterSpacing = 2.sp,
 )
 

@@ -30,7 +30,15 @@ fun DashboardView(onNavigate: (String) -> Unit, viewModel: LocalViewModel) {
     topBar = {
       CenterAlignedTopAppBar(
         scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
-        navigationIcon = { Image(painterResource(R.drawable.che_fico_icon), null, Modifier.size(IconSizeExtraLarge)) },
+        navigationIcon = {
+          Image(
+            painterResource(R.drawable.che_fico_icon),
+            null,
+            Modifier
+              .padding(start = PaddingMedium)
+              .size(IconSizeExtraLarge)
+          )
+        },
         title = { Text(stringResource(R.string.app_name)) }
       )
     },

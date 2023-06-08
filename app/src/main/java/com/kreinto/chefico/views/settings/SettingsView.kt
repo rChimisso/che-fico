@@ -47,13 +47,9 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: LocalViewModel, authVie
     },
     bottomBar = {
       if (authViewModel.isUserSignedIn()) {
-        SubmitButton(R.string.account_settings) {
-          onNavigate(CheFicoRoute.Account.path)
-        }
+        SubmitButton(R.string.account_settings) { onNavigate(CheFicoRoute.Account.path) }
       } else {
-        SubmitButton(R.string.login) {
-          onNavigate(CheFicoRoute.Login.path)
-        }
+        SubmitButton(R.string.login) { onNavigate(CheFicoRoute.Login.path) }
       }
     }
   ) {
@@ -74,10 +70,7 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: LocalViewModel, authVie
           alertBuilder.create().show()
         }
       )
-      MenuItem(
-        text = R.string.language,
-        onClick = { showMenu = true }
-      ) {
+      MenuItem(R.string.language, { showMenu = true }) {
         Box {
           Text(language, Modifier.align(Alignment.Center))
           DropdownMenu(showMenu, { showMenu = false }) {
