@@ -41,7 +41,7 @@ fun AccountView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
       title = { Text(authViewModel.currentUser?.displayName ?: stringResource(id = R.string.settings)) },
       bottomBar = {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-          SubmitButton(R.string.logout, textOnly = true, isDanger = true) {
+          SubmitButton(R.string.delete_account, textOnly = true, isDanger = true) {
             authViewModel.signOut()
             onNavigate(CheFicoRoute.Back.path)
           }
@@ -82,6 +82,14 @@ fun AccountView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
           MenuItem(
             R.string.blocked_users,
             onClick = { onNavigate(CheFicoRoute.Blacklist.path) }
+          )
+          MenuItem(
+            R.string.logout,
+            isDanger = true,
+            onClick = {
+              authViewModel.signOut()
+              onNavigate(CheFicoRoute.Back.path)
+            }
           )
         }
       }

@@ -47,6 +47,7 @@
   <string name = "italian">Italiano</string>
   <string name = "english">English</string>
   <string name = "theme">Theme:</string>
+  <string name = "delete_account">Delete account</string>
   <string name = "light">Light</string>
   <string name = "dark">Dark</string>
   <string name = "system">System</string>

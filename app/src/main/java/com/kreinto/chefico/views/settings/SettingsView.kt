@@ -5,6 +5,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.kreinto.chefico.CheFicoRoute
@@ -17,6 +19,8 @@ import com.kreinto.chefico.managers.SettingsManager
 import com.kreinto.chefico.managers.Theme
 import com.kreinto.chefico.room.viewmodels.AuthViewModel
 import com.kreinto.chefico.room.viewmodels.LocalViewModel
+import com.kreinto.chefico.ui.theme.InteractSizeLarge
+import com.kreinto.chefico.ui.theme.PaddingMedium
 import com.kreinto.chefico.ui.theme.PaddingSmall
 
 @ExperimentalMaterial3Api
@@ -42,6 +46,24 @@ fun SettinsView(onNavigate: (String) -> Unit, viewModel: LocalViewModel, authVie
     actions = {
       if (isUserSignedIn) {
         FilledButton(R.drawable.che_fico_icon, R.string.settings) { onNavigate(CheFicoRoute.Account.path) }
+      }
+    },
+    bottomBar = {
+      val lineColor = MaterialTheme.colorScheme.onBackground
+      Row(
+        modifier = Modifier
+          .height(InteractSizeLarge)
+          .fillMaxWidth()
+          .drawBehind { drawLine(color = lineColor, start = Offset.Zero, end = Offset(size.width, 0f)) }
+          .padding(BottomAppBarDefaults.ContentPadding),
+        horizontalArrangement = Arrangement.spacedBy(PaddingMedium, Alignment.CenterHorizontally),
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        Text(stringResource(R.string.privacy))
+        Text(stringResource(R.string.dot_spacer))
+        Text(stringResource(R.string.copyright))
+        Text(stringResource(R.string.dot_spacer))
+        Text(stringResource(R.string.version))
       }
     }
   ) {
