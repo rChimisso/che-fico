@@ -24,9 +24,7 @@ val IconSizeExtraLarge = 64.dp
 val WideButtonWidth = 208.dp
 
 val CheFicoIconSize = 128.dp
-val CheFicoIconPadding = 64.dp
+val CheFicoIconPadding = 32.dp
 val DashboardItemSize = 64.dp
 val GoogleButtonPadding = 40.dp
 val CameraTakePictureButtonSize = 64.dp
-
-

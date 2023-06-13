@@ -58,7 +58,7 @@
   <string name = "edit_account">Modifica account</string>
   <string name = "black_list">Utenti bloccati</string>
   <string name = "signup">Registrati</string>
-  <string name = "or">Oppure</string>
+  <string name = "or">oppure</string>
   <string name = "min_password_len">La password deve essere lunga almeno 6 caratteri</string>
   <string name = "passwords_equal">Le password devono coincidere</string>
   <string name = "settings">Impostazioni</string>
