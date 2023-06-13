@@ -3,10 +3,7 @@ package com.kreinto.chefico.views.account.login
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -29,7 +26,7 @@ import com.kreinto.chefico.ui.theme.*
 @ExperimentalMaterial3Api
 @Composable
 fun AccountLoginView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
-  SimpleFrame(onNavigate) { paddingValues ->
+  SimpleFrame(onNavigate) {
     val loading = remember { mutableStateOf(false) }
     val context = LocalContext.current
     var email: String by rememberSaveable { mutableStateOf("") }
@@ -38,19 +35,24 @@ fun AccountLoginView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel)
     val accessError = stringResource(R.string.access_error)
 
     Column(
-      verticalArrangement = Arrangement.SpaceBetween,
+      verticalArrangement = Arrangement.Bottom,
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier
-        .padding(top = paddingValues.calculateTopPadding(), bottom = PaddingExtraLarge)
+        .padding(bottom = PaddingExtraLarge)
         .fillMaxSize()
     ) {
-      Image(
-        painterResource(R.drawable.che_fico_icon),
-        null,
-        Modifier
-          .padding(CheFicoIconPadding)
-          .size(CheFicoIconSize)
-      )
+      Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.weight(1f)
+      ) {
+        Image(
+          painterResource(R.drawable.che_fico_icon),
+          null,
+          Modifier
+            .size(CheFicoIconSize)
+        )
+      }
       Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
@@ -59,7 +61,13 @@ fun AccountLoginView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel)
           authViewModel.initGoogleAccount(it)
           onNavigate(CheFicoRoute.Account.path)
         }
-        Text(stringResource(R.string.or), fontSize = LabelLarge, color = MaterialTheme.colorScheme.primary)
+        Row(horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
+          Divider(color = MaterialTheme.colorScheme.primary, modifier = Modifier.width(CheFicoIconSize))
+          Spacer(Modifier.width(PaddingMedium))
+          Text(stringResource(R.string.or), fontSize = LabelLarge, color = MaterialTheme.colorScheme.primary)
+          Spacer(Modifier.width(PaddingMedium))
+          Divider(color = MaterialTheme.colorScheme.primary, modifier = Modifier.width(CheFicoIconSize))
+        }
         Column(
           horizontalAlignment = Alignment.CenterHorizontally,
           verticalArrangement = Arrangement.spacedBy(PaddingExtraLarge),

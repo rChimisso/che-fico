@@ -52,7 +52,7 @@
   <string name = "system">System</string>
   <string name = "login">Log in</string>
   <string name = "logout">Log out</string>
-  <string name = "or">Or</string>
+  <string name = "or">or</string>
   <string name = "edit_account">Edit account</string>
   <string name = "black_list">View blocked users</string>
   <string name = "signup">Sign up</string>
