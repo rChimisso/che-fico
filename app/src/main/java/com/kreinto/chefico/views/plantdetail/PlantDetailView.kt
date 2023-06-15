@@ -4,8 +4,8 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -21,7 +21,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.buildAnnotatedString
 import com.kreinto.chefico.CheFicoRoute
 import com.kreinto.chefico.R
 import com.kreinto.chefico.components.buttons.TransparentButton
@@ -48,8 +47,8 @@ fun PlantDetailView(onNavigate: (String) -> Unit, imageURI: String?, organ: Stri
       result.value = it
       PlantRecognition.fetchPlantDescription(
         result.value.results?.getOrNull(0)?.species?.commonNames?.getOrNull(0) ?: ""
-      ) { url, data ->
-        wikipediaUrl.value = url
+      ) { data ->
+        wikipediaUrl.value = data.getOrNull(0)?.fullUrl ?: ""
         description.value = data.getOrNull(0)?.extract ?: ""
       }
     }
@@ -94,27 +93,16 @@ fun PlantDetailView(onNavigate: (String) -> Unit, imageURI: String?, organ: Stri
           }
           if (description.value.isNotBlank()) {
             val uriHandler = LocalUriHandler.current
-            val annotatedString = buildAnnotatedString {
-              addStringAnnotation(
-                tag = "URL",
-                annotation = wikipediaUrl.value,
-                start = 0,
-                end = wikipediaUrl.value.length
-              )
+            Spacer(Modifier.height(PaddingLarge))
+            Column(
+              horizontalAlignment = Alignment.CenterHorizontally,
+              verticalArrangement = Arrangement.spacedBy(PaddingSmall)
+            ) {
+              Text(wikipediaUrl.value, Modifier.clickable {
+                uriHandler.openUri(wikipediaUrl.value)
+              })
+              Text(description.value, Modifier.padding(PaddingLarge))
             }
-            Spacer(Modifier.height(PaddingLarge))
-            ClickableText(
-              text = annotatedString,
-              onClick = {
-                annotatedString
-                  .getStringAnnotations("URL", it, it)
-                  .firstOrNull()?.let { stringAnnotation ->
-                    uriHandler.openUri(stringAnnotation.item)
-                  }
-              }
-            )
-            Spacer(Modifier.height(PaddingLarge))
-            Text(description.value, Modifier.padding(PaddingLarge))
           }
         }
       }
