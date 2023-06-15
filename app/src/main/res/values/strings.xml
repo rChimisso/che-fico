@@ -69,7 +69,8 @@
   <string name = "plant_aka">Conosciuta come:</string>
   <string name = "plant_unknown">Pianta non riconosciuta</string>
   <string name = "save">Salva</string>
-  <string name = "cancel">Cancella</string>
+  <string name = "cancel">Annulla</string>
+  <string name = "delete_account">Elimina account</string>
   <string name = "confirm">Conferma</string>
   <string name = "account_settings">Impostazioni account</string>
   <string name = "delete_notifications">Elimina tutte le notifiche</string>

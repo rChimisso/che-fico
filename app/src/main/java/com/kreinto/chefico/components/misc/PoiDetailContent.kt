@@ -207,25 +207,19 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
         )
       }
       if (openNotificationPopUp) {
-        Dialog({ openNotificationPopUp = false }) {
-          var notificationName by remember { mutableStateOf("") }
-          var notificationMessage by remember { mutableStateOf("") }
-          val dateRangePickerState = rememberDatePickerState()
-          Surface(shape = MaterialTheme.shapes.small) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(PaddingLarge)) {
-              TextInput(
-                modifier = Modifier.padding(horizontal = PaddingLarge),
-                label = R.string.title,
-              ) { notificationName = it }
-              DatePicker(dateRangePickerState, title = null, headline = null, showModeToggle = false)
-              TextInput(
-                modifier = Modifier.padding(horizontal = PaddingLarge),
-                label = R.string.desc,
-              ) { notificationMessage = it }
-              SubmitButton(
-                text = R.string.add,
-                enabled = notificationName.isNotBlank() && notificationMessage.isNotBlank() && dateRangePickerState.selectedDateMillis != null,
-              ) {
+        var notificationName by remember { mutableStateOf("") }
+        var notificationMessage by remember { mutableStateOf("") }
+        val dateRangePickerState = rememberDatePickerState()
+        DatePickerDialog(
+          onDismissRequest = { openNotificationPopUp = false },
+          dismissButton = {
+            TextButton({ openNotificationPopUp = false }) {
+              Text(stringResource(R.string.cancel), fontSize = LabelExtraLarge)
+            }
+          },
+          confirmButton = {
+            TextButton(
+              onClick = {
                 openNotificationPopUp = false
                 viewModel.addNotification(
                   Notification(
@@ -241,9 +235,21 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
                   notificationName,
                   notificationMessage
                 )
-              }
+              },
+              enabled = notificationName.isNotBlank() && notificationMessage.isNotBlank() && dateRangePickerState.selectedDateMillis != null,
+            ) {
+              Text(stringResource(R.string.add), fontSize = LabelExtraLarge)
             }
-          }
+          }) {
+          TextInput(
+            modifier = Modifier.padding(horizontal = PaddingLarge),
+            label = R.string.title,
+          ) { notificationName = it }
+          TextInput(
+            modifier = Modifier.padding(horizontal = PaddingLarge),
+            label = R.string.desc,
+          ) { notificationMessage = it }
+          DatePicker(dateRangePickerState, title = null, headline = null, showModeToggle = false)
         }
       }
       LazyColumn(

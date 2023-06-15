@@ -52,7 +52,7 @@ class AuthViewModel(application: Application) : CheFicoViewModel(application) {
   private fun initAccount(user: FirebaseUser) {
     val collection = db.collection(user.uid)
     collection.document(Document.Info.path).set(mapOf("username" to user.displayName, "email" to user.email, "photoUrl" to user.photoUrl))
-    collection.document(Document.BlockedUsers.path).set(mapOf("data" to emptyList<String>()))
+    collection.document(Document.BlockedUsers.path).set(mapOf("data" to emptyMap<String, String>()))
     collection.document(Document.Settings.path).set(mapOf("backupOnline" to false, "lastUpdate" to Timestamp.now()))
     collection.document(Document.Pois.path).set(mapOf("data" to emptyList<Poi>()))
     collection.document(Document.SharedPois.path).set(mapOf("data" to emptyList<Poi>()))
