@@ -161,8 +161,10 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
                 .offset(y = InteractSizeMedium / 2)
             ) {
               if (showActions) {
-                FilledButton(R.drawable.ic_share, R.string.share) { openBottomSheet = true }
-                Spacer(Modifier.width(PaddingMedium))
+                if (authViewModel.isUserSignedIn()) {
+                  FilledButton(R.drawable.ic_share, R.string.share) { openBottomSheet = true }
+                  Spacer(Modifier.width(PaddingMedium))
+                }
                 FilledButton(R.drawable.ic_map, R.string.open_maps) {
                   val intent = Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=${poi.latitude},${poi.longitude}"))
                   intent.setPackage("com.google.android.apps.maps")

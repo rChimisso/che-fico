@@ -64,7 +64,7 @@ class PlantRecognition {
 
     fun fetchPlantDescription(
       plantName: String,
-      onResult: (result: List<PlantDescriptionData>) -> Unit
+      onResult: (url: String, result: List<PlantDescriptionData>) -> Unit
     ) {
       OkHttpClient().newCall(
         Request.Builder()
@@ -96,6 +96,7 @@ class PlantRecognition {
 
         override fun onResponse(call: Call, response: Response) {
           val gson = Gson()
+          val url = response.request.url.toUrl().toString()
           response.body?.string()?.let {
             val result = gson.fromJson(
               it,
@@ -103,9 +104,9 @@ class PlantRecognition {
             )
 
             if (result.query?.pages != null) {
-              onResult(result.query.pages)
+              onResult(url, result.query.pages)
             } else {
-              onResult(listOf())
+              onResult(url, listOf())
             }
           }
         }

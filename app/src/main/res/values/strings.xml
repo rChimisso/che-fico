@@ -75,4 +75,5 @@
   <string name = "delete_notifications">Elimina tutte le notifiche</string>
   <string name = "required_permission">Permesso necessario</string>
   <string name = "flash">Flash</string>
+  <string name = "required_account">È necessario un account per condividere</string>
 </resources>

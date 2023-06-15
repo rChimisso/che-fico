@@ -74,4 +74,5 @@
   <string name = "delete_notifications">Delete all notifications</string>
   <string name = "required_permission">Permission required</string>
   <string name = "flash">Flash</string>
+  <string name = "required_account">Sharing requires an account</string>
 </resources>

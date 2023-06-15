@@ -2,6 +2,7 @@ package com.kreinto.chefico.views.account
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Switch
@@ -23,6 +24,7 @@ import com.kreinto.chefico.components.misc.Loader
 import com.kreinto.chefico.room.viewmodels.AuthViewModel
 import com.kreinto.chefico.ui.theme.CheFicoIconSize
 import com.kreinto.chefico.ui.theme.PaddingLarge
+import com.kreinto.chefico.ui.theme.PaddingSmall
 
 @ExperimentalMaterial3Api
 @Composable
@@ -38,7 +40,7 @@ fun AccountView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
   if (!loading) {
     StandardFrame(
       onNavigate,
-      title = { Text(authViewModel.currentUser?.displayName ?: stringResource(id = R.string.settings)) },
+      title = { Text(authViewModel.currentUser?.displayName ?: stringResource(R.string.settings)) },
       bottomBar = {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
           SubmitButton(R.string.logout, textOnly = true, isDanger = true) {
@@ -61,9 +63,17 @@ fun AccountView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
           Modifier
             .size(CheFicoIconSize)
         )
-        Text(Firebase.auth.currentUser?.email ?: "")
+        Column(
+          horizontalAlignment = Alignment.CenterHorizontally,
+          verticalArrangement = Arrangement.spacedBy(PaddingSmall)
+        ) {
+          Text(Firebase.auth.currentUser?.email ?: "")
+          SelectionContainer {
+            Text(Firebase.auth.currentUser?.uid ?: "")
+          }
+        }
         Divider()
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.fillMaxWidth()) {
           if (!authViewModel.isGoogleUserProvider()) {
             MenuItem(
               R.string.edit_account,
