@@ -78,8 +78,6 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
   var openBottomSheet by remember { mutableStateOf(false) }
   val notifications = viewModel.getPoiNotifications(poi.id).collectAsStateWithLifecycle(emptyList())
   var openNotificationPopUp by remember { mutableStateOf(false) }
-  val shareSuccessMessage = stringResource(R.string.share_success)
-  val shareFailureMessage = stringResource(R.string.share_failure)
 
   val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
     if (uri != null) {
@@ -109,7 +107,7 @@ fun PoiDetailContent(poi: Poi, updatePoi: (Poi) -> Unit, showActions: Boolean, v
           text = R.string.share
         ) {
           authViewModel.share(user, poi.id) {
-            Toast.makeText(context, if (it) shareSuccessMessage else shareFailureMessage, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, if (it) R.string.share_success else R.string.share_failure, Toast.LENGTH_SHORT).show()
             openBottomSheet = false
           }
         }

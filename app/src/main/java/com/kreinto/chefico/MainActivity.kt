@@ -184,6 +184,7 @@ class MainActivity : AppCompatActivity() {
       } else {
         val alertBuilder = AlertDialog.Builder(this@MainActivity)
         alertBuilder.setCancelable(true)
+
         alertBuilder.setTitle("Attenzione!")
         alertBuilder.setMessage("Per proseguire è necessario garantire i permessi")
         alertBuilder.setPositiveButton(

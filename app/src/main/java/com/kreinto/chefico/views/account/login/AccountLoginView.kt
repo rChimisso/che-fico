@@ -32,8 +32,6 @@ fun AccountLoginView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel)
     var email: String by rememberSaveable { mutableStateOf("") }
     var password: String by rememberSaveable { mutableStateOf("") }
 
-    val accessError = stringResource(R.string.access_error)
-
     Column(
       verticalArrangement = Arrangement.Bottom,
       horizontalAlignment = Alignment.CenterHorizontally,
@@ -111,7 +109,7 @@ fun AccountLoginView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel)
                 if (it) {
                   onNavigate(CheFicoRoute.Back.path)
                 } else {
-                  Toast.makeText(context, accessError, Toast.LENGTH_SHORT).show()
+                  Toast.makeText(context, R.string.access_error, Toast.LENGTH_SHORT).show()
                 }
               }
             }

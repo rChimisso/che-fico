@@ -39,8 +39,6 @@ fun AccountSigninView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel
   var isRepeatedPasswordFieldClicked by rememberSaveable { mutableStateOf(false) }
   var isDisplaNameFieldClicked by rememberSaveable { mutableStateOf(false) }
 
-  val accessError = stringResource(R.string.access_error)
-
   SimpleFrame(onNavigate) {
     Column(
       verticalArrangement = Arrangement.Bottom,
@@ -153,7 +151,7 @@ fun AccountSigninView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel
             if (it) {
               onNavigate(CheFicoRoute.Account.path)
             } else {
-              Toast.makeText(context, accessError, Toast.LENGTH_SHORT).show()
+              Toast.makeText(context, R.string.access_error, Toast.LENGTH_SHORT).show()
             }
           }
         }

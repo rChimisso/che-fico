@@ -35,8 +35,6 @@ fun AccountEditView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) 
     var openConfirmDialog by rememberSaveable { mutableStateOf(false) }
     var currPassword by rememberSaveable { mutableStateOf("") }
 
-    val changesFailureMessage = stringResource(R.string.changes_failure)
-
     if (openConfirmDialog) {
       Dialog({ openConfirmDialog = false }) {
         Column {
@@ -52,7 +50,7 @@ fun AccountEditView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) 
                 if (it) {
                   onNavigate(CheFicoRoute.Back.path)
                 } else {
-                  Toast.makeText(context, changesFailureMessage, Toast.LENGTH_SHORT).show()
+                  Toast.makeText(context, R.string.changes_failure, Toast.LENGTH_SHORT).show()
                 }
               }
             },

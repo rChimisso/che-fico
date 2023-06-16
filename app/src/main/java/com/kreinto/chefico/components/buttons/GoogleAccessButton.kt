@@ -52,7 +52,6 @@ fun GoogleAccessButton(onSuccess: (Boolean) -> Unit) {
       )
       .setAutoSelectEnabled(false)
       .build()
-  val googleAccessErrorMessage = stringResource(R.string.access_error)
 
   val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
     val googleCredential = oneTapClient.getSignInCredentialFromIntent(result.data)
@@ -62,7 +61,7 @@ fun GoogleAccessButton(onSuccess: (Boolean) -> Unit) {
         onSuccess(it.additionalUserInfo?.isNewUser ?: true)
       }
     } else {
-      Toast.makeText(context, googleAccessErrorMessage, Toast.LENGTH_SHORT).show()
+      Toast.makeText(context, R.string.access_error, Toast.LENGTH_SHORT).show()
     }
   }
   Button(

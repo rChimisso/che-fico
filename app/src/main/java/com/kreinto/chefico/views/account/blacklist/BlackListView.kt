@@ -42,11 +42,6 @@ fun BlackListView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
     })
   }
 
-  val blockUserSuccessMessage = stringResource(R.string.block_user_success)
-  val blockUserFailureMessage = stringResource(R.string.block_user_failure)
-  val unlockUserSuccessMessage = stringResource(R.string.unlock_user_success)
-  val unlockUserFailureMessage = stringResource(R.string.unlock_user_failure)
-
   if (openDialog) {
     Dialog({ openDialog = false }) {
       var user by rememberSaveable { mutableStateOf("") }
@@ -71,7 +66,7 @@ fun BlackListView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
           authViewModel.blockUser(user) {
             Toast.makeText(
               context,
-              if (it) blockUserSuccessMessage else blockUserFailureMessage,
+              if (it) R.string.block_user_success else R.string.block_user_failure,
               Toast.LENGTH_SHORT
             ).show()
             openDialog = false
@@ -117,7 +112,7 @@ fun BlackListView(onNavigate: (String) -> Unit, authViewModel: AuthViewModel) {
                   blackList = users.entries.toList()
                   loading = false
                 })
-                Toast.makeText(context, if (it) unlockUserSuccessMessage else unlockUserFailureMessage, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, if (it) R.string.unlock_user_success else R.string.unlock_user_failure, Toast.LENGTH_SHORT).show()
               }
             }
           })

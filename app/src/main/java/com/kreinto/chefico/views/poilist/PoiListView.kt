@@ -44,10 +44,6 @@ fun PoiListView(onNavigate: (String) -> Unit, viewModel: LocalViewModel, authVie
   var openShareDialog by remember { mutableStateOf(false) }
   var user by remember { mutableStateOf("") }
 
-  val shareSuccess = stringResource(R.string.share_success)
-  val shareFailure = stringResource(R.string.share_failure)
-  val accountRequired = stringResource(R.string.required_account)
-
   if (openShareDialog) {
     Dialog({ openShareDialog = false }) {
       Column(
@@ -65,7 +61,7 @@ fun PoiListView(onNavigate: (String) -> Unit, viewModel: LocalViewModel, authVie
         )
         SubmitButton(R.string.share) {
           authViewModel.share(user, *selectedPois.toLongArray()) {
-            Toast.makeText(context, if (it) shareSuccess else shareFailure, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, if (it) R.string.share_success else R.string.share_failure, Toast.LENGTH_SHORT).show()
             openShareDialog = false
           }
         }
@@ -87,7 +83,7 @@ fun PoiListView(onNavigate: (String) -> Unit, viewModel: LocalViewModel, authVie
             if (authViewModel.isUserSignedIn()) {
               openShareDialog = true
             } else {
-              Toast.makeText(context, accountRequired, Toast.LENGTH_SHORT).show()
+              Toast.makeText(context, R.string.required_account, Toast.LENGTH_SHORT).show()
             }
           }
         )
