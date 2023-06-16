@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
@@ -48,7 +49,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * Che Fico! Main Activity.
- *
  */
 @ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
@@ -60,6 +60,79 @@ class MainActivity : AppCompatActivity() {
    * [NavHostController] for views navigation.
    */
   private lateinit var navController: NavHostController
+
+  /**
+   * Local View Model.
+   */
+  private val viewModel by viewModels<LocalViewModel>()
+
+  /**
+   * Authentication and Cloud View Model.
+   */
+  private val authViewModel by viewModels<AuthViewModel>()
+
+  /**
+   * Permission launcher to request location access and navigate to Maps.
+   */
+  private val requestLocationPermLauncherMaps = getPermissionLauncher(CheFicoRoute.Maps.path)
+
+  /**
+   * Permission launcher to request location access and navigate to PoiCreation.
+   */
+  private val requestLocationPermLauncherPoi = getPermissionLauncher(CheFicoRoute.PoiCreation.path)
+
+  /**
+   * Utility to get the correct permission launcher to request location and navigate.
+   */
+  private val requestLocationPermLauncher: (String) -> ActivityResultLauncher<String> = {
+    when (it) {
+      CheFicoRoute.Maps.path -> requestLocationPermLauncherMaps
+      CheFicoRoute.PoiCreation.path -> requestLocationPermLauncherPoi
+      else -> requestLocationPermLauncherMaps
+    }
+  }
+
+  /**
+   * Permission launcher to request camera access and navigate to Camera.
+   */
+  private val requestCameraPermLauncher = getPermissionLauncher(CheFicoRoute.Camera.path)
+
+  /**
+   * Generic permission launcher.
+   */
+  private val requestGenericPermLauncher = getPermissionLauncher {}
+
+  /**
+   *
+   */
+  private val onNavigate: (String) -> Unit = {
+    println(it)
+    when (it) {
+      CheFicoRoute.Back.path -> {
+        navController.popBackStack()
+        println(navController.currentDestination?.route)
+        when (navController.currentDestination?.route) {
+          CheFicoRoute.PlantDetail.path, CheFicoRoute.Login.path -> navController.popBackStack()
+          CheFicoRoute.Signin.path -> {
+            navController.popBackStack()
+            navController.popBackStack()
+          }
+          CheFicoRoute.Dashboard.path -> {
+            if (authViewModel.isUserSignedIn()) {
+              authViewModel.isOnlineBackupActive { onlineBackup ->
+                if (onlineBackup) {
+                  authViewModel.sync()
+                }
+              }
+            }
+          }
+        }
+      }
+      CheFicoRoute.Maps.path, CheFicoRoute.PoiCreation.path -> requestPerm(ACCESS_FINE_LOCATION, requestLocationPermLauncher(it))
+      CheFicoRoute.Camera.path -> requestPerm(CAMERA, requestCameraPermLauncher)
+      else -> navController.navigate(it)
+    }
+  }
 
   /**
    * If the app is lacking the specified permission, requests it.
@@ -125,9 +198,6 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val viewModel by viewModels<LocalViewModel>()
-    val authViewModel by viewModels<AuthViewModel>()
-
     SettingsManager(this).refreshTheme()
     PoiNotificationManager.createNotificationChannel(this)
     if (authViewModel.isUserSignedIn()) {
@@ -140,17 +210,6 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SourceLockedOrientationActivity")
     this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-    val requestLocationPermLauncherMaps = getPermissionLauncher(CheFicoRoute.Maps.path)
-    val requestLocationPermLauncherPoi = getPermissionLauncher(CheFicoRoute.PoiCreation.path)
-    val requestLocationPermLauncher: (String) -> ActivityResultLauncher<String> = {
-      when (it) {
-        CheFicoRoute.Maps.path -> requestLocationPermLauncherMaps
-        CheFicoRoute.PoiCreation.path -> requestLocationPermLauncherPoi
-        else -> requestLocationPermLauncherMaps
-      }
-    }
-    val requestCameraPermLauncher = getPermissionLauncher(CheFicoRoute.Camera.path)
-    val requestGenericPermLauncher = getPermissionLauncher {}
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       requestPerm(POST_NOTIFICATIONS, requestGenericPermLauncher)
       requestPerm(READ_MEDIA_IMAGES, requestGenericPermLauncher)
@@ -160,34 +219,7 @@ class MainActivity : AppCompatActivity() {
     setContent {
       CheFicoTheme {
         navController = rememberNavController()
-        val onNavigate: (String) -> Unit = {
-          when (it) {
-            CheFicoRoute.Back.path -> {
-              navController.popBackStack()
-              println(navController.currentDestination?.route)
-              when (navController.currentDestination?.route) {
-                CheFicoRoute.PlantDetail.path, CheFicoRoute.Login.path -> navController.popBackStack()
-                CheFicoRoute.Signin.path -> {
-                  navController.popBackStack()
-                  navController.popBackStack()
-                }
-                CheFicoRoute.Dashboard.path -> {
-                  if (authViewModel.isUserSignedIn()) {
-                    authViewModel.isOnlineBackupActive { onlineBackup ->
-                      if (onlineBackup) {
-                        authViewModel.sync()
-                      }
-                    }
-                  }
-                }
-              }
-            }
-            CheFicoRoute.Maps.path, CheFicoRoute.PoiCreation.path -> requestPerm(ACCESS_FINE_LOCATION, requestLocationPermLauncher(it))
-            CheFicoRoute.Camera.path -> requestPerm(CAMERA, requestCameraPermLauncher)
-            else -> navController.navigate(it)
-          }
-        }
-
+        BackHandler(true) { onNavigate(CheFicoRoute.Back.path) }
         NavHost(navController, CheFicoRoute.Dashboard.path) {
           composable(CheFicoRoute.Dashboard.path) { DashboardView(onNavigate, viewModel) }
           composable(CheFicoRoute.Maps.path) {

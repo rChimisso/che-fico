@@ -37,7 +37,7 @@ object CheFicoRoute {
   /**
    * Settings [Route].
    */
-  object Settings : Route("sesttings")
+  object Settings : Route("settings")
 
   /**
    * Maps [Route].
