@@ -76,4 +76,7 @@
   <string name = "required_permission">Permission required</string>
   <string name = "flash">Flash</string>
   <string name = "required_account">Sharing requires an account</string>
+  <string name = "warning">Warning!</string>
+  <string name = "warning_body">Permission required</string>
+  <string name = "greet">Thank you</string>
 </resources>

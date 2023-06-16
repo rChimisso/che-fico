@@ -77,4 +77,7 @@
   <string name = "required_permission">Permesso necessario</string>
   <string name = "flash">Flash</string>
   <string name = "required_account">È necessario un account per condividere</string>
+  <string name = "warning">Attenzione!</string>
+  <string name = "warning_body">Per proseguire è necessario garantire i permessi</string>
+  <string name = "greet">Grazie</string>
 </resources>

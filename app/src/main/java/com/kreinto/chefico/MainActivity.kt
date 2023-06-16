@@ -145,10 +145,10 @@ class MainActivity : AppCompatActivity() {
       if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
         val alertBuilder = AlertDialog.Builder(this@MainActivity)
         alertBuilder.setCancelable(true)
-        alertBuilder.setTitle("Permesso necessario")
-        alertBuilder.setMessage("Il permesso è necessario ai fini dell'utilizzo.")
+        alertBuilder.setTitle(R.string.warning)
+        alertBuilder.setMessage(R.string.warning_body)
         alertBuilder.setPositiveButton(
-          "Grazie"
+          R.string.greet
         ) { _, _ ->
           launcher.launch(permission)
         }
@@ -185,10 +185,10 @@ class MainActivity : AppCompatActivity() {
         val alertBuilder = AlertDialog.Builder(this@MainActivity)
         alertBuilder.setCancelable(true)
 
-        alertBuilder.setTitle("Attenzione!")
-        alertBuilder.setMessage("Per proseguire è necessario garantire i permessi")
+        alertBuilder.setTitle(R.string.warning)
+        alertBuilder.setMessage(R.string.warning_body)
         alertBuilder.setPositiveButton(
-          "Grazie"
+          R.string.greet
         ) { _, _ -> }
         val alert = alertBuilder.create()
         alert.show()
