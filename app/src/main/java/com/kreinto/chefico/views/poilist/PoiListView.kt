@@ -47,7 +47,7 @@ fun PoiListView(onNavigate: (String) -> Unit, viewModel: LocalViewModel, authVie
   if (openShareDialog) {
     Dialog({ openShareDialog = false }) {
       Column(
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(PaddingLarge),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
           .padding(PaddingLarge)
