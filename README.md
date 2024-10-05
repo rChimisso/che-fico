@@ -1,5 +1,6 @@
 # che-fico
-*(Readme da migliorare)*
+
+Android app to identify plants, save their location and set alarms
 
 Nome gruppo: **Kreinto**
 
